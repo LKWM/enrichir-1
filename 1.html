@@ -797,14 +797,14 @@
                         { text: `목표 문장: "${target}"` },
                         { inline_data: { mime_type: mimeType, data: audioBase64 } }
                     ]}],
-                    systemInstruction: `한국어 발화를 그대로 한글로 전사하고, Reference Text 기준으로 발음을 100점 만점으로 평가해 숫자로 제시한다.`
+                    systemInstruction: `한국어 발화를 그대로 한글로 전사하고, Reference Text 기준으로 발음을 100점 만점으로 평가한다. 출력 형식: [전사값] / [점수]. 이 외 어떤 텍스트도 출력 금지.`
                 })
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
             rawText = data.text || JSON.stringify(data);
-            const allNums = rawText.match(/\d+/g);
-            if (allNums) score = Math.min(100, parseInt(allNums[allNums.length - 1]));
+            const sm = rawText.match(/\/\s*(\d+)/);
+            if (sm) score = Math.min(100, parseInt(sm[1]));
         } catch(e) {
             if (transcriptEl) transcriptEl.textContent = 'Erreur : ' + e.message;
             statusEl.textContent = 'Erreur de connexion. Réessayez.';
