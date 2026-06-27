@@ -52,6 +52,7 @@
         .card-btn { transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; }
         .card-btn:active { transform: scale(0.97); }
         .mic-btn-lg {
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -65,13 +66,12 @@
             .mic-btn-lg i { font-size: 3.5rem !important; }
         }
         .consigne {
-            font-size: 0.75rem; line-height: 1.1rem;
-            font-weight: 700; color: #64748b;
-            margin: 0;
-            text-transform: uppercase; letter-spacing: 0.08em;
+            font-size: 1.25rem; line-height: 1.75rem;
+            font-weight: 700; color: #1e293b;
+            margin-bottom: 1.25rem;
         }
-        @media (min-width: 640px)  { .consigne { font-size: 0.8rem; } }
-        @media (min-width: 1024px) { .consigne { font-size: 0.9rem; } }
+        @media (min-width: 640px)  { .consigne { font-size: 1.5rem; } }
+        @media (min-width: 1024px) { .consigne { font-size: 1.75rem; margin-bottom: 1.75rem; } }
         .recording-pulse { animation: pulse-red 1.5s infinite; }
         @keyframes pulse-red {
             0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.7); }
@@ -143,7 +143,7 @@
             <div class="content-area gap-4">
                 <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0">
                     <p class="text-2xl sm:text-3xl font-black text-slate-800 mb-1">
-                        (<span class="text-red-600">lieu</span>) + <span class="text-orange-600">에서</span> (<span class="text-purple-600">action</span>).
+                        (lieu) + <span class="text-orange-600">에서</span> (action).
                     </p>
                     <p class="text-sm sm:text-base font-semibold text-slate-400"><span class="text-orange-600">에서</span>(particule)</p>
                 </div>
@@ -568,9 +568,14 @@
         document.getElementById('progress-container').classList.remove('hidden');
         document.getElementById('bottom-nav').style.display = 'flex';
 
-        // Play transition sound and go to page 2
-        transitionSynth.triggerAttackRelease('C6', '0.05s');
-        goToPage(2);
+        // Lesson start sound: C4 → G4 → C5 arpeggio
+        const now = Tone.now();
+        completionSynth.triggerAttackRelease('C4', '0.2s', now);
+        completionSynth.triggerAttackRelease('G4', '0.2s', now + 0.25);
+        completionSynth.triggerAttackRelease('C5', '0.3s', now + 0.5);
+
+        // Navigate immediately; delay TTS until start sound finishes (~900ms)
+        goToPage(2, 900);
     }
 
     /* ═══════════════════════════════════════
@@ -583,14 +588,14 @@
         goToPage(currentPage + dir);
     }
 
-    function goToPage(n) {
+    function goToPage(n, ttsDelay) {
         document.getElementById(`page-${currentPage}`).classList.remove('active');
         currentPage = Math.max(2, Math.min(n, TOTAL_PAGES));
         document.getElementById(`page-${currentPage}`).classList.add('active');
         updateProgress();
         updateNav();
         restorePageState(currentPage);
-        schedulePageAudio(currentPage);
+        schedulePageAudio(currentPage, ttsDelay || 350);
 
         if (currentPage === TOTAL_PAGES) {
             if (completionSynth) completionSynth.triggerAttackRelease(['C5','E5','G5','C6'], '4n');
@@ -641,29 +646,34 @@
         if (p !== undefined) p.catch(e => { console.warn('Audio:', e); toggleActiveMic(false); });
     }
 
-    function schedulePageAudio(p) {
+    function schedulePageAudio(p, delay) {
         const d = PAGE_TTS[p];
         if (!d) return;
         const capturedPage = p;
         audioTimeoutId = setTimeout(() => {
             if (d.sentence && !pageStates[capturedPage].completed) {
-                // Play TTS, then chain sentence audio on ended
+                // Play TTS silently (no mic toggle), then chain sentence audio
                 const ttsAudio = new Audio(AUDIO_URLS[d.tts]);
                 currentAudio = ttsAudio;
-                ttsAudio.addEventListener('play',  () => toggleActiveMic(true));
-                ttsAudio.addEventListener('pause', () => toggleActiveMic(false));
                 ttsAudio.addEventListener('ended', () => {
-                    toggleActiveMic(false);
                     if (currentPage === capturedPage) {
-                        audioTimeoutId = setTimeout(() => playCardAudio(d.sentence), 300);
+                        audioTimeoutId = setTimeout(() => playAutoAudio(d.sentence), 300);
                     }
                 });
-                const promise = ttsAudio.play();
-                if (promise !== undefined) promise.catch(e => { console.warn('TTS:', e); toggleActiveMic(false); });
+                ttsAudio.play().catch(e => console.warn('TTS:', e));
             } else {
-                playCardAudio(d.tts);
+                playAutoAudio(d.tts);
             }
-        }, 350);
+        }, delay || 350);
+    }
+
+    // Auto-play audio: no mic toggling
+    function playAutoAudio(key) {
+        const url = AUDIO_URLS[key];
+        if (!url) return;
+        if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+        currentAudio = new Audio(url);
+        currentAudio.play().catch(e => console.warn('Auto audio:', e));
     }
 
     /* ═══════════════════════════════════════
@@ -782,21 +792,19 @@
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body:    JSON.stringify({
+                    model: 'gemini-2.5-flash',
                     contents: [{ role: 'user', parts: [
-                        { inline_data: { mime_type: mimeType, data: audioBase64 } },
-                        { text: `목표 문장: ${target}` }
+                        { text: `목표 문장: "${target}"` },
+                        { inline_data: { mime_type: mimeType, data: audioBase64 } }
                     ]}],
-                    systemInstruction: '한국어 발화 평가 시스템.\n출력 형식(엄수):\n전사: [한국어 전사]\n점수: [0-100]\n위 두 줄 외 어떤 텍스트도 절대 금지.',
-                    config: { temperature: 0, maxOutputTokens: 30 }
+                    systemInstruction: `한국어 발화를 그대로 한글로 전사하고, Reference Text 기준으로 발음을 100점 만점으로 평가해 숫자로 제시한다.`
                 })
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
             rawText = data.text || JSON.stringify(data);
-            const tm = rawText.match(/전사:\s*(.+)/);
-            const sm = rawText.match(/점수:\s*(\d+)/);
-            if (tm) transcript = tm[1].trim();
-            if (sm) score = Math.min(100, parseInt(sm[1]));
+            const allNums = rawText.match(/\d+/g);
+            if (allNums) score = Math.min(100, parseInt(allNums[allNums.length - 1]));
         } catch(e) {
             if (transcriptEl) transcriptEl.textContent = 'Erreur : ' + e.message;
             statusEl.textContent = 'Erreur de connexion. Réessayez.';
