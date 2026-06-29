@@ -38,29 +38,31 @@
         }
         .content-area {
             flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
-            padding: 0 1.25rem; gap: 2vh; text-align: center; min-height: 0; overflow: hidden;
+            padding: 0 1.25rem; text-align: center; min-height: 0; overflow: hidden;
         }
         @media (min-width: 768px)  { .content-area { padding: 0 3rem; } }
         @media (min-width: 1024px) { .content-area { padding: 0 6rem; } }
+        .content-block {
+            display: flex; flex-direction: column; align-items: center; gap: 1em;
+            width: 100%; flex-shrink: 0;
+        }
         .text-content {
-            font-size: 1rem; line-height: 1.6rem; color: #334155;
+            font-size: 1rem; line-height: 1; color: #334155;
             width: 100%; max-width: 42rem;
             text-align: center;
         }
-        @media (min-width: 768px)  { .text-content { font-size: 1.15rem; line-height: 1.85rem; } }
-        @media (min-width: 1024px) { .text-content { font-size: 1.25rem; line-height: 2rem; } }
+        @media (min-width: 768px)  { .text-content { font-size: 1.15rem; } }
+        @media (min-width: 1024px) { .text-content { font-size: 1.25rem; } }
         .card-btn { transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; gap: 0.4em; }
         .card-btn:active { transform: scale(0.97); }
         .mic-btn-lg {
-            width: 13vmin; height: 13vmin;
+            width: 4rem; height: 4rem;
             display: flex; align-items: center; justify-content: center;
             padding: 0; line-height: 0;
         }
-        .mic-btn-lg i {
-            font-size: 6vmin; display: block; line-height: 0;
-        }
+        .mic-btn-lg i { font-size: 2rem; display: block; line-height: 0; }
         .consigne {
-            font-size: 1.2rem; line-height: 1.8rem;
+            font-size: 1.2rem; line-height: 1;
             font-weight: 400; color: #94a3b8;
         }
         .feedback-area {
@@ -87,472 +89,497 @@
         <!-- PAGE 1 — Cover -->
         <div id="page-1" class="page active bg-purple-50">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <span class="text-4xl shrink-0">📱</span>
-                <p class="text-purple-600 font-semibold text-lg sm:text-xl shrink-0">Chapitre 1 : Le lieu et l'action</p>
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 px-4 shrink-0">Leçon 1 : J'étudie à l'école.</h1>
-                <button onclick="startLesson()"
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-3 shrink-0">
-                    <i class="ph-fill ph-play-circle text-2xl"></i> Commencer
-                </button>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <span class="text-4xl shrink-0">📱</span>
+                    <p class="text-purple-600 font-semibold text-lg sm:text-xl shrink-0">Chapitre 1 : Le lieu et l'action</p>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 px-4 shrink-0">Leçon 1 : J'étudie à l'école.</h1>
+                    <button onclick="startLesson()"
+                        class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-colors flex items-center gap-3 shrink-0">
+                        <i class="ph-fill ph-play-circle text-2xl"></i> Commencer
+                    </button>
+                </div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 2 — Introduction -->
         <div id="page-2" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">
-                    Bonjour, et bienvenue dans « Enrichir son expression (1) ». Ce programme a été conçu pour vous faire pratiquer la construction de phrases coréennes de structures variées à l'aide de différentes particules. Si vous n'êtes pas encore à l'aise avec la prononciation du hangeul, la conjugaison au présent ou le vocabulaire de base, nous vous recommandons de suivre ce programme en parallèle des autres cours de niveau A1 de CoréenO.
-                </p>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">
+                        Bonjour, et bienvenue dans « Enrichir son expression (1) ». Ce programme a été conçu pour vous faire pratiquer la construction de phrases coréennes de structures variées à l'aide de différentes particules. Si vous n'êtes pas encore à l'aise avec la prononciation du hangeul, la conjugaison au présent ou le vocabulaire de base, nous vous recommandons de suivre ce programme en parallèle des autres cours de niveau A1 de CoréenO.
+                    </p>
+                </div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 3 — Repeat S1-1 -->
         <div id="page-3" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Pour commencer, essayons de dire la phrase que nous allons apprendre aujourd'hui. Répétez après moi.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S1F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
-                            <span class="text-sm font-semibold text-red-600">école</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Pour commencer, essayons de dire la phrase que nous allons apprendre aujourd'hui. Répétez après moi.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S1F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
+                                <span class="text-sm font-semibold text-red-600">école</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                    </button>
+                    <button id="mic-btn-3" onclick="toggleRecordSpeech(this,'status-3','transcript-3','학교에서 공부해요',3)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-3" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-3" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-3" onclick="toggleRecordSpeech(this,'status-3','transcript-3','학교에서 공부해요',3)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-3"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-3" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 4 — S1 Explanation -->
         <div id="page-4" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <div class="flex items-baseline justify-center">
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">(lieu)&nbsp;+&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-slate-800">에서</span>
-                            <span class="text-sm font-semibold text-slate-400">particule</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <div class="flex items-baseline justify-center">
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">(lieu)&nbsp;+&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-slate-800">에서</span>
+                                <span class="text-sm font-semibold text-slate-400">particule</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;&nbsp;(action).</span>
                         </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;&nbsp;(action).</span>
                     </div>
+                    <button onclick="playCardAudio('C1S1F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
+                                <span class="text-sm font-semibold text-red-600">lieu</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">particule</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">action</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
+                        </div>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                    </button>
+                    <p class="text-content shrink-0">
+                        Très bien ! Dans cette phrase, le verbe, c'est-à-dire l'action, c'est « 공부하다 » (étudier). Et « 학교 » joue le rôle du lieu où se déroule cette action. Pour exprimer le lieu où une action se déroule, on utilise la particule « 에서 ». Elle correspond à « dans » ou « à » en français.
+                    </p>
                 </div>
-                <button onclick="playCardAudio('C1S1F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
-                            <span class="text-sm font-semibold text-red-600">lieu</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">particule</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">action</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
-                    </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <p class="text-content shrink-0">
-                    Très bien ! Dans cette phrase, le verbe, c'est-à-dire l'action, c'est « 공부하다 » (étudier). Et « 학교 » joue le rôle du lieu où se déroule cette action. Pour exprimer le lieu où une action se déroule, on utilise la particule « 에서 ». Elle correspond à « dans » ou « à » en français.
-                </p>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 5 — Repeat S1-2 -->
         <div id="page-5" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Dites-le à nouveau.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S1F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
-                            <span class="text-sm font-semibold text-red-600">école</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Dites-le à nouveau.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S1F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">학교</span>
+                                <span class="text-sm font-semibold text-red-600">école</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                    </button>
+                    <button id="mic-btn-5" onclick="toggleRecordSpeech(this,'status-5','transcript-5','학교에서 공부해요',5)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-5" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-5" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-5" onclick="toggleRecordSpeech(this,'status-5','transcript-5','학교에서 공부해요',5)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-5"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-5" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 6 — Repeat S2-1 -->
         <div id="page-6" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Très bien. Maintenant, remplaçons « 학교 » par « 집 » pour former une nouvelle phrase. Répétez après moi.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S2F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">집</span>
-                            <span class="text-sm font-semibold text-red-600">maison</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Très bien. Maintenant, remplaçons « 학교 » par « 집 » pour former une nouvelle phrase. Répétez après moi.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S2F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">집</span>
+                                <span class="text-sm font-semibold text-red-600">maison</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                    </button>
+                    <button id="mic-btn-6" onclick="toggleRecordSpeech(this,'status-6','transcript-6','집에서 공부해요',6)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-6" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-6" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-6" onclick="toggleRecordSpeech(this,'status-6','transcript-6','집에서 공부해요',6)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-6"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-6" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 7 — Repeat S2-2 -->
         <div id="page-7" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Essayez encore une fois !</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S2F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">집</span>
-                            <span class="text-sm font-semibold text-red-600">maison</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Essayez encore une fois !</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S2F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">집</span>
+                                <span class="text-sm font-semibold text-red-600">maison</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">.</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                    </button>
+                    <button id="mic-btn-7" onclick="toggleRecordSpeech(this,'status-7','transcript-7','집에서 공부해요',7)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-7" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-7" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-7" onclick="toggleRecordSpeech(this,'status-7','transcript-7','집에서 공부해요',7)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-7"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-7" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 8 — Repeat S3-1 -->
         <div id="page-8" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S3F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">어디</span>
-                            <span class="text-sm font-semibold text-red-600">où</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S3F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">어디</span>
+                                <span class="text-sm font-semibold text-red-600">où</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">?</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">?</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                    </button>
+                    <button id="mic-btn-8" onclick="toggleRecordSpeech(this,'status-8','transcript-8','어디에서 공부해요',8)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-8" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-8" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-8" onclick="toggleRecordSpeech(this,'status-8','transcript-8','어디에서 공부해요',8)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-8"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-8" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 9 — Repeat S3-2 -->
         <div id="page-9" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">On essaie une fois de plus ?</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <button onclick="playCardAudio('C1S3F')"
-                    class="card-btn bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-slate-50 shrink-0">
-                    <div class="flex items-baseline justify-center">
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-red-600">어디</span>
-                            <span class="text-sm font-semibold text-red-600">où</span>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">On essaie une fois de plus ?</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <button onclick="playCardAudio('C1S3F')"
+                        class="card-btn bg-white border-2 border-violet-600 rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center justify-center hover:bg-violet-50 shrink-0">
+                        <div class="flex items-baseline justify-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-red-600">어디</span>
+                                <span class="text-sm font-semibold text-red-600">où</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
+                                <span class="text-sm font-semibold text-orange-600">dans</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
+                                <span class="text-sm font-semibold text-purple-600">étudier</span>
+                            </div>
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800">?</span>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-orange-600">에서</span>
-                            <span class="text-sm font-semibold text-orange-600">dans</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">&nbsp;</span>
-                        <div class="flex flex-col items-center">
-                            <span class="text-2xl sm:text-3xl font-black text-purple-600">공부해요</span>
-                            <span class="text-sm font-semibold text-purple-600">étudier</span>
-                        </div>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-800">?</span>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                    </button>
+                    <button id="mic-btn-9" onclick="toggleRecordSpeech(this,'status-9','transcript-9','어디에서 공부해요',9)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-9" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-9" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                     </div>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
-                    <i class="ph-fill ph-play-circle text-4xl text-purple-400"></i>
-                </button>
-                <button id="mic-btn-9" onclick="toggleRecordSpeech(this,'status-9','transcript-9','어디에서 공부해요',9)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-9"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-9" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
                 </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 10 — Repeat S1-3 (hide) -->
         <div id="page-10" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Cette fois, je vais cacher un mot. Répétez après moi.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        <span id="p10h1" class="text-slate-300">◯◯</span>에서 공부해요.
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Cette fois, je vais cacher un mot. Répétez après moi.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            <span id="p10h1" class="text-slate-300">◯◯</span>에서 공부해요.
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                    </div>
+                    <button id="mic-btn-10" onclick="toggleRecordSpeech(this,'status-10','transcript-10','학교에서 공부해요',10)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-10" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-10" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-10" onclick="toggleRecordSpeech(this,'status-10','transcript-10','학교에서 공부해요',10)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-10"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-10" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 11 — Repeat S2-3 (hide) -->
         <div id="page-11" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Répétez aussi cette phrase.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        집<span id="p11h1" class="text-slate-300">◯◯</span> 공부해요.
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Répétez aussi cette phrase.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            집<span id="p11h1" class="text-slate-300">◯◯</span> 공부해요.
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                    </div>
+                    <button id="mic-btn-11" onclick="toggleRecordSpeech(this,'status-11','transcript-11','집에서 공부해요',11)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-11" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-11" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-11" onclick="toggleRecordSpeech(this,'status-11','transcript-11','집에서 공부해요',11)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-11"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-11" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 12 — Repeat S3-3 (hide) -->
         <div id="page-12" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Dites aussi cette phrase.</p>
-                <p class="consigne shrink-0">Répétez après moi.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        <span id="p12h1" class="text-slate-300">◯◯</span>에서 공부<span id="p12h2" class="text-slate-300">◯◯</span>?
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Dites aussi cette phrase.</p>
+                    <p class="consigne shrink-0">Répétez après moi.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            <span id="p12h1" class="text-slate-300">◯◯</span>에서 공부<span id="p12h2" class="text-slate-300">◯◯</span>?
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                    </div>
+                    <button id="mic-btn-12" onclick="toggleRecordSpeech(this,'status-12','transcript-12','어디에서 공부해요',12)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-12" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-12" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-12" onclick="toggleRecordSpeech(this,'status-12','transcript-12','어디에서 공부해요',12)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-12"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-12" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 13 — Trad S1-4 -->
         <div id="page-13" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Cette fois, dites la phrase vous-même en coréen.</p>
-                <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        학교<span id="p13h1" class="text-slate-300">◯◯</span> <span id="p13h2" class="text-slate-300">◯◯◯◯</span>.
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Cette fois, dites la phrase vous-même en coréen.</p>
+                    <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            학교<span id="p13h1" class="text-slate-300">◯◯</span> <span id="p13h2" class="text-slate-300">◯◯◯◯</span>.
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à l'école.</p>
+                    </div>
+                    <button id="mic-btn-13" onclick="toggleRecordSpeech(this,'status-13','transcript-13','학교에서 공부해요',13)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-13" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-13" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-13" onclick="toggleRecordSpeech(this,'status-13','transcript-13','학교에서 공부해요',13)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-13"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-13" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 14 — Trad S2-4 -->
         <div id="page-14" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">Dites aussi cette phrase en coréen.</p>
-                <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        <span id="p14h1" class="text-slate-300">◯</span><span id="p14h2" class="text-slate-300">◯◯</span> 공부<span id="p14h3" class="text-slate-300">◯◯</span>.
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">Dites aussi cette phrase en coréen.</p>
+                    <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            <span id="p14h1" class="text-slate-300">◯</span><span id="p14h2" class="text-slate-300">◯◯</span> 공부<span id="p14h3" class="text-slate-300">◯◯</span>.
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">J'étudie à la maison.</p>
+                    </div>
+                    <button id="mic-btn-14" onclick="toggleRecordSpeech(this,'status-14','transcript-14','집에서 공부해요',14)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-14" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-14" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-14" onclick="toggleRecordSpeech(this,'status-14','transcript-14','집에서 공부해요',14)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-14"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-14" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 15 — Trad S3-4 -->
         <div id="page-15" class="page">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">C'est la dernière question ! Posez la question en coréen.</p>
-                <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
-                <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
-                        <span id="p15h1" class="text-slate-300">◯◯</span>에서 <span id="p15h2" class="text-slate-300">◯◯◯◯</span>?
-                    </h3>
-                    <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">C'est la dernière question ! Posez la question en coréen.</p>
+                    <p class="consigne shrink-0">Traduisez la phrase en coréen.</p>
+                    <div class="bg-white border-2 border-slate-200 shadow-md rounded-3xl py-4 px-8 w-full max-w-sm flex flex-col items-center shrink-0" style="gap:0.4em;">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-800 text-center">
+                            <span id="p15h1" class="text-slate-300">◯◯</span>에서 <span id="p15h2" class="text-slate-300">◯◯◯◯</span>?
+                        </h3>
+                        <p class="text-sm sm:text-base font-semibold w-full text-center text-slate-500">Où étudiez-vous ?</p>
+                    </div>
+                    <button id="mic-btn-15" onclick="toggleRecordSpeech(this,'status-15','transcript-15','어디에서 공부해요',15)"
+                        class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
+                        <i class="ph-fill ph-microphone"></i>
+                    </button>
+                    <div class="feedback-area">
+                        <p id="status-15" class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
+                        <p id="transcript-15" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
+                    </div>
                 </div>
-                <button id="mic-btn-15" onclick="toggleRecordSpeech(this,'status-15','transcript-15','어디에서 공부해요',15)"
-                    class="mic-req mic-btn-lg bg-red-500 text-white rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 relative z-10 shrink-0">
-                    <i class="ph-fill ph-microphone"></i>
-                </button>
-                <div class="feedback-area">
-                    <p id="status-15"     class="font-bold text-sm text-center w-full transition-colors text-slate-500" style="visibility:hidden;">&nbsp;</p>
-                    <p id="transcript-15" class="text-slate-700 text-sm text-center px-4 leading-tight" style="visibility:hidden;">&nbsp;</p>
-                </div>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
         <!-- PAGE 16 — Outro -->
         <div id="page-16" class="page bg-purple-50">
             <div class="content-area">
-                <div style="flex:1; flex-shrink:0;"></div>
-                <p class="text-content shrink-0">
-                    Fantastique ! Grâce à la leçon d'aujourd'hui, nous savons maintenant exprimer en coréen le lieu où une action se déroule. La prochaine fois, nous allons utiliser d'autres mots pour construire, dire et écrire nous-mêmes des phrases variées. Alors, rendez-vous à la leçon de pratique !
-                </p>
-                <div style="flex:1; flex-shrink:0;"></div>
+                <div style="flex:1; flex-shrink:1;"></div>
+                <div class="content-block">
+                    <p class="text-content shrink-0">
+                        Fantastique ! Grâce à la leçon d'aujourd'hui, nous savons maintenant exprimer en coréen le lieu où une action se déroule. La prochaine fois, nous allons utiliser d'autres mots pour construire, dire et écrire nous-mêmes des phrases variées. Alors, rendez-vous à la leçon de pratique !
+                    </p>
+                </div>
+                <div style="flex:1; flex-shrink:1;"></div>
             </div>
         </div>
 
     </div><!-- end pages-wrapper -->
 
     <!-- Bottom nav -->
-    <div id="bottom-nav" class="w-full bg-white border-t border-slate-200 items-center justify-between px-6 sm:px-10"
+    <div id="bottom-nav" class="w-full bg-white border-t border-slate-200 items-center justify-between"
          style="height:4rem; flex-shrink:0; display:none;">
         <button id="btn-prev" onclick="changePage(-1)"
-            class="text-slate-500 font-bold text-base sm:text-lg flex items-center gap-2 hover:text-slate-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-5 sm:px-12 lg:px-24">
+            class="text-slate-500 font-bold text-base sm:text-lg flex flex-1 justify-center items-center gap-2 hover:text-slate-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             <i class="ph-bold ph-caret-left"></i> Précédent
         </button>
         <span id="page-indicator" class="text-slate-400 text-sm font-semibold tabular-nums"></span>
         <button id="btn-next" onclick="changePage(1)"
-            class="text-purple-600 font-bold text-base sm:text-lg flex items-center gap-2 hover:text-purple-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed px-5 sm:px-12 lg:px-24">
+            class="text-purple-600 font-bold text-base sm:text-lg flex flex-1 justify-center items-center gap-2 hover:text-purple-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Suivant <i class="ph-bold ph-caret-right"></i>
         </button>
     </div>
@@ -560,9 +587,6 @@
 </div><!-- end app-container -->
 
 <script>
-    /* ═══════════════════════════════════════
-       CONFIG
-    ═══════════════════════════════════════ */
     const GEMINI_URL  = 'https://coreeno.base44.app/api/functions/Geminichat';
     const TOTAL_PAGES = 16;
 
@@ -633,9 +657,6 @@
 
     const INTERACTIVE = new Set([3,5,6,7,8,9,10,11,12,13,14,15]);
 
-    /* ═══════════════════════════════════════
-       STATE
-    ═══════════════════════════════════════ */
     let currentPage   = 1;
     let currentAudio  = null;
     let audioTimeoutId = null;
@@ -647,12 +668,8 @@
 
     let correctSound = null, errorSound = null, completionSynth = null, transitionSynth = null;
 
-    /* ═══════════════════════════════════════
-       INIT
-    ═══════════════════════════════════════ */
     async function startLesson() {
         await Tone.start();
-
         correctSound    = new Tone.Synth({ oscillator: { type: 'sine'     } }).toDestination();
         errorSound      = new Tone.Synth({ oscillator: { type: 'triangle' } }).toDestination();
         completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
@@ -673,9 +690,6 @@
         goToPage(2, 900);
     }
 
-    /* ═══════════════════════════════════════
-       NAVIGATION
-    ═══════════════════════════════════════ */
     function changePage(dir) {
         if (transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s');
         stopCurrentAudio();
@@ -690,6 +704,7 @@
         updateProgress();
         updateNav();
         restorePageState(currentPage);
+        requestAnimationFrame(updateMicSize);
         if (INTERACTIVE.has(currentPage) && !pageStates[currentPage].completed) {
             toggleActiveMic(true);
         }
@@ -724,9 +739,6 @@
         }
     }
 
-    /* ═══════════════════════════════════════
-       AUDIO
-    ═══════════════════════════════════════ */
     function stopCurrentAudio() {
         if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
         if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
@@ -780,17 +792,6 @@
         }, delay || 350);
     }
 
-    function playAutoAudio(key) {
-        const url = AUDIO_URLS[key];
-        if (!url) return;
-        if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
-        currentAudio = new Audio(url);
-        currentAudio.play().catch(e => console.warn('Auto audio:', e));
-    }
-
-    /* ═══════════════════════════════════════
-       MIC UI HELPERS
-    ═══════════════════════════════════════ */
     function toggleActiveMic(disable) {
         document.querySelectorAll(`#page-${currentPage} .mic-req`).forEach(btn => {
             if (btn.classList.contains('bg-green-500') || btn.classList.contains('recording-pulse')) return;
@@ -818,9 +819,6 @@
         btn.innerHTML = `<i class="ph-fill ph-microphone"></i>`;
     }
 
-    /* ═══════════════════════════════════════
-       RECORDING
-    ═══════════════════════════════════════ */
     function stopRecording() {
         if (recordingTimeout)  { clearTimeout(recordingTimeout); recordingTimeout = null; }
         if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
@@ -864,7 +862,7 @@
             statusEl.textContent = 'Analyse...';
             statusEl.style.visibility = 'visible';
             statusEl.className   = 'font-bold text-sm text-center w-full transition-colors text-slate-500';
-            if (transcriptEl) { transcriptEl.textContent = ' '; transcriptEl.style.visibility = 'hidden'; }
+            if (transcriptEl) { transcriptEl.textContent = ' '; transcriptEl.style.visibility = 'hidden'; }
 
             if (chunks.length === 0) {
                 statusEl.textContent = 'Erreur : aucun audio enregistré.';
@@ -894,9 +892,6 @@
         }, 6000);
     }
 
-    /* ═══════════════════════════════════════
-       GEMINI API
-    ═══════════════════════════════════════ */
     async function processGemini(audioBase64, mimeType, target, pageId, btn, statusEl, transcriptEl) {
         const cfg = PAGE_CFG[pageId];
         const ps  = pageStates[pageId];
@@ -980,9 +975,6 @@
         }
     }
 
-    /* ═══════════════════════════════════════
-       REVEALS
-    ═══════════════════════════════════════ */
     function revealAnswers(pageId) {
         const cfg = PAGE_CFG[pageId];
         if (!cfg || !cfg.reveals) return;
@@ -1002,12 +994,26 @@
         if (btn) disableMicBtn(btn, false);
     }
 
-    /* ═══════════════════════════════════════
-       LESSON COMPLETE
-    ═══════════════════════════════════════ */
     function triggerLessonComplete() {
         window.parent.postMessage({ type: 'lesson_complete' }, '*');
     }
+
+    function updateMicSize() {
+        const page = document.getElementById(`page-${currentPage}`);
+        if (!page) return;
+        const card = page.querySelector('.card-btn');
+        if (!card) return;
+        const cardH = card.getBoundingClientRect().height;
+        if (!cardH) return;
+        const btnSize = cardH * 0.8;
+        page.querySelectorAll('.mic-btn-lg').forEach(btn => {
+            btn.style.width  = btnSize + 'px';
+            btn.style.height = btnSize + 'px';
+            const icon = btn.querySelector('i');
+            if (icon) icon.style.fontSize = (btnSize * 0.5) + 'px';
+        });
+    }
+    window.addEventListener('resize', updateMicSize);
 </script>
 </body>
 </html>
