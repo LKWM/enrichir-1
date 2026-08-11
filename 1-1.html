@@ -14,7 +14,7 @@
     .page {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 5vh 5vw; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden;
+      padding: 2.5vh 2.5vw; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden;
     }
     .page.active { opacity: 1; pointer-events: auto; }
     .ko { font-family: 'Noto Sans KR', sans-serif; }
@@ -30,7 +30,7 @@
     .mic-btn.disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-    .feedback-area { min-height: 6vh; display: flex; align-items: center; justify-content: center; }
+    .feedback-area { min-height: 6vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8vh; }
     .invisible-fb { visibility: hidden; }
     .visible-fb { visibility: visible; }
     .nav-btn {
@@ -65,19 +65,19 @@
 
   <!-- ════════ PAGE 1 — INTRODUCTION ════════ -->
   <div class="page flex-col bg-violet-50" id="page-1">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2vh;">
-      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
-        <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Bonjour, et bienvenue dans « Enrichir son expression (1) ». Ce programme a été conçu pour vous faire pratiquer la construction de phrases coréennes de structures variées à l'aide de différentes particules. Si vous n'êtes pas encore à l'aise avec la prononciation du hangeul, la conjugaison au présent ou le vocabulaire de base, nous vous recommandons de suivre ce programme en parallèle des autres cours de niveau A1 de CoréenO.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
+      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
+        <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bonjour, et bienvenue dans « Enrichir son expression (1) ». Ce programme a été conçu pour vous faire pratiquer la construction de phrases coréennes de structures variées à l'aide de différentes particules. Si vous n'êtes pas encore à l'aise avec la prononciation du hangeul, la conjugaison au présent ou le vocabulaire de base, nous vous recommandons de suivre ce programme en parallèle des autres cours de niveau A1 de CoréenO.</p>
       </div>
     </div>
   </div>
 
   <!-- ════════ PAGE 2 — REPEAT S1-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-2">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Pour commencer, essayons de dire la phrase que nous allons apprendre aujourd'hui. Répétez après moi.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Pour commencer, essayons de dire la phrase que nous allons apprendre aujourd'hui. Répétez après moi.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
         <button class="mic-btn disabled" id="mic-2" onclick="handleMicClick(2)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -88,29 +88,29 @@
 
   <!-- ════════ PAGE 3 — S1 EXPLANATION ════════ -->
   <div class="page flex-col bg-violet-50" id="page-3">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2.5vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.1rem,2.5vw,1.7rem);font-weight:700;text-align:center;">(lieu) + <span class="text-orange-500">에서</span> (action).</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;color:#6b7280;">(lieu) + <span class="text-orange-500">particule</span> (action).</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:0.8vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.2rem,3vw,1.9rem);font-weight:700;text-align:center;">(lieu) + <span class="text-orange-500">에서</span> (action).</p>
+        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;color:#6b7280;"><span class="text-orange-500">particule</span></p>
       </div>
-      <div class="card-clickable" onclick="playClickAudio(3)" style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2.5vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+      <div class="card-clickable" onclick="playClickAudio(3)" style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:0.8vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;">
           <i class="ph-fill ph-speaker-high" style="font-size:clamp(1rem,2vw,1.5rem);color:#7c3aed;"></i>
-          <p class="ko" style="font-size:clamp(1.1rem,2.5vw,1.7rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
+          <p class="ko" style="font-size:clamp(1.2rem,3vw,1.9rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         </div>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">lieu</span> <span class="text-orange-500">particule</span> <span class="text-purple-600">action</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
       </div>
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Très bien ! Dans cette phrase, le verbe, c'est-à-dire l'action, c'est « 공부하다 » (étudier). Et « 학교 » joue le rôle du lieu où se déroule cette action. Pour exprimer le lieu où une action se déroule, on utilise la particule « 에서 ». Elle correspond à « dans » ou « à » en français.</p>
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien ! Dans cette phrase, le verbe, c'est-à-dire l'action, c'est « 공부하다 » (étudier). Et « 학교 » joue le rôle du lieu où se déroule cette action. Pour exprimer le lieu où une action se déroule, on utilise la particule « 에서 ». Elle correspond à « dans » ou « à » en français.</p>
     </div>
   </div>
 
   <!-- ════════ PAGE 4 — REPEAT S1-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-4">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Dites-le à nouveau.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites-le à nouveau.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
         <button class="mic-btn disabled" id="mic-4" onclick="handleMicClick(4)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -121,10 +121,10 @@
 
   <!-- ════════ PAGE 5 — REPEAT S2-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-5">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Très bien. Maintenant, remplaçons « 학교 » par « 집 » pour former une nouvelle phrase. Répétez après moi.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien. Maintenant, remplaçons « 학교 » par « 집 » pour former une nouvelle phrase. Répétez après moi.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
         <button class="mic-btn disabled" id="mic-5" onclick="handleMicClick(5)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -135,10 +135,10 @@
 
   <!-- ════════ PAGE 6 — REPEAT S2-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-6">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Essayez encore une fois !</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Essayez encore une fois !</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
         <button class="mic-btn disabled" id="mic-6" onclick="handleMicClick(6)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -149,10 +149,10 @@
 
   <!-- ════════ PAGE 7 — REPEAT S3-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-7">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
         <button class="mic-btn disabled" id="mic-7" onclick="handleMicClick(7)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -163,10 +163,10 @@
 
   <!-- ════════ PAGE 8 — REPEAT S3-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-8">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">On essaie une fois de plus ?</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">On essaie une fois de plus ?</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
         <button class="mic-btn disabled" id="mic-8" onclick="handleMicClick(8)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -177,11 +177,12 @@
 
   <!-- ════════ PAGE 9 — REPEAT S1-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-9">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Cette fois, je vais cacher un mot. Répétez après moi.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="9" data-answer="학교">◯◯</span>에서 공부해요.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, je vais cacher un mot. Répétez après moi.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="9" data-answer="학교">◯◯</span>에서 공부해요.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
+        <button onclick="playCardAudio(9)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1rem,2vw,1.5rem);padding:0;margin-bottom:0.5vh;"><i class="ph-fill ph-speaker-high"></i></button>
         <button class="mic-btn disabled" id="mic-9" onclick="handleMicClick(9)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-9" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -190,11 +191,12 @@
 
   <!-- ════════ PAGE 10 — REPEAT S2-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-10">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Répétez aussi cette phrase.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;">집<span class="blank" data-page="10" data-answer="에서">◯◯</span> 공부해요.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Répétez aussi cette phrase.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">집<span class="blank" data-page="10" data-answer="에서">◯◯</span> 공부해요.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
+        <button onclick="playCardAudio(10)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1rem,2vw,1.5rem);padding:0;margin-bottom:0.5vh;"><i class="ph-fill ph-speaker-high"></i></button>
         <button class="mic-btn disabled" id="mic-10" onclick="handleMicClick(10)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-10" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -203,11 +205,12 @@
 
   <!-- ════════ PAGE 11 — REPEAT S3-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-11">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Dites aussi cette phrase.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="11" data-answer="어디">◯◯</span>에서 공부<span class="blank" data-page="11" data-answer="해요">◯◯</span>?</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites aussi cette phrase.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="11" data-answer="어디">◯◯</span>에서 공부<span class="blank" data-page="11" data-answer="해요">◯◯</span>?</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
+        <button onclick="playCardAudio(11)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1rem,2vw,1.5rem);padding:0;margin-bottom:0.5vh;"><i class="ph-fill ph-speaker-high"></i></button>
         <button class="mic-btn disabled" id="mic-11" onclick="handleMicClick(11)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-11" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -216,10 +219,10 @@
 
   <!-- ════════ PAGE 12 — TRAD S1-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-12">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Cette fois, dites la phrase vous-même en coréen.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;">학교<span class="blank" data-page="12" data-answer="에서">◯◯</span> <span class="blank" data-page="12" data-answer="공부해요">◯◯◯◯</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, dites la phrase vous-même en coréen.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">학교<span class="blank" data-page="12" data-answer="에서">◯◯</span> <span class="blank" data-page="12" data-answer="공부해요">◯◯◯◯</span>.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
         <button class="mic-btn disabled" id="mic-12" onclick="handleMicClick(12)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -230,10 +233,10 @@
 
   <!-- ════════ PAGE 13 — TRAD S2-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-13">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Dites aussi cette phrase en coréen.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="13" data-answer="집에서">◯◯◯</span> 공부<span class="blank" data-page="13" data-answer="해요">◯◯</span>.</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites aussi cette phrase en coréen.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="13" data-answer="집에서">◯◯◯</span> 공부<span class="blank" data-page="13" data-answer="해요">◯◯</span>.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
         <button class="mic-btn disabled" id="mic-13" onclick="handleMicClick(13)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -244,10 +247,10 @@
 
   <!-- ════════ PAGE 14 — TRAD S3-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-14">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
-      <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">C'est la dernière question ! Posez la question en coréen.</p>
-      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="14" data-answer="어디">◯◯</span>에서 <span class="blank" data-page="14" data-answer="공부해요">◯◯◯◯</span>?</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">C'est la dernière question ! Posez la question en coréen.</p>
+      <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
+        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="14" data-answer="어디">◯◯</span>에서 <span class="blank" data-page="14" data-answer="공부해요">◯◯◯◯</span>?</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
         <button class="mic-btn disabled" id="mic-14" onclick="handleMicClick(14)"><i class="ph-fill ph-microphone" style="font-size:4vh;"></i></button>
@@ -258,15 +261,15 @@
 
   <!-- ════════ PAGE 15 — OUTRO ════════ -->
   <div class="page flex-col bg-violet-50" id="page-15">
-    <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2vh;">
-      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
-        <p style="font-size:clamp(0.85rem,2vw,1.15rem);font-weight:500;line-height:1.8;text-align:center;color:#1e1b2e;">Fantastique ! Grâce à la leçon d'aujourd'hui, nous savons maintenant exprimer en coréen le lieu où une action se déroule. La prochaine fois, nous allons utiliser d'autres mots pour construire, dire et écrire nous-mêmes des phrases variées. Alors, rendez-vous à la leçon de pratique !</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
+      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
+        <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Fantastique ! Grâce à la leçon d'aujourd'hui, nous savons maintenant exprimer en coréen le lieu où une action se déroule. La prochaine fois, nous allons utiliser d'autres mots pour construire, dire et écrire nous-mêmes des phrases variées. Alors, rendez-vous à la leçon de pratique !</p>
       </div>
     </div>
   </div>
 
   <!-- ════════ BOTTOM NAV ════════ -->
-  <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:10vh;display:none;align-items:center;justify-content:space-between;padding:0 5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
+  <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:8vh;display:none;align-items:center;justify-content:space-between;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
     <button class="nav-btn" id="prev-btn" onclick="prevPage()"><i class="ph ph-caret-left"></i></button>
     <span id="page-num" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:700;color:#4a4466;"></span>
     <button class="nav-btn" id="next-btn" onclick="nextPage()"><i class="ph ph-caret-right"></i></button>
@@ -277,7 +280,7 @@
    CONFIG
    ═══════════════════════════════════════ */
 const GEMINI_URL = 'https://coreeno.base44.app/api/functions/Geminichat';
-const TOTAL_PAGES = 15; // P1-P15
+const TOTAL_PAGES = 16; // Syllabus P1-P16
 
 const PAGE_AUDIO = {
   1: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-1_u0bdyi.mp3',
@@ -299,8 +302,14 @@ const PAGE_AUDIO = {
 
 const CARD_AUDIO = {
   2: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1S1F_nnqttc.mp3',
+  4: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1S1F_nnqttc.mp3',
   5: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504923/C1S2F_l0hybt.mp3',
+  6: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504923/C1S2F_l0hybt.mp3',
   7: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1S3F_pcyksx.mp3',
+  8: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1S3F_pcyksx.mp3',
+  9: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1S1F_nnqttc.mp3',
+  10: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504923/C1S2F_l0hybt.mp3',
+  11: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1S3F_pcyksx.mp3',
 };
 
 const CLICK_AUDIO = {
@@ -420,6 +429,10 @@ function stopAudio() {
   if (micTimer) { clearTimeout(micTimer); micTimer = null; }
 }
 
+function playCardAudio(pageNum) {
+  if (CARD_AUDIO[pageNum]) playAudio(CARD_AUDIO[pageNum]);
+}
+
 function playClickAudio(pageNum) {
   if (CLICK_AUDIO[pageNum]) {
     stopAudio();
@@ -464,7 +477,7 @@ function prevPage() {
 }
 
 function updateProgress() {
-  const pct = (currentPage / TOTAL_PAGES) * 100;
+  const pct = (currentPage / (TOTAL_PAGES - 1)) * 100;
   document.getElementById('progress-bar').style.width = pct + '%';
 }
 
@@ -477,12 +490,12 @@ function updateBottomBar() {
 
   if (currentPage === 0 || currentPage === 15) {
     nav.style.display = 'none';
-    if (activePage) activePage.style.paddingBottom = '5vh';
+    if (activePage) activePage.style.paddingBottom = '3vh';
     return;
   }
   nav.style.display = 'flex';
-  if (activePage) activePage.style.paddingBottom = '15vh';
-  pageNum.textContent = currentPage + '/' + TOTAL_PAGES;
+  if (activePage) activePage.style.paddingBottom = '12vh';
+  pageNum.textContent = (currentPage + 1) + '/' + TOTAL_PAGES;
   prevBtn.disabled = (currentPage === 1);
 
   if (EXERCISES[currentPage]) {
@@ -753,8 +766,8 @@ function showFeedback(pageNum, message, type, transcript, score) {
   const el = document.getElementById('feedback-' + pageNum);
   if (!el) return;
   var html = '';
-  if (transcript) html += '<div style="font-weight:500;color:#6b7280;margin-bottom:0.3vh;">« ' + transcript + ' »</div>';
-  if (typeof score !== 'undefined' && score !== null) html += '<div style="font-weight:700;color:' + (type === 'success' ? '#16a34a' : '#f97316') + ';margin-bottom:0.3vh;">' + score + '/100</div>';
+  if (transcript) html += '<div style="font-weight:500;color:#6b7280;">« ' + transcript + ' »</div>';
+  if (typeof score !== 'undefined' && score !== null) html += '<div style="font-weight:700;color:' + (type === 'success' ? '#16a34a' : '#f97316') + ';">' + score + '/100</div>';
   html += '<div>' + message + '</div>';
   el.innerHTML = html;
   el.className = 'feedback-area visible-fb';
