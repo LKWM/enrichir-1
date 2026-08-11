@@ -374,7 +374,7 @@ async function initTone() {
   completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
   transitionSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
   transitionSynth.volume.value = -15;
-  startSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  startSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "triangle" } }).toDestination();
   toneReady = true;
 }
 
@@ -391,7 +391,7 @@ function playSfx(type) {
       errorSound.triggerAttackRelease('C4', '0.1s');
       break;
     case 'start':
-      startSynth.triggerAttackRelease(["C4","E4","G4"], "4n");
+      startSynth.triggerAttackRelease(["D4","F#4","A4"], "4n");
       break;
     case 'end':
       completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
