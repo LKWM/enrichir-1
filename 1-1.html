@@ -30,7 +30,7 @@
     .mic-btn.disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-    .feedback-area { min-height: 3vh; display: flex; align-items: center; justify-content: center; }
+    .feedback-area { min-height: 6vh; display: flex; align-items: center; justify-content: center; }
     .invisible-fb { visibility: hidden; }
     .visible-fb { visibility: visible; }
     .nav-btn {
@@ -80,7 +80,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-2" onclick="handleMicClick(2)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-2" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -92,7 +91,7 @@
     <div style="width:90%;max-width:80vw;display:flex;flex-direction:column;gap:2.5vh;">
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2.5vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p class="ko" style="font-size:clamp(1.1rem,2.5vw,1.7rem);font-weight:700;text-align:center;">(lieu) + <span class="text-orange-500">에서</span> (action).</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;color:#6b7280;"><span class="text-orange-500">에서</span>(particule)</p>
+        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;color:#6b7280;">(lieu) + <span class="text-orange-500">particule</span> (action).</p>
       </div>
       <div class="card-clickable" onclick="playClickAudio(3)" style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2.5vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;">
@@ -114,7 +113,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-4" onclick="handleMicClick(4)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-4" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -129,7 +127,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-5" onclick="handleMicClick(5)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-5" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -144,7 +141,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>.</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-6" onclick="handleMicClick(6)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-6" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -159,7 +155,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-7" onclick="handleMicClick(7)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-7" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -174,7 +169,6 @@
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에서</span> <span class="text-purple-600">공부해요</span>?</p>
         <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">dans</span> <span class="text-purple-600">étudier</span></p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-8" onclick="handleMicClick(8)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-8" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -188,7 +182,6 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="9" data-answer="학교">◯◯</span>에서 공부해요.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-9" onclick="handleMicClick(9)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-9" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -202,7 +195,6 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;">집<span class="blank" data-page="10" data-answer="에서">◯◯</span> 공부해요.</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-10" onclick="handleMicClick(10)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-10" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -216,7 +208,6 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:3vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p class="ko" style="font-size:clamp(1.2rem,3vw,2rem);font-weight:700;text-align:center;"><span class="blank" data-page="11" data-answer="어디">◯◯</span>에서 공부<span class="blank" data-page="11" data-answer="해요">◯◯</span>?</p>
         <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Répétez après moi.</p>
         <button class="mic-btn disabled" id="mic-11" onclick="handleMicClick(11)"><i class="ph-fill ph-microphone" style="font-size:3vh;"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-11" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -275,7 +266,7 @@
   </div>
 
   <!-- ════════ BOTTOM NAV ════════ -->
-  <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:8vh;display:none;align-items:center;justify-content:space-between;padding:0 5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
+  <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:10vh;display:none;align-items:center;justify-content:space-between;padding:0 5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
     <button class="nav-btn" id="prev-btn" onclick="prevPage()"><i class="ph ph-caret-left"></i></button>
     <span id="page-num" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:700;color:#4a4466;"></span>
     <button class="nav-btn" id="next-btn" onclick="nextPage()"><i class="ph ph-caret-right"></i></button>
@@ -443,7 +434,6 @@ function playClickAudio(pageNum) {
    ═══════════════════════════════════════ */
 async function startLesson() {
   await initTone();
-  playSfx('start');
   document.getElementById('progress-bar-container').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
   goToPage(1);
@@ -687,17 +677,18 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     isPass = false;
   }
 
-  evaluateResult(pageNum, isPass);
+  evaluateResult(pageNum, isPass, transcript, eMatch ? (eMatch[1]||'').trim() : '');
 }
 
 /* ═══════════════════════════════════════
    EVALUATION
    ═══════════════════════════════════════ */
-function evaluateResult(pageNum, isPass) {
+function evaluateResult(pageNum, isPass, transcript, evaluation) {
   const ex = EXERCISES[pageNum];
   const state = pageState[pageNum];
   const micBtn = document.getElementById('mic-' + pageNum);
   const feedbackEl = document.getElementById('feedback-' + pageNum);
+  const transcriptEl = document.getElementById('transcript-' + pageNum);
 
   if (isPass) {
     playSfx('correct');
@@ -705,10 +696,10 @@ function evaluateResult(pageNum, isPass) {
     state.completed = true;
 
     if (ex.type === 'repeat') {
-      showFeedback(pageNum, MSG.SUCCESS_END, 'success');
+      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript);
     } else {
       // hide or trad: reveal blanks
-      showFeedback(pageNum, MSG.SUCCESS_END, 'success');
+      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript);
       revealBlanks(pageNum);
       if (ex.type === 'trad') {
         setTimeout(() => {
@@ -724,13 +715,13 @@ function evaluateResult(pageNum, isPass) {
     if (ex.type === 'repeat') {
       // 1 attempt: fail → end
       state.completed = true;
-      showFeedback(pageNum, MSG.FAIL_END, 'fail');
+      showFeedback(pageNum, MSG.FAIL_END, 'fail', transcript);
       disableMic(pageNum);
     } else {
       // hide or trad: check attempts
       if (state.attempts < ex.maxAttempts) {
         // Can retry
-        showFeedback(pageNum, MSG.FAIL_RETRY, 'fail');
+        showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript);
         setTimeout(() => {
           micBtn.classList.remove('disabled');
           micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:3vh;"></i>';
@@ -738,7 +729,7 @@ function evaluateResult(pageNum, isPass) {
       } else {
         // Max attempts reached
         state.completed = true;
-        showFeedback(pageNum, MSG.ANSWER_REVEAL, 'fail');
+        showFeedback(pageNum, MSG.ANSWER_REVEAL, 'fail', transcript);
         revealBlanks(pageNum);
         if (ex.type === 'trad') {
           setTimeout(() => {
@@ -754,13 +745,16 @@ function evaluateResult(pageNum, isPass) {
   updateBottomBar();
 }
 
-function showFeedback(pageNum, message, type) {
+function showFeedback(pageNum, message, type, transcript) {
   const el = document.getElementById('feedback-' + pageNum);
   if (!el) return;
-  el.textContent = message;
+  var html = '';
+  if (transcript) html += '<div style="font-weight:500;color:#6b7280;margin-bottom:0.5vh;">« ' + transcript + ' »</div>';
+  html += '<div>' + message + '</div>';
+  el.innerHTML = html;
   el.className = 'feedback-area visible-fb';
   el.style.color = type === 'success' ? '#16a34a' : '#f97316';
-  if (pageState[pageNum]) pageState[pageNum].feedback = { message, type };
+  if (pageState[pageNum]) pageState[pageNum].feedback = { message, type, transcript: transcript || '' };
 }
 
 function disableMic(pageNum) {
@@ -787,7 +781,7 @@ function restoreState(pageNum) {
   disableMic(pageNum);
 
   if (state.feedback) {
-    showFeedback(pageNum, state.feedback.message, state.feedback.type);
+    showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '');
   }
 
   if (state.blanksRevealed) {
