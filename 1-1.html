@@ -277,7 +277,6 @@
    CONFIG
    ═══════════════════════════════════════ */
 const GEMINI_URL = 'https://coreeno.base44.app/api/functions/Geminichat';
-const GEMINI_MODEL = 'gemini-2.5-flash';
 const TOTAL_PAGES = 15; // P1-P15
 
 const PAGE_AUDIO = {
@@ -316,29 +315,29 @@ const SENTENCE_AUDIO = {
 
 const EXERCISES = {
   2:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        sysPrompt: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   4:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        sysPrompt: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   5:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        sysPrompt: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   6:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        sysPrompt: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   7:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        sysPrompt: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   8:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        sysPrompt: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   9:  { type: 'hide', maxAttempts: 2, expected: '학교에서 공부해요',
-        sysPrompt: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   10: { type: 'hide', maxAttempts: 2, expected: '집에서 공부해요',
-        sysPrompt: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   11: { type: 'hide', maxAttempts: 2, expected: '어디에서 공부해요',
-        sysPrompt: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   12: { type: 'trad', maxAttempts: 2, expected: '학교에서 공부해요',
-        sysPrompt: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"학교에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   13: { type: 'trad', maxAttempts: 2, expected: '집에서 공부해요',
-        sysPrompt: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"집에서 공부해요\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
   14: { type: 'trad', maxAttempts: 2, expected: '어디에서 공부해요',
-        sysPrompt: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라.\n[전사] 유저의 발화를 한국어로 전사한다.\n[점수] 발음을 0부터 100점으로 평가한다. 숫자만 답한다." },
+        systemInstruction: "정답 문장은 \"어디에서 공부해요?\"이다. 유저의 발화를 듣고 발음을 평가하라. 유저가 말한 문장을 한국어로 전사하고 발음 점수 0~100을 한 문장으로 답하라." },
 };
 const MSG = {
   SUCCESS_RETRY: 'Très bien, essayons encore une fois.',
@@ -440,7 +439,7 @@ async function startLesson() {
 
 function goToPage(n) {
   if (n === currentPage) return;
-  if (currentPage > 0) playSfx('pageTurn');
+  playSfx('pageTurn');
   stopAudio();
   stopRecording();
 
@@ -632,14 +631,12 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
   const ex = EXERCISES[pageNum];
   if (!ex) return;
 
-  // Initialize page state
   if (!pageState[pageNum]) {
     pageState[pageNum] = { completed: false, passed: false, attempts: 0, feedback: null, blanksRevealed: false };
   }
   pageState[pageNum].attempts++;
 
   const payload = {
-    model: GEMINI_MODEL,
     contents: [{
       role: "user",
       parts: [
@@ -647,11 +644,12 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
         { inline_data: { mime_type: mimeType, data: audioBase64 } }
       ]
     }],
-    systemInstruction: ex.sysPrompt
+    systemInstruction: ex.systemInstruction
   };
 
   let transcript = "";
   let isPass = false;
+  let score = 0;
 
   try {
     const res = await fetch(GEMINI_URL, {
@@ -665,15 +663,15 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     const data = await res.json();
     const resultText = data.text || "";
 
-    const tMatch = resultText.match(/\[전사\]\s*(.*?)\s*(?:\[점수\]|$)/si);
-    if (tMatch && tMatch[1]) transcript = tMatch[1].trim();
-
-    const sMatch = resultText.match(/\[점수\]\s*(\d+)/i);
-    let score = sMatch ? parseInt(sMatch[1]) : 0;
+    // Parse score: last number 0-100 in the response
+    const sMatch = resultText.match(/(\d{1,3})\s*점?\.?\s*$/);
+    score = sMatch ? parseInt(sMatch[1]) : 0;
     if (score > 100) score = 100;
     if (score < 0) score = 0;
     isPass = score >= 80;
 
+    // Transcript: everything except the trailing score
+    transcript = resultText.replace(/\s*\d{1,3}\s*점?\.?\s*$/, '').trim();
     if (!transcript) transcript = "???";
 
   } catch (error) {
