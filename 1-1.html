@@ -316,31 +316,30 @@ const SENTENCE_AUDIO = {
 
 const EXERCISES = {
   2:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        sysPrompt: '"학교에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"학교에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "학교에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   4:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        sysPrompt: '"학교에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"학교에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "학교에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   5:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        sysPrompt: '"집에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"집에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "집에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   6:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        sysPrompt: '"집에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"집에서 공부해요"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "집에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   7:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        sysPrompt: '"어디에서 공부해요?"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"어디에서 공부해요?"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "어디에서 공부해요?"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   8:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        sysPrompt: '"어디에서 공부해요?"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확히 따라말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"어디에서 공부해요?"라는 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "어디에서 공부해요?"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   9:  { type: 'hide', maxAttempts: 2, expected: '학교에서 공부해요',
-        sysPrompt: '"학교에서 공부해요"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 빈칸에 해당하는 단어 "학교"를 포함하여 완전한 문장 "학교에서 공부해요"를 정확히 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"학교에서 공부해요"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 빈칸에 해당하는 단어 "학교"를 포함하여 완전한 문장 "학교에서 공부해요"를 말했는지를 포함해 정답 문장과의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   10: { type: 'hide', maxAttempts: 2, expected: '집에서 공부해요',
-        sysPrompt: '"집에서 공부해요"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 빈칸에 해당하는 단어 "에서"를 포함하여 완전한 문장 "집에서 공부해요"를 정확히 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"집에서 공부해요"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 빈칸에 해당하는 단어 "에서"를 포함하여 완전한 문장 "집에서 공부해요"를 말했는지를 포함해 정답 문장과의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   11: { type: 'hide', maxAttempts: 2, expected: '어디에서 공부해요',
-        sysPrompt: '"어디에서 공부해요?"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 빈칸에 해당하는 단어 "어디"와 "해요"를 포함하여 완전한 문장 "어디에서 공부해요?"를 정확히 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 발화하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"어디에서 공부해요?"라는 완전한 문장을 유저가 따라 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 빈칸에 해당하는 단어 "어디"와 "해요"를 포함하여 완전한 문장 "어디에서 공부해요?"를 말했는지를 포함해 정답 문장과의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   12: { type: 'trad', maxAttempts: 2, expected: '학교에서 공부해요',
-        sysPrompt: '"J\'étudie à l\'école"에 해당하는 한국어 문장 "학교에서 공부해요"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확한 한국어 문장 "학교에서 공부해요"를 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 말하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"J\'étudie à l\'école"에 해당하는 한국어 문장 "학교에서 공부해요"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "학교에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   13: { type: 'trad', maxAttempts: 2, expected: '집에서 공부해요',
-        sysPrompt: '"J\'étudie à la maison"에 해당하는 한국어 문장 "집에서 공부해요"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확한 한국어 문장 "집에서 공부해요"를 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 말하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"J\'étudie à la maison"에 해당하는 한국어 문장 "집에서 공부해요"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "집에서 공부해요"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
   14: { type: 'trad', maxAttempts: 2, expected: '어디에서 공부해요',
-        sysPrompt: '"Où étudiez-vous ?"에 해당하는 한국어 문장 "어디에서 공부해요?"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[평가] 정확한 한국어 문장 "어디에서 공부해요?"를 말하면 <Pass> 라고 답한다. 이외 다른 설명은 덧붙이지 않는다. 유저가 제대로 말하지 못한 경우에는 문제에 대해 프랑스어 한 문장 이내로 설명한다.' },
+        sysPrompt: '"Où étudiez-vous ?"에 해당하는 한국어 문장 "어디에서 공부해요?"를 유저가 말하는 것을 듣고 두 부분으로 평가한다.\n[전사] 유저의 발화값을 한국어로 전사한다.\n[점수] 발음 정확도를 0부터 100점으로 평가한다. 정답 문장 "어디에서 공부해요?"와의 일치도를 기준으로 점수를 매긴다. 숫자만 답한다.' },
 };
-
 const MSG = {
   SUCCESS_RETRY: 'Très bien, essayons encore une fois.',
   SUCCESS_END:   'Très bien ! Passez à la suite.',
@@ -663,11 +662,14 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     const data = await res.json();
     const resultText = data.text || "";
 
-    const tMatch = resultText.match(/\[전사\]\s*(.*?)\s*(?:\[평가\]|$)/si);
+    const tMatch = resultText.match(/\[전사\]\s*(.*?)\s*(?:\[점수\]|$)/si);
     if (tMatch && tMatch[1]) transcript = tMatch[1].trim();
 
-    const eMatch = resultText.match(/\[평가\]\s*(.*)/si);
-    if (eMatch && eMatch[1] && eMatch[1].includes('<Pass>')) isPass = true;
+    const sMatch = resultText.match(/\[점수\]\s*(\d+)/i);
+    let score = sMatch ? parseInt(sMatch[1]) : 0;
+    if (score > 100) score = 100;
+    if (score < 0) score = 0;
+    isPass = score >= 80;
 
     if (!transcript) transcript = "???";
 
@@ -675,15 +677,16 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     console.warn("Gemini API Error:", error);
     transcript = "Erreur";
     isPass = false;
+    score = 0;
   }
 
-  evaluateResult(pageNum, isPass, transcript, eMatch ? (eMatch[1]||'').trim() : '');
+  evaluateResult(pageNum, isPass, transcript, score);
 }
 
 /* ═══════════════════════════════════════
    EVALUATION
    ═══════════════════════════════════════ */
-function evaluateResult(pageNum, isPass, transcript, evaluation) {
+function evaluateResult(pageNum, isPass, transcript, score) {
   const ex = EXERCISES[pageNum];
   const state = pageState[pageNum];
   const micBtn = document.getElementById('mic-' + pageNum);
@@ -696,10 +699,10 @@ function evaluateResult(pageNum, isPass, transcript, evaluation) {
     state.completed = true;
 
     if (ex.type === 'repeat') {
-      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript);
+      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript, score);
     } else {
       // hide or trad: reveal blanks
-      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript);
+      showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript, score);
       revealBlanks(pageNum);
       if (ex.type === 'trad') {
         setTimeout(() => {
@@ -715,13 +718,13 @@ function evaluateResult(pageNum, isPass, transcript, evaluation) {
     if (ex.type === 'repeat') {
       // 1 attempt: fail → end
       state.completed = true;
-      showFeedback(pageNum, MSG.FAIL_END, 'fail', transcript);
+      showFeedback(pageNum, MSG.FAIL_END, 'fail', transcript, score);
       disableMic(pageNum);
     } else {
       // hide or trad: check attempts
       if (state.attempts < ex.maxAttempts) {
         // Can retry
-        showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript);
+        showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
         setTimeout(() => {
           micBtn.classList.remove('disabled');
           micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:3vh;"></i>';
@@ -729,7 +732,7 @@ function evaluateResult(pageNum, isPass, transcript, evaluation) {
       } else {
         // Max attempts reached
         state.completed = true;
-        showFeedback(pageNum, MSG.ANSWER_REVEAL, 'fail', transcript);
+        showFeedback(pageNum, MSG.ANSWER_REVEAL, 'fail', transcript, score);
         revealBlanks(pageNum);
         if (ex.type === 'trad') {
           setTimeout(() => {
@@ -745,16 +748,17 @@ function evaluateResult(pageNum, isPass, transcript, evaluation) {
   updateBottomBar();
 }
 
-function showFeedback(pageNum, message, type, transcript) {
+function showFeedback(pageNum, message, type, transcript, score) {
   const el = document.getElementById('feedback-' + pageNum);
   if (!el) return;
   var html = '';
-  if (transcript) html += '<div style="font-weight:500;color:#6b7280;margin-bottom:0.5vh;">« ' + transcript + ' »</div>';
+  if (transcript) html += '<div style="font-weight:500;color:#6b7280;margin-bottom:0.3vh;">« ' + transcript + ' »</div>';
+  if (typeof score !== 'undefined' && score !== null) html += '<div style="font-weight:700;color:' + (type === 'success' ? '#16a34a' : '#f97316') + ';margin-bottom:0.3vh;">' + score + '/100</div>';
   html += '<div>' + message + '</div>';
   el.innerHTML = html;
   el.className = 'feedback-area visible-fb';
   el.style.color = type === 'success' ? '#16a34a' : '#f97316';
-  if (pageState[pageNum]) pageState[pageNum].feedback = { message, type, transcript: transcript || '' };
+  if (pageState[pageNum]) pageState[pageNum].feedback = { message, type, transcript: transcript || '', score: score };
 }
 
 function disableMic(pageNum) {
@@ -781,7 +785,7 @@ function restoreState(pageNum) {
   disableMic(pageNum);
 
   if (state.feedback) {
-    showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '');
+    showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '', state.feedback.score);
   }
 
   if (state.blanksRevealed) {
