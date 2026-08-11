@@ -432,6 +432,7 @@ function playClickAudio(pageNum) {
    ═══════════════════════════════════════ */
 async function startLesson() {
   await initTone();
+  playSfx('start');
   document.getElementById('progress-bar-container').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
   goToPage(1);
@@ -663,15 +664,20 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     const data = await res.json();
     const resultText = data.text || "";
 
-    // Parse score: last number 0-100 in the response
-    const sMatch = resultText.match(/(\d{1,3})\s*점?\.?\s*$/);
+    // Parse score: find "XX점" pattern anywhere in the response
+    const sMatch = resultText.match(/(\d{1,3})\s*점/);
     score = sMatch ? parseInt(sMatch[1]) : 0;
     if (score > 100) score = 100;
     if (score < 0) score = 0;
     isPass = score >= 80;
 
-    // Transcript: everything except the trailing score
-    transcript = resultText.replace(/\s*\d{1,3}\s*점?\.?\s*$/, '').trim();
+    // Transcript: try to extract quoted Korean text, fallback to full response
+    const quoted = resultText.match(/[""']([^""']+)[""']/);
+    if (quoted) {
+      transcript = quoted[1].trim();
+    } else {
+      transcript = resultText.replace(/\d{1,3}\s*점[^\n]*/g, '').trim(' .');
+    }
     if (!transcript) transcript = "???";
 
   } catch (error) {
