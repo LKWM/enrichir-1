@@ -338,29 +338,29 @@ const SENTENCE_AUDIO = {
 
 const EXERCISES = {
   2:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   4:  { type: 'repeat', maxAttempts: 1, expected: '학교에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지.." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   5:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   6:  { type: 'repeat', maxAttempts: 1, expected: '집에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   7:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   8:  { type: 'repeat', maxAttempts: 1, expected: '어디에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   9:  { type: 'hide', maxAttempts: 2, expected: '학교에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   10: { type: 'hide', maxAttempts: 2, expected: '집에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   11: { type: 'hide', maxAttempts: 2, expected: '어디에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   12: { type: 'trad', maxAttempts: 2, expected: '학교에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   13: { type: 'trad', maxAttempts: 2, expected: '집에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
   14: { type: 'trad', maxAttempts: 2, expected: '어디에서 공부해요',
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 이외 아무것도 추가 금지." },
+        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
 };
 const MSG = {
   SUCCESS_RETRY: 'Très bien, essayons encore une fois.',
@@ -798,13 +798,23 @@ function evaluateResult(pageNum, isPass, transcript, score) {
     } else {
       // hide or trad: check attempts
       if (state.attempts < ex.maxAttempts) {
-        // Can retry — Repeat (hide): reveal the answer first, then retry (2026-09-07 rule)
+        // Can retry — Repeat (hide): reveal the answer, replay the sentence audio, then retry (2026-09-07 rule)
         if (ex.type === 'hide') revealBlanks(pageNum);
         showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
-        setTimeout(() => {
-          micBtn.classList.remove('disabled');
-          micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
-        }, 1500);
+        if (ex.type === 'hide' && CARD_AUDIO[pageNum]) {
+          // Auto-play the sentence audio again on retry, then re-enable the mic
+          audioTimer = setTimeout(() => {
+            playAudio(CARD_AUDIO[pageNum], () => {
+              micBtn.classList.remove('disabled');
+              micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
+            });
+          }, 1500);
+        } else {
+          setTimeout(() => {
+            micBtn.classList.remove('disabled');
+            micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
+          }, 1500);
+        }
       } else {
         // Max attempts reached
         state.completed = true;
