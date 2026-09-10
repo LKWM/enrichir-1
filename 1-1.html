@@ -452,10 +452,12 @@ function stopAudio() {
 }
 
 function playCardAudio(pageNum) {
+  if (isRecording) return; // 말하기 사용 중 오디오 재생 차단
   if (CARD_AUDIO[pageNum]) playAudio(CARD_AUDIO[pageNum]);
 }
 
 function playClickAudio(pageNum) {
+  if (isRecording) return; // 말하기 사용 중 오디오 재생 차단
   if (CLICK_AUDIO[pageNum]) {
     stopAudio();
     playAudio(CLICK_AUDIO[pageNum]);
@@ -611,6 +613,9 @@ async function handleMicClick(pageNum) {
 async function startRecording(pageNum) {
   const micBtn = document.getElementById('mic-' + pageNum);
   const feedbackEl = document.getElementById('feedback-' + pageNum);
+
+  // 말하기 사용 중 오디오 재생 차단: 녹음 시작 시 재생 중인 오디오 정지
+  stopAudio();
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
