@@ -429,8 +429,15 @@ function playSfx(type) {
 function playAudio(url, onEnded) {
   stopAudio();
   currentAudio = new Audio(url);
-  currentAudio.onended = onEnded || null;
-  currentAudio.play().catch(e => console.warn('Audio autoplay blocked:', e));
+  if (onEnded) {
+    let fired = false;
+    const done = () => { if (!fired) { fired = true; onEnded(); } };
+    currentAudio.onended = done;
+    currentAudio.onerror = done;
+    currentAudio.play().catch(e => { console.warn('Audio autoplay blocked:', e); done(); });
+  } else {
+    currentAudio.play().catch(e => console.warn('Audio autoplay blocked:', e));
+  }
 }
 
 function stopAudio() {
@@ -541,11 +548,18 @@ function handlePageEnter(n) {
   if (isReturning) {
     if (pageState[n]?.completed) {
       restoreState(n);
+    } else if (EXERCISES[n]) {
+      // 미완료 문제 페이지 재방문: 오디오 체인 재실행 후 마이크 활성화
+      startExerciseChain(n);
     }
     return;
   }
 
   // First visit — auto-play audio
+  startExerciseChain(n);
+}
+
+function startExerciseChain(n) {
   if (PAGE_AUDIO[n]) {
     audioTimer = setTimeout(() => {
       playAudio(PAGE_AUDIO[n], () => {
@@ -882,7 +896,30 @@ function restoreState(pageNum) {
 /* ═══════════════════════════════════════
    LESSON COMPLETE
    ═══════════════════════════════════════ */
-document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopAudio();
+  } else {
+    resumeCurrentPage();
+  }
+});
+
+// 탭 복귀 시 중단된 오디오 체인 재개: 마이크가 죽어 있으면 다시 활성화 경로로 수렴
+function resumeCurrentPage() {
+  const n = currentPage;
+  if (!EXERCISES[n]) return;
+  if (pageState[n]?.completed) return;
+  if (isRecording) return;
+  if (currentAudio) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (!micBtn || !micBtn.classList.contains('disabled')) return;
+  if (pageState[n]?.attempts > 0 && CARD_AUDIO[n]) {
+    // 재시도 중이었던 경우: 카드 오디오만 재생 후 마이크 활성화
+    playAudio(CARD_AUDIO[n], () => { activateMic(n); });
+  } else {
+    startExerciseChain(n);
+  }
+}
 window.addEventListener('pagehide', () => { stopAudio(); });
 window.addEventListener('beforeunload', () => { stopAudio(); });
 
