@@ -457,9 +457,11 @@ function playCardAudio(pageNum) {
   if (isRecording) return; // 말하기 사용 중 듣기 버튼 차단
   if (CARD_AUDIO[pageNum]) {
     const isPendingExercise = EXERCISES[pageNum] && !pageState[pageNum]?.completed;
+    // 누르기 전 활성 상태였을 때만 재생 종료 후 복원 (신규 활성화 금지)
+    const micWasActive = isPendingExercise && !document.getElementById('mic-' + pageNum).classList.contains('disabled');
     if (isPendingExercise) disableMic(pageNum);
     playAudio(CARD_AUDIO[pageNum], () => {
-      if (isPendingExercise) activateMic(pageNum);
+      if (micWasActive) activateMic(pageNum);
     });
   }
 }
@@ -831,8 +833,8 @@ function evaluateResult(pageNum, isPass, transcript, score) {
     } else {
       // hide or trad: check attempts
       if (state.attempts < ex.maxAttempts) {
-        // Can retry — Repeat (hide): reveal the answer, replay the sentence audio, then retry (2026-09-07 rule)
-        if (ex.type === 'hide') revealBlanks(pageNum);
+        // Can retry (2026-09-12 rule): Repeat (hide) = NO reveal, audio replay only / Trad = reveal the answer, no audio
+        if (ex.type === 'trad') revealBlanks(pageNum);
         showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
         if (ex.type === 'hide' && CARD_AUDIO[pageNum]) {
           // Auto-play the sentence audio again on retry, then re-enable the mic
