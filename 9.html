@@ -9,8 +9,7 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <style>
-    :root { --nav-h: 14vh; }
-    @media (orientation: landscape) { :root { --nav-h: 12vh; } }
+    :root { --nav-h: max(12vmin, 10vh); --btn: calc(var(--nav-h) * 0.5); }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
     .page {
@@ -23,7 +22,7 @@
     .blank { color: #cbd5e1; font-weight: 400; }
     .blank.revealed { color: #5b21b6; font-weight: 700; transition: color 0.4s; }
     .mic-btn {
-      width: calc((calc(var(--nav-h) - 6vh)) * 2); height: calc((calc(var(--nav-h) - 6vh)) * 2);
+      width: calc(var(--btn) * 2); height: calc(var(--btn) * 2);
       border-radius: 50%; border: none; background: #7c3aed; color: #fff;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
       transition: transform 0.15s, background 0.15s; flex-shrink: 0;
@@ -36,13 +35,15 @@
     .invisible-fb { visibility: hidden; }
     .visible-fb { visibility: visible; }
     .nav-btn {
-      width: calc(var(--nav-h) - 6vh); height: calc(var(--nav-h) - 6vh);
+      width: var(--btn); height: var(--btn);
       border-radius: 50%; border: none; background: #7c3aed; color: #fff;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
-      font-size: calc((calc(var(--nav-h) - 6vh)) * 0.4167); transition: opacity 0.15s;
+      font-size: calc(var(--btn) * 0.4167); transition: opacity 0.15s;
     }
     .nav-btn:disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .card-clickable { cursor: pointer; transition: background 0.15s; }
+    .listen-btn { transition: opacity 0.15s; }
+    .listen-btn.disabled { opacity: 0.5; pointer-events: none; }
     .card-clickable:hover { background: #ede9fe; }
   </style>
 </head>
@@ -56,12 +57,12 @@
   <!-- ════════ PAGE 0 — COVER ════════ -->
   <div class="page active flex-col bg-violet-50" id="page-0">
     <div class="flex flex-col items-center" style="gap:3vh;">
-      <div style="width:clamp(4rem,12vw,8rem);height:clamp(4rem,12vw,8rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
-        <i class="ph ph-graduation-cap" style="font-size:clamp(2rem,6vw,4rem);color:#fff;"></i>
+      <div style="width:clamp(4rem,max(12vw,12vh),8rem);height:clamp(4rem,max(12vw,12vh),8rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
+        <i class="ph ph-graduation-cap" style="font-size:clamp(2rem,max(6vw,6vh),4rem);color:#fff;"></i>
       </div>
-      <p style="font-size:clamp(0.8rem,1.8vw,1.1rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;">Chapitre 3: La localisation d’un objet</p>
-      <h1 style="font-size:clamp(1.8rem,5vw,3.5rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;">Leçon 9 : Il y a un chat à la maison.</h1>
-      <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(1rem,2.5vw,1.5rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
+      <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),1.1rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;">Chapitre 3: La localisation d’un objet</p>
+      <h1 style="font-size:clamp(1.8rem,max(5vw,5vh),3.5rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;">Leçon 9 : Il y a un chat à la maison.</h1>
+      <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(1rem,max(2.5vw,2.5vh),1.5rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
     </div>
   </div>
 
@@ -69,7 +70,7 @@
   <div class="page flex-col bg-violet-50" id="page-1">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
       <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
-        <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bonjour ! Bienvenue dans le chapitre 3. Dans ce chapitre, on va apprendre à dire que quelque chose ou quelqu'un est présent dans un endroit.</p>
+        <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bonjour ! Bienvenue dans le chapitre 3. Dans ce chapitre, on va apprendre à dire que quelque chose ou quelqu'un est présent dans un endroit.</p>
       </div>
     </div>
   </div>
@@ -77,13 +78,13 @@
   <!-- ════════ PAGE 2 — REPEAT S1-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-2">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Pour commencer, essayons de dire la phrase d'aujourd'hui. Répétez après moi.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Pour commencer, essayons de dire la phrase d'aujourd'hui. Répétez après moi.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">à</span> <span class="text-blue-600">chat</span> <span class="text-purple-600">exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
-        <button class="mic-btn disabled" id="mic-2" onclick="handleMicClick(2)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-2" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">à</span> <span class="text-blue-600">chat</span> <span class="text-purple-600">exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
+        <button class="mic-btn disabled" id="mic-2" onclick="handleMicClick(2)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-2" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -93,35 +94,35 @@
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:0.8vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:inline-flex;align-items:flex-start;justify-content:center;">
-          <span class="ko" style="font-size:clamp(1.2rem,3vw,1.9rem);font-weight:700;">(lieu) +&nbsp;에&nbsp;+&nbsp;(sujet) +&nbsp;이/가&nbsp;+&nbsp;</span>
+          <span class="ko" style="font-size:clamp(1.2rem,max(3vw,3vh),1.9rem);font-weight:700;">(lieu) +&nbsp;에&nbsp;+&nbsp;(sujet) +&nbsp;이/가&nbsp;+&nbsp;</span>
           <div style="display:flex;flex-direction:column;align-items:center;">
-            <span class="ko text-purple-600" style="font-size:clamp(1.2rem,3vw,1.9rem);font-weight:700;">있다</span>
-            <span class="text-purple-600" style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;">Exister</span>
+            <span class="ko text-purple-600" style="font-size:clamp(1.2rem,max(3vw,3vh),1.9rem);font-weight:700;">있다</span>
+            <span class="text-purple-600" style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;">Exister</span>
           </div>
         </div>
       </div>
       <div class="card-clickable" onclick="playClickAudio(3)" style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:0.8vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;">
-          <i class="ph-fill ph-speaker-high" style="font-size:clamp(1.5rem,3vw,2rem);color:#7c3aed;"></i>
-          <p class="ko" style="font-size:clamp(1.2rem,3vw,1.9rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
+          <i class="ph-fill ph-speaker-high" style="font-size:clamp(1.5rem,max(3vw,3vh),2rem);color:#7c3aed;"></i>
+          <p class="ko" style="font-size:clamp(1.2rem,max(3vw,3vh),1.9rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
         </div>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">lieu</span> <span class="text-orange-500">particule</span> <span class="text-blue-600">sujet</span> <span class="text-yellow-500">particule</span> <span class="text-purple-600">prédicat</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">lieu</span> <span class="text-orange-500">particule</span> <span class="text-blue-600">sujet</span> <span class="text-yellow-500">particule</span> <span class="text-purple-600">prédicat</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
       </div>
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien ! Cette phrase commence par la structure « lieu + 에 ». Ensuite, la personne ou l’objet qui existe joue le rôle de sujet de la phrase. Il est donc suivi de la particule « 이/가 ». Enfin, la phrase se termine par le verbe « 있다 », qui signifie « exister » ou « être présent ».</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien ! Cette phrase commence par la structure « lieu + 에 ». Ensuite, la personne ou l’objet qui existe joue le rôle de sujet de la phrase. Il est donc suivi de la particule « 이/가 ». Enfin, la phrase se termine par le verbe « 있다 », qui signifie « exister » ou « être présent ».</p>
     </div>
   </div>
 
   <!-- ════════ PAGE 4 — REPEAT S1-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-4">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites-le à nouveau.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites-le à nouveau.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">à</span> <span class="text-blue-600">chat</span> <span class="text-purple-600">exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
-        <button class="mic-btn disabled" id="mic-4" onclick="handleMicClick(4)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-4" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">집</span><span class="text-orange-500">에</span> <span class="text-blue-600">고양이</span><span class="text-yellow-500">가</span> <span class="text-purple-600">있어요</span>.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">maison</span> <span class="text-orange-500">à</span> <span class="text-blue-600">chat</span> <span class="text-purple-600">exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
+        <button class="mic-btn disabled" id="mic-4" onclick="handleMicClick(4)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-4" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -129,13 +130,13 @@
   <!-- ════════ PAGE 5 — REPEAT S2-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-5">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien. Maintenant, utilisons « 없다 » pour exprimer l'absence. Répétez après moi.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Très bien. Maintenant, utilisons « 없다 » pour exprimer l'absence. Répétez après moi.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에</span> <span class="text-blue-600">선생님</span><span class="text-yellow-500">이</span> <span class="text-purple-600">없어요</span>.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">à</span> <span class="text-blue-600">professeur</span> <span class="text-purple-600">ne pas exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
-        <button class="mic-btn disabled" id="mic-5" onclick="handleMicClick(5)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-5" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에</span> <span class="text-blue-600">선생님</span><span class="text-yellow-500">이</span> <span class="text-purple-600">없어요</span>.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">à</span> <span class="text-blue-600">professeur</span> <span class="text-purple-600">ne pas exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
+        <button class="mic-btn disabled" id="mic-5" onclick="handleMicClick(5)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-5" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -143,13 +144,13 @@
   <!-- ════════ PAGE 6 — REPEAT S2-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-6">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Essayez encore une fois !</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Essayez encore une fois !</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에</span> <span class="text-blue-600">선생님</span><span class="text-yellow-500">이</span> <span class="text-purple-600">없어요</span>.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">à</span> <span class="text-blue-600">professeur</span> <span class="text-purple-600">ne pas exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
-        <button class="mic-btn disabled" id="mic-6" onclick="handleMicClick(6)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-6" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">학교</span><span class="text-orange-500">에</span> <span class="text-blue-600">선생님</span><span class="text-yellow-500">이</span> <span class="text-purple-600">없어요</span>.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">école</span> <span class="text-orange-500">à</span> <span class="text-blue-600">professeur</span> <span class="text-purple-600">ne pas exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
+        <button class="mic-btn disabled" id="mic-6" onclick="handleMicClick(6)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-6" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -157,13 +158,13 @@
   <!-- ════════ PAGE 7 — REPEAT S3-1 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-7">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bien joué ! Cette fois, formons une question avec le mot interrogatif « 어디 ».</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에</span> <span class="text-yellow-500">고양이</span><span class="text-pink-500">가</span> <span class="text-purple-600">있어요</span>?</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">à</span> <span class="text-yellow-500">chat</span> <span class="text-purple-600">exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
-        <button class="mic-btn disabled" id="mic-7" onclick="handleMicClick(7)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-7" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에</span> <span class="text-yellow-500">고양이</span><span class="text-pink-500">가</span> <span class="text-purple-600">있어요</span>?</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">à</span> <span class="text-yellow-500">chat</span> <span class="text-purple-600">exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
+        <button class="mic-btn disabled" id="mic-7" onclick="handleMicClick(7)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-7" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -171,13 +172,13 @@
   <!-- ════════ PAGE 8 — REPEAT S3-2 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-8">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">On essaie une fois de plus ?</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">On essaie une fois de plus ?</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에</span> <span class="text-yellow-500">고양이</span><span class="text-pink-500">가</span> <span class="text-purple-600">있어요</span>?</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">à</span> <span class="text-yellow-500">chat</span> <span class="text-purple-600">exister</span></p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
-        <button class="mic-btn disabled" id="mic-8" onclick="handleMicClick(8)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-8" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="text-red-500">어디</span><span class="text-orange-500">에</span> <span class="text-yellow-500">고양이</span><span class="text-pink-500">가</span> <span class="text-purple-600">있어요</span>?</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;"><span class="text-red-500">où</span> <span class="text-orange-500">à</span> <span class="text-yellow-500">chat</span> <span class="text-purple-600">exister</span></p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
+        <button class="mic-btn disabled" id="mic-8" onclick="handleMicClick(8)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-8" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -185,15 +186,15 @@
   <!-- ════════ PAGE 9 — REPEAT S1-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-9">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, je vais cacher un mot. Répétez après moi.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, je vais cacher un mot. Répétez après moi.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(9)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,3vw,2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
-          <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">집<span class="blank" data-page="9" data-answer="에">◯</span> 고양이<span class="blank" data-page="9" data-answer="가">◯</span> 있어요.</p>
+          <button onclick="playCardAudio(9)" id="listen-9" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">집<span class="blank" data-page="9" data-answer="에">◯</span> 고양이<span class="blank" data-page="9" data-answer="가">◯</span> 있어요.</p>
         </div>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
-        <button class="mic-btn disabled" id="mic-9" onclick="handleMicClick(9)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-9" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
+        <button class="mic-btn disabled" id="mic-9" onclick="handleMicClick(9)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-9" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -201,15 +202,15 @@
   <!-- ════════ PAGE 10 — REPEAT S2-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-10">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Répétez aussi cette phrase.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Répétez aussi cette phrase.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(10)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,3vw,2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
-          <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">학교에 선생님이 <span class="blank" data-page="10" data-answer="없어요">◯◯◯</span>.</p>
+          <button onclick="playCardAudio(10)" id="listen-10" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">학교에 선생님이 <span class="blank" data-page="10" data-answer="없어요">◯◯◯</span>.</p>
         </div>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
-        <button class="mic-btn disabled" id="mic-10" onclick="handleMicClick(10)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-10" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
+        <button class="mic-btn disabled" id="mic-10" onclick="handleMicClick(10)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-10" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -217,15 +218,15 @@
   <!-- ════════ PAGE 11 — REPEAT S3-3 (HIDE) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-11">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Essayez aussi cette phrase !</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Essayez aussi cette phrase !</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(11)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,3vw,2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
-          <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">어디<span class="blank" data-page="11" data-answer="에">◯</span> 고양이가 <span class="blank" data-page="11" data-answer="있어요">◯◯◯</span>?</p>
+          <button onclick="playCardAudio(11)" id="listen-11" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">어디<span class="blank" data-page="11" data-answer="에">◯</span> 고양이가 <span class="blank" data-page="11" data-answer="있어요">◯◯◯</span>?</p>
         </div>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
-        <button class="mic-btn disabled" id="mic-11" onclick="handleMicClick(11)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-11" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
+        <button class="mic-btn disabled" id="mic-11" onclick="handleMicClick(11)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-11" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -233,13 +234,13 @@
   <!-- ════════ PAGE 12 — TRAD S1-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-12">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, dites la phrase vous-même en coréen.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, dites la phrase vous-même en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;">집에 <span class="blank" data-page="12" data-answer="고양이">◯◯◯</span>가 있어요.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
-        <button class="mic-btn disabled" id="mic-12" onclick="handleMicClick(12)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-12" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">집에 <span class="blank" data-page="12" data-answer="고양이">◯◯◯</span>가 있어요.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il y a un chat à la maison.</p>
+        <p style="font-size:clamp(0.75rem,max(1.5vw,1.5vh),1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
+        <button class="mic-btn disabled" id="mic-12" onclick="handleMicClick(12)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-12" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -247,13 +248,13 @@
   <!-- ════════ PAGE 13 — TRAD S2-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-13">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites aussi cette phrase en coréen.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites aussi cette phrase en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="13" data-answer="학교에">◯◯◯</span> 선생님이 <span class="blank" data-page="13" data-answer="없어요">◯◯◯</span>.</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
-        <button class="mic-btn disabled" id="mic-13" onclick="handleMicClick(13)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-13" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="13" data-answer="학교에">◯◯◯</span> 선생님이 <span class="blank" data-page="13" data-answer="없어요">◯◯◯</span>.</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Il n’y a pas de professeur à l’école.</p>
+        <p style="font-size:clamp(0.75rem,max(1.5vw,1.5vh),1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
+        <button class="mic-btn disabled" id="mic-13" onclick="handleMicClick(13)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-13" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -261,13 +262,13 @@
   <!-- ════════ PAGE 14 — TRAD S3-4 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-14">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">C'est la dernière question ! Posez la question en coréen.</p>
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">C'est la dernière question ! Posez la question en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
-        <p class="ko" style="font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="14" data-answer="어디에">◯◯◯</span> 고양이가 <span class="blank" data-page="14" data-answer="있어요">◯◯◯</span>?</p>
-        <p style="font-size:clamp(0.9rem,2.2vw,1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
-        <p style="font-size:clamp(0.75rem,1.5vw,1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
-        <button class="mic-btn disabled" id="mic-14" onclick="handleMicClick(14)"><i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i></button>
-        <div class="feedback-area invisible-fb" id="feedback-14" style="font-size:clamp(0.8rem,1.5vw,1rem);font-weight:600;text-align:center;"></div>
+        <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="14" data-answer="어디에">◯◯◯</span> 고양이가 <span class="blank" data-page="14" data-answer="있어요">◯◯◯</span>?</p>
+        <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où est le chat ?</p>
+        <p style="font-size:clamp(0.75rem,max(1.5vw,1.5vh),1rem);font-weight:700;color:#7c3aed;">Traduisez la phrase en coréen.</p>
+        <button class="mic-btn disabled" id="mic-14" onclick="handleMicClick(14)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
+        <div class="feedback-area invisible-fb" id="feedback-14" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -276,7 +277,7 @@
   <div class="page flex-col bg-violet-50" id="page-15">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
       <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
-        <p style="font-size:clamp(0.9rem,2.3vw,1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bravo ! Vous pouvez maintenant dire en coréen si une personne ou un objet est présent ou non, et indiquer où il se trouve. Dans la prochaine leçon, nous allons créer davantage de phrases avec d’autres mots. On se retrouve dans la leçon de vocabulaire !</p>
+        <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Bravo ! Vous pouvez maintenant dire en coréen si une personne ou un objet est présent ou non, et indiquer où il se trouve. Dans la prochaine leçon, nous allons créer davantage de phrases avec d’autres mots. On se retrouve dans la leçon de vocabulaire !</p>
       </div>
     </div>
   </div>
@@ -284,7 +285,7 @@
   <!-- ════════ BOTTOM NAV ════════ -->
   <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:space-between;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
     <button class="nav-btn" id="prev-btn" onclick="prevPage()"><i class="ph ph-caret-left"></i></button>
-    <span id="page-num" style="font-size:calc((calc(var(--nav-h) - 6vh)) * 0.4167);font-weight:700;color:#4a4466;"></span>
+    <span id="page-num" style="font-size:calc(var(--btn) * 0.4167);font-weight:700;color:#4a4466;"></span>
     <button class="nav-btn" id="next-btn" onclick="nextPage()"><i class="ph ph-caret-right"></i></button>
   </div>
 
@@ -429,8 +430,34 @@ function playSfx(type) {
 function playAudio(url, onEnded) {
   stopAudio();
   currentAudio = new Audio(url);
-  currentAudio.onended = onEnded || null;
-  currentAudio.play().catch(e => console.warn('Audio autoplay blocked:', e));
+  const self = currentAudio;
+  const done = () => {
+    if (self._done) return;
+    self._done = true;
+    if (onEnded) onEnded();
+    if (currentAudio === self) currentAudio = null;
+    // 이어질 오디오가 예약돼 있으면 동기화 보류 (깜빡임 방지)
+    if (!audioTimer && !cardAudioTimer) syncMicAudioState();
+  };
+  currentAudio.onended = done;
+  currentAudio.onerror = done;
+  syncMicAudioState(); // 오디오 재생 중 → 마이크 비활성
+  currentAudio.play().catch(e => { console.warn('Audio autoplay blocked:', e); done(); });
+}
+
+/* 오디오가 재생 중이지 않을 땐 마이크가 항상 활성 (2026-09-12 규칙) */
+function syncMicAudioState() {
+  const n = currentPage;
+  if (!EXERCISES[n]) return;
+  if (pageState[n]?.completed) return;
+  if (isRecording) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (!micBtn) return;
+  if (currentAudio) {
+    if (!micBtn.classList.contains('disabled')) disableMic(n);
+  } else {
+    if (micBtn.classList.contains('disabled')) activateMic(n);
+  }
 }
 
 function stopAudio() {
@@ -445,10 +472,17 @@ function stopAudio() {
 }
 
 function playCardAudio(pageNum) {
+  if (isRecording) return; // 말하기 사용 중 듣기 버튼 차단
   if (CARD_AUDIO[pageNum]) playAudio(CARD_AUDIO[pageNum]);
 }
 
+function setListenDisabled(pageNum, disabled) {
+  const btn = document.getElementById('listen-' + pageNum);
+  if (btn) btn.classList.toggle('disabled', disabled);
+}
+
 function playClickAudio(pageNum) {
+  if (isRecording) return; // 말하기 사용 중 오디오 재생 차단
   if (CLICK_AUDIO[pageNum]) {
     stopAudio();
     playAudio(CLICK_AUDIO[pageNum]);
@@ -541,26 +575,29 @@ function handlePageEnter(n) {
   if (isReturning) {
     if (pageState[n]?.completed) {
       restoreState(n);
+    } else if (EXERCISES[n]) {
+      // 미완료 문제 페이지 재방문: 오디오 체인 재실행 후 마이크 활성화
+      startExerciseChain(n);
     }
     return;
   }
 
   // First visit — auto-play audio
+  startExerciseChain(n);
+}
+
+function startExerciseChain(n) {
+  setListenDisabled(n, false);
   if (PAGE_AUDIO[n]) {
     audioTimer = setTimeout(() => {
       playAudio(PAGE_AUDIO[n], () => {
         // After page audio, check for card audio
         if (CARD_AUDIO[n]) {
           cardAudioTimer = setTimeout(() => {
-            playAudio(CARD_AUDIO[n], () => {
-              if (EXERCISES[n]) {
-                micTimer = setTimeout(() => activateMic(n), 500);
-              }
-            });
+            playAudio(CARD_AUDIO[n]); // 종료 시 syncMicAudioState가 마이크 활성화
           }, 500);
-        } else if (EXERCISES[n]) {
-          micTimer = setTimeout(() => activateMic(n), 500);
         }
+        // 카드 오디오가 없으면 인트로 종료 시 syncMicAudioState가 활성화
       });
     }, 300);
   } else if (EXERCISES[n]) {
@@ -598,6 +635,10 @@ async function startRecording(pageNum) {
   const micBtn = document.getElementById('mic-' + pageNum);
   const feedbackEl = document.getElementById('feedback-' + pageNum);
 
+  // 말하기 사용 중 오디오 재생 차단: 녹음 시작 시 재생 중인 오디오 정지
+  stopAudio();
+  setListenDisabled(pageNum, true);
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(stream);
@@ -609,7 +650,7 @@ async function startRecording(pageNum) {
       if (isDiscarding) { isDiscarding = false; return; }
 
       micBtn.classList.remove('recording');
-      micBtn.innerHTML = '<i class="ph ph-spinner" style="font-size:calc(var(--nav-h) - 6vh);animation:spin 1s linear infinite;"></i>';
+      micBtn.innerHTML = '<i class="ph ph-spinner" style="font-size:var(--btn);animation:spin 1s linear infinite;"></i>';
       if (feedbackEl) {
         feedbackEl.textContent = 'Analyse en cours...';
         feedbackEl.className = 'feedback-area visible-fb';
@@ -631,7 +672,7 @@ async function startRecording(pageNum) {
     activeRecorder = mediaRecorder;
     isRecording = true;
     micBtn.classList.add('recording');
-    micBtn.innerHTML = '<i class="ph-fill ph-stop" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
+    micBtn.innerHTML = '<i class="ph-fill ph-stop" style="font-size:var(--btn);"></i>';
 
     // Max 6 seconds (Golden Rule)
     recordingTimeout = setTimeout(() => {
@@ -640,6 +681,7 @@ async function startRecording(pageNum) {
 
   } catch (err) {
     console.error('Mic access error:', err);
+    setListenDisabled(pageNum, false);
     if (feedbackEl) {
       feedbackEl.textContent = 'Micro inaccessible. Réessayez.';
       feedbackEl.className = 'feedback-area visible-fb';
@@ -761,6 +803,7 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
    EVALUATION
    ═══════════════════════════════════════ */
 function evaluateResult(pageNum, isPass, transcript, score) {
+  setListenDisabled(pageNum, false);
   const ex = EXERCISES[pageNum];
   const state = pageState[pageNum];
   const micBtn = document.getElementById('mic-' + pageNum);
@@ -797,21 +840,18 @@ function evaluateResult(pageNum, isPass, transcript, score) {
     } else {
       // hide or trad: check attempts
       if (state.attempts < ex.maxAttempts) {
-        // Can retry — Repeat (hide): reveal the answer, replay the sentence audio, then retry (2026-09-07 rule)
-        if (ex.type === 'hide') revealBlanks(pageNum);
+        // Can retry (2026-09-12 rule): Repeat (hide) = NO reveal, audio replay only / Trad = reveal the answer, no audio
+        if (ex.type === 'trad') revealBlanks(pageNum);
         showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
         if (ex.type === 'hide' && CARD_AUDIO[pageNum]) {
-          // Auto-play the sentence audio again on retry, then re-enable the mic
+          // Replay the sentence audio only (2026-09-12: no answer reveal) — mic re-enables via syncMicAudioState
           audioTimer = setTimeout(() => {
-            playAudio(CARD_AUDIO[pageNum], () => {
-              micBtn.classList.remove('disabled');
-              micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
-            });
+            playAudio(CARD_AUDIO[pageNum]);
           }, 1500);
         } else {
           setTimeout(() => {
             micBtn.classList.remove('disabled');
-            micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
+            micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
           }, 1500);
         }
       } else {
@@ -852,7 +892,7 @@ function disableMic(pageNum) {
   if (micBtn) {
     micBtn.classList.add('disabled');
     micBtn.classList.remove('recording');
-    micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:calc(var(--nav-h) - 6vh);"></i>';
+    micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
   }
 }
 
@@ -869,6 +909,7 @@ function restoreState(pageNum) {
   if (!state?.completed) return;
 
   disableMic(pageNum);
+  setListenDisabled(pageNum, false);
 
   if (state.feedback) {
     showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '', state.feedback.score);
@@ -882,7 +923,31 @@ function restoreState(pageNum) {
 /* ═══════════════════════════════════════
    LESSON COMPLETE
    ═══════════════════════════════════════ */
-document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopAudio();
+  } else {
+    resumeCurrentPage();
+  }
+});
+
+// 탭 복귀 시 중단된 오디오 체인 재개: 마이크가 죽어 있으면 다시 활성화 경로로 수렴
+function resumeCurrentPage() {
+  const n = currentPage;
+  if (!EXERCISES[n]) return;
+  if (pageState[n]?.completed) return;
+  if (isRecording) return;
+  if (currentAudio) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (!micBtn || !micBtn.classList.contains('disabled')) return;
+  if (pageState[n]?.attempts > 0 && CARD_AUDIO[n]) {
+    // 재시도 중이었던 경우: 카드 오디오만 재생 — 종료 시 syncMicAudioState가 활성화
+    playAudio(CARD_AUDIO[n]);
+  } else {
+    startExerciseChain(n);
+  }
+}
+
 window.addEventListener('pagehide', () => { stopAudio(); });
 window.addEventListener('beforeunload', () => { stopAudio(); });
 
