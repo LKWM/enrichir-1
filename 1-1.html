@@ -431,14 +431,33 @@ function playSfx(type) {
 function playAudio(url, onEnded) {
   stopAudio();
   currentAudio = new Audio(url);
-  if (onEnded) {
-    let fired = false;
-    const done = () => { if (!fired) { fired = true; onEnded(); } };
-    currentAudio.onended = done;
-    currentAudio.onerror = done;
-    currentAudio.play().catch(e => { console.warn('Audio autoplay blocked:', e); done(); });
+  const self = currentAudio;
+  const done = () => {
+    if (self._done) return;
+    self._done = true;
+    if (onEnded) onEnded();
+    if (currentAudio === self) currentAudio = null;
+    // 이어질 오디오가 예약돼 있으면 동기화 보류 (깜빡임 방지)
+    if (!audioTimer && !cardAudioTimer) syncMicAudioState();
+  };
+  currentAudio.onended = done;
+  currentAudio.onerror = done;
+  syncMicAudioState(); // 오디오 재생 중 → 마이크 비활성
+  currentAudio.play().catch(e => { console.warn('Audio autoplay blocked:', e); done(); });
+}
+
+/* 오디오가 재생 중이지 않을 땐 마이크가 항상 활성 (2026-09-12 규칙) */
+function syncMicAudioState() {
+  const n = currentPage;
+  if (!EXERCISES[n]) return;
+  if (pageState[n]?.completed) return;
+  if (isRecording) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (!micBtn) return;
+  if (currentAudio) {
+    if (!micBtn.classList.contains('disabled')) disableMic(n);
   } else {
-    currentAudio.play().catch(e => console.warn('Audio autoplay blocked:', e));
+    if (micBtn.classList.contains('disabled')) activateMic(n);
   }
 }
 
@@ -455,15 +474,7 @@ function stopAudio() {
 
 function playCardAudio(pageNum) {
   if (isRecording) return; // 말하기 사용 중 듣기 버튼 차단
-  if (CARD_AUDIO[pageNum]) {
-    const isPendingExercise = EXERCISES[pageNum] && !pageState[pageNum]?.completed;
-    // 누르기 전 활성 상태였을 때만 재생 종료 후 복원 (신규 활성화 금지)
-    const micWasActive = isPendingExercise && !document.getElementById('mic-' + pageNum).classList.contains('disabled');
-    if (isPendingExercise) disableMic(pageNum);
-    playAudio(CARD_AUDIO[pageNum], () => {
-      if (micWasActive) activateMic(pageNum);
-    });
-  }
+  if (CARD_AUDIO[pageNum]) playAudio(CARD_AUDIO[pageNum]);
 }
 
 function setListenDisabled(pageNum, disabled) {
@@ -584,13 +595,10 @@ function startExerciseChain(n) {
         // After page audio, check for card audio
         if (CARD_AUDIO[n]) {
           cardAudioTimer = setTimeout(() => {
-            playAudio(CARD_AUDIO[n], () => {
-              if (EXERCISES[n]) activateMic(n);
-            });
+            playAudio(CARD_AUDIO[n]); // 종료 시 syncMicAudioState가 마이크 활성화
           }, 500);
-        } else if (EXERCISES[n]) {
-          activateMic(n);
         }
+        // 카드 오디오가 없으면 인트로 종료 시 syncMicAudioState가 활성화
       });
     }, 300);
   } else if (EXERCISES[n]) {
@@ -837,12 +845,9 @@ function evaluateResult(pageNum, isPass, transcript, score) {
         if (ex.type === 'trad') revealBlanks(pageNum);
         showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
         if (ex.type === 'hide' && CARD_AUDIO[pageNum]) {
-          // Auto-play the sentence audio again on retry, then re-enable the mic
+          // Replay the sentence audio only (2026-09-12: no answer reveal) — mic re-enables via syncMicAudioState
           audioTimer = setTimeout(() => {
-            playAudio(CARD_AUDIO[pageNum], () => {
-              micBtn.classList.remove('disabled');
-              micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
-            });
+            playAudio(CARD_AUDIO[pageNum]);
           }, 1500);
         } else {
           setTimeout(() => {
@@ -937,8 +942,8 @@ function resumeCurrentPage() {
   const micBtn = document.getElementById('mic-' + n);
   if (!micBtn || !micBtn.classList.contains('disabled')) return;
   if (pageState[n]?.attempts > 0 && CARD_AUDIO[n]) {
-    // 재시도 중이었던 경우: 카드 오디오만 재생 후 마이크 활성화
-    playAudio(CARD_AUDIO[n], () => { activateMic(n); });
+    // 재시도 중이었던 경우: 카드 오디오만 재생 — 종료 시 syncMicAudioState가 활성화
+    playAudio(CARD_AUDIO[n]);
   } else {
     startExerciseChain(n);
   }
