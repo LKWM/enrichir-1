@@ -42,6 +42,8 @@
     }
     .nav-btn:disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .card-clickable { cursor: pointer; transition: background 0.15s; }
+    .listen-btn { transition: opacity 0.15s; }
+    .listen-btn.disabled { opacity: 0.5; pointer-events: none; }
     .card-clickable:hover { background: #ede9fe; }
   </style>
 </head>
@@ -188,7 +190,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Cette fois, je vais cacher un mot. Répétez après moi.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(9)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <button onclick="playCardAudio(9)" id="listen-9" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
           <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="9" data-answer="학교">◯◯</span>에서 공부해요.</p>
         </div>
         <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à l'école.</p>
@@ -204,7 +206,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Répétez aussi cette phrase.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(10)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <button onclick="playCardAudio(10)" id="listen-10" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
           <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">집<span class="blank" data-page="10" data-answer="에서">◯◯</span> 공부해요.</p>
         </div>
         <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">J'étudie à la maison.</p>
@@ -220,7 +222,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites aussi cette phrase.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <div style="display:flex;align-items:center;gap:0.5vw;justify-content:center;">
-          <button onclick="playCardAudio(11)" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
+          <button onclick="playCardAudio(11)" id="listen-11" class="listen-btn" style="background:none;border:none;cursor:pointer;color:#7c3aed;font-size:clamp(1.5rem,max(3vw,3vh),2rem);padding:0;display:flex;align-items:center;"><i class="ph-fill ph-speaker-high"></i></button>
           <p class="ko" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"><span class="blank" data-page="11" data-answer="어디">◯◯</span>에서 공부<span class="blank" data-page="11" data-answer="해요">◯◯</span>?</p>
         </div>
         <p style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.3rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;">Où étudiez-vous ?</p>
@@ -452,8 +454,19 @@ function stopAudio() {
 }
 
 function playCardAudio(pageNum) {
-  if (isRecording) return; // 말하기 사용 중 오디오 재생 차단
-  if (CARD_AUDIO[pageNum]) playAudio(CARD_AUDIO[pageNum]);
+  if (isRecording) return; // 말하기 사용 중 듣기 버튼 차단
+  if (CARD_AUDIO[pageNum]) {
+    const isPendingExercise = EXERCISES[pageNum] && !pageState[pageNum]?.completed;
+    if (isPendingExercise) disableMic(pageNum);
+    playAudio(CARD_AUDIO[pageNum], () => {
+      if (isPendingExercise) activateMic(pageNum);
+    });
+  }
+}
+
+function setListenDisabled(pageNum, disabled) {
+  const btn = document.getElementById('listen-' + pageNum);
+  if (btn) btn.classList.toggle('disabled', disabled);
 }
 
 function playClickAudio(pageNum) {
@@ -562,6 +575,7 @@ function handlePageEnter(n) {
 }
 
 function startExerciseChain(n) {
+  setListenDisabled(n, false);
   if (PAGE_AUDIO[n]) {
     audioTimer = setTimeout(() => {
       playAudio(PAGE_AUDIO[n], () => {
@@ -569,13 +583,11 @@ function startExerciseChain(n) {
         if (CARD_AUDIO[n]) {
           cardAudioTimer = setTimeout(() => {
             playAudio(CARD_AUDIO[n], () => {
-              if (EXERCISES[n]) {
-                micTimer = setTimeout(() => activateMic(n), 500);
-              }
+              if (EXERCISES[n]) activateMic(n);
             });
           }, 500);
         } else if (EXERCISES[n]) {
-          micTimer = setTimeout(() => activateMic(n), 500);
+          activateMic(n);
         }
       });
     }, 300);
@@ -616,6 +628,7 @@ async function startRecording(pageNum) {
 
   // 말하기 사용 중 오디오 재생 차단: 녹음 시작 시 재생 중인 오디오 정지
   stopAudio();
+  setListenDisabled(pageNum, true);
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -659,6 +672,7 @@ async function startRecording(pageNum) {
 
   } catch (err) {
     console.error('Mic access error:', err);
+    setListenDisabled(pageNum, false);
     if (feedbackEl) {
       feedbackEl.textContent = 'Micro inaccessible. Réessayez.';
       feedbackEl.className = 'feedback-area visible-fb';
@@ -780,6 +794,7 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
    EVALUATION
    ═══════════════════════════════════════ */
 function evaluateResult(pageNum, isPass, transcript, score) {
+  setListenDisabled(pageNum, false);
   const ex = EXERCISES[pageNum];
   const state = pageState[pageNum];
   const micBtn = document.getElementById('mic-' + pageNum);
@@ -888,6 +903,7 @@ function restoreState(pageNum) {
   if (!state?.completed) return;
 
   disableMic(pageNum);
+  setListenDisabled(pageNum, false);
 
   if (state.feedback) {
     showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '', state.feedback.score);
