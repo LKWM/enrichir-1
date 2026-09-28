@@ -7,9 +7,24 @@
   // 한국어 발음 오디오 — 녹음 완료 후 링크 추가 시 자동 연동
   // ================================================================
   const audioMap = {
-      '학교에서 공부해요.': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1S1F_nnqttc.mp3',
-      '집에서 공부해요.': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504923/C1S2F_l0hybt.mp3',
-      '어디에서 공부해요?': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1S3F_pcyksx.mp3',
+      'C1L1-1': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-1_u0bdyi.mp3',
+      'C1L1-2': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-2_jdxkoh.mp3',
+      'C1L1-3': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-3_fnnlzt.mp3',
+      'C1L1-4': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504917/C1L1-4_xtvbr9.mp3',
+      'C1L1-5': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-5_t3xxcu.mp3',
+      'C1L1-6': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-6_ucxg0y.mp3',
+      'C1L1-7': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-7_hyclvr.mp3',
+      'C1L1-8': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-8_hnb5ey.mp3',
+      'C1L1-9': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-9_k6dhme.mp3',
+      'C1L1-10': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-10_fecigc.mp3',
+      'C1L1-11': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-11_xh3brz.mp3',
+      'C1L1-12': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504920/C1L1-12_bhmdeo.mp3',
+      'C1L1-13': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1L1-13_gv22h7.mp3',
+      'C1L1-14': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1L1-14_x9rv3n.mp3',
+      'C1L1-15': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1L1-15_mawi0a.mp3',
+      'C1S1F': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1S1F_nnqttc.mp3',
+      'C1S2F': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504923/C1S2F_l0hybt.mp3',
+      'C1S3F': 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1S3F_pcyksx.mp3',
   };
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -305,43 +320,43 @@ const GEMINI_URL = 'https://coreeno.base44.app/api/functions/Geminichat';
 const TOTAL_PAGES = 16; // Syllabus P1-P16
 
 const PAGE_AUDIO = {
-  1: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-1_u0bdyi.mp3',
-  2: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-2_jdxkoh.mp3',
-  3: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-3_fnnlzt.mp3',
-  4: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504917/C1L1-4_xtvbr9.mp3',
-  5: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-5_t3xxcu.mp3',
-  6: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-6_ucxg0y.mp3',
-  7: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504918/C1L1-7_hyclvr.mp3',
-  8: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-8_hnb5ey.mp3',
-  9: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-9_k6dhme.mp3',
-  10: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-10_fecigc.mp3',
-  11: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504919/C1L1-11_xh3brz.mp3',
-  12: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504920/C1L1-12_bhmdeo.mp3',
-  13: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1L1-13_gv22h7.mp3',
-  14: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504921/C1L1-14_x9rv3n.mp3',
-  15: 'https://res.cloudinary.com/de76i94ia/video/upload/v1782504922/C1L1-15_mawi0a.mp3',
+  1: audioMap['C1L1-1'],
+  2: audioMap['C1L1-2'],
+  3: audioMap['C1L1-3'],
+  4: audioMap['C1L1-4'],
+  5: audioMap['C1L1-5'],
+  6: audioMap['C1L1-6'],
+  7: audioMap['C1L1-7'],
+  8: audioMap['C1L1-8'],
+  9: audioMap['C1L1-9'],
+  10: audioMap['C1L1-10'],
+  11: audioMap['C1L1-11'],
+  12: audioMap['C1L1-12'],
+  13: audioMap['C1L1-13'],
+  14: audioMap['C1L1-14'],
+  15: audioMap['C1L1-15'],
 };
 
 const CARD_AUDIO = {
-  2: audioMap['학교에서 공부해요.'],
-  4: audioMap['학교에서 공부해요.'],
-  5: audioMap['집에서 공부해요.'],
-  6: audioMap['집에서 공부해요.'],
-  7: audioMap['어디에서 공부해요?'],
-  8: audioMap['어디에서 공부해요?'],
-  9: audioMap['학교에서 공부해요.'],
-  10: audioMap['집에서 공부해요.'],
-  11: audioMap['어디에서 공부해요?'],
+  2: audioMap['C1S1F'],
+  4: audioMap['C1S1F'],
+  5: audioMap['C1S2F'],
+  6: audioMap['C1S2F'],
+  7: audioMap['C1S3F'],
+  8: audioMap['C1S3F'],
+  9: audioMap['C1S1F'],
+  10: audioMap['C1S2F'],
+  11: audioMap['C1S3F'],
 };
 
 const CLICK_AUDIO = {
-  3: audioMap['학교에서 공부해요.'],
+  3: audioMap['C1S1F'],
 };
 
 const SENTENCE_AUDIO = {
-  12: audioMap['학교에서 공부해요.'],
-  13: audioMap['집에서 공부해요.'],
-  14: audioMap['어디에서 공부해요?'],
+  12: audioMap['C1S1F'],
+  13: audioMap['C1S2F'],
+  14: audioMap['C1S3F'],
 };
 
 const EXERCISES = {
