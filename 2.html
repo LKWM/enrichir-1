@@ -46,7 +46,7 @@
     .mic-btn.disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-    .feedback-area { min-height: 8vh; display: flex; align-items: center; justify-content: center; }
+    .feedback-area { height: 8vh; display: flex; align-items: center; justify-content: center; }
     .invisible-fb { visibility: hidden; }
     .visible-fb { visibility: visible; }
     .nav-btn {
@@ -58,8 +58,8 @@
     .nav-btn:disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
     .word-btn {
       background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff; border: none; border-radius: 1.2vw;
-      padding: 2.2vh 9vw; font-family: 'Noto Sans KR', sans-serif;
-      font-size: clamp(1.6rem, max(5vw, 5vh), 2.8rem); font-weight: 800; cursor: pointer;
+      padding: 2.4vh 10vw; font-family: 'Noto Sans KR', sans-serif;
+      font-size: clamp(1.9rem, max(7vw, 7vh), 99rem); font-weight: 800; cursor: pointer;
       box-shadow: 0 0.5vh 1.8vh rgba(124,58,237,0.2); transition: transform 0.15s;
     }
     .word-btn:hover { transform: scale(1.04); }
@@ -76,6 +76,13 @@
     .option-btn.wrong { color: #ef4444; text-decoration: line-through; opacity: 0.55; pointer-events: none; }
     .option-btn.matched { background: #dcfce7; border-color: #16a34a; color: #14532d; pointer-events: none; }
     .answer-reveal { color: #5b21b6; font-weight: 700; }
+    .deck-arrow {
+      border: none; background: transparent; cursor: pointer; padding: 0; line-height: 1;
+      font-size: clamp(1.5rem, max(5vw, 5vh), 99rem); transition: opacity 0.15s;
+    }
+    .deck-arrow:disabled { opacity: 0.3; cursor: default; }
+    .mcq-opts { display: grid; grid-template-columns: 1fr; gap: 1vh; width: 100%; }
+    @media (orientation: landscape) { .mcq-opts { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -88,12 +95,13 @@
   <!-- ════════ PAGE 0 — COVER ════════ -->
   <div class="page active flex-col bg-violet-50" id="page-0">
     <div class="flex flex-col items-center" style="gap:3vh;">
-      <div style="width:clamp(4rem,max(12vw,12vh),8rem);height:clamp(4rem,max(12vw,12vh),8rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
-        <i class="ph ph-graduation-cap" style="font-size:clamp(2rem,max(6vw,6vh),4rem);color:#fff;"></i>
+      <div style="width:clamp(3.5rem,max(12vw,12vh),99rem);height:clamp(3.5rem,max(12vw,12vh),99rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
+        <i class="ph ph-cards" style="font-size:clamp(1.75rem,max(6vw,6vh),99rem);color:#fff;"></i>
       </div>
-      <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),1.1rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;">Chapitre 1 : Le lieu et l'action</p>
-      <h1 style="font-size:clamp(1.8rem,max(5vw,5vh),3.5rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;">Vocabulaire</h1>
-      <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(1rem,max(2.5vw,2.5vh),1.5rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
+      <p style="font-size:clamp(1.05rem,max(2.6vw,2.6vh),99rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;line-height:1.5;margin-bottom:1.5vh;"><span style="white-space:nowrap;">Chapitre 1 :</span> <span style="display:inline-block;">le lieu et l'action</span></p>
+      <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Vocabulaire 🗒️</p>
+      <h1 style="font-size:clamp(1.5rem,max(5vw,5vh),99rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;margin-top:-1.5vh;">Les lieux et les actions</h1>
+      <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(0.9rem,max(2.5vw,2.5vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
     </div>
   </div>
 
@@ -102,14 +110,14 @@
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Voici les mots appris dans ce chapitre. Écoutez-les attentivement.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;height:calc((100vh - var(--nav-h)) * 0.8);">
-        <div id="deck-content" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;width:100%;">
+        <div id="deck-content" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5vh;width:100%;">
           <button class="word-btn" id="deck-word" onclick="playDeckAudio()"></button>
-          <p id="deck-sub1" style="font-size:clamp(1.1rem,max(2.8vw,2.8vh),1.8rem);font-weight:700;text-align:center;color:#1e1b2e;"></p>
-          <p id="deck-sub2" class="invisible" style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),1.1rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;"></p>
+          <p id="deck-sub1" style="font-size:clamp(1.05rem,max(3vw,3vh),99rem);font-weight:700;text-align:center;color:#1e1b2e;"></p>
+          <p id="deck-sub2" class="invisible" style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),99rem);font-weight:500;text-align:center;color:#6b7280;font-style:italic;"></p>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-top:1.5vh;">
-          <button class="nav-btn" id="deck-prev" onclick="deckPrev()"><i class="ph ph-caret-left"></i></button>
-          <button class="nav-btn" id="deck-next" onclick="deckNext()"><i class="ph ph-caret-right"></i></button>
+        <div style="display:flex;justify-content:center;align-items:center;gap:8vw;padding-top:1.5vh;">
+          <button class="deck-arrow" id="deck-prev" onclick="deckPrev()">⬅️</button>
+          <button class="deck-arrow" id="deck-next" onclick="deckNext()">➡️</button>
         </div>
       </div>
     </div>
@@ -121,7 +129,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-2" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-2" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -130,7 +138,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-3" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-3" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-3" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -139,7 +147,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-4" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-4" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-4" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -148,7 +156,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-5" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-5" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-5" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -157,7 +165,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-6" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-6" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-6" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -166,7 +174,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-7" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-7" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-7" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -175,7 +183,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-8" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-8" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-8" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -184,7 +192,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-9" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-9" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-9" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -193,7 +201,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Lisez le mot coréen et choisissez la traduction française appropriée.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);width:100%;">
         <p class="ko" id="mcq-q-10" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
-        <div id="mcq-opts-10" style="display:grid;grid-template-columns:1fr 1fr;gap:1vh;width:100%;"></div>
+        <div id="mcq-opts-10" class="mcq-opts"></div>
       </div>
     </div>
   </div>
@@ -226,7 +234,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Entreprise</p>
-        <p class="ko invisible" id="answer-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">회사</p>
         <button class="mic-btn disabled" id="mic-13" onclick="handleMicClick(13)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-13" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -237,7 +245,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Travailler</p>
-        <p class="ko invisible" id="answer-14" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-14" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">일하다</p>
         <button class="mic-btn disabled" id="mic-14" onclick="handleMicClick(14)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-14" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -248,7 +256,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Banque</p>
-        <p class="ko invisible" id="answer-15" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-15" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">은행</p>
         <button class="mic-btn disabled" id="mic-15" onclick="handleMicClick(15)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-15" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -259,7 +267,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Hôpital</p>
-        <p class="ko invisible" id="answer-16" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-16" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">병원</p>
         <button class="mic-btn disabled" id="mic-16" onclick="handleMicClick(16)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-16" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -270,7 +278,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Aéroport</p>
-        <p class="ko invisible" id="answer-17" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-17" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">공항</p>
         <button class="mic-btn disabled" id="mic-17" onclick="handleMicClick(17)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-17" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -281,7 +289,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Attendre</p>
-        <p class="ko invisible" id="answer-18" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;"></p>
+        <p class="ko invisible" id="answer-18" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;">기다리다</p>
         <button class="mic-btn disabled" id="mic-18" onclick="handleMicClick(18)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-18" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -363,13 +371,6 @@ const EXERCISES = {
 // 다음 페이지 진행 게이트가 있는 페이지 (완료 전 Suivant 비활성)
 const GATED = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
 
-const MSG = {
-  SUCCESS_RETRY: 'Très bien, essayons encore une fois.',
-  SUCCESS_END:   'Très bien ! Passez à la suite.',
-  FAIL_RETRY:    'On y est presque ! Essayez encore une fois.',
-  FAIL_END:      'Bien essayé ! Passez à la suite.',
-  ANSWER_REVEAL: 'Bien essayé ! Voici la bonne réponse.',
-};
 
 /* ═══════════════════════════════════════
    STATE
@@ -384,6 +385,7 @@ let activeRecorder = null;
 let recordingTimeout = null;
 let isDiscarding = false;
 let isRecording = false;
+let pendingStop = false;
 const pageState = {};
 const visitedPages = new Set();
 
@@ -576,11 +578,11 @@ function handlePageEnter(n) {
   // First visit
   if (n === 1) {
     renderDeck();
-    // 입장시 오디오 1회 자동재생
+    // 입장시 오디오 자동재생 — 페이지 전환 효과음과 겹치지 않도록 0.5초 후 재생
     audioTimer = setTimeout(() => {
       const w = WORDS[pageState[1].deckIndex];
       if (w.audio) playAudio(w.audio);
-    }, 300);
+    }, 500);
   } else if (MCQ_PAGES[n] !== undefined) {
     renderMCQ(n);
   } else if (MATCH_PAGES[n]) {
@@ -629,6 +631,7 @@ function deckPrev() {
     st.deckIndex--;
     st.seen.add(st.deckIndex);
     updateDeckCard();
+    playDeckCardAudio();
     checkDeckComplete();
   }
 }
@@ -640,8 +643,17 @@ function deckNext() {
     st.deckIndex++;
     st.seen.add(st.deckIndex);
     updateDeckCard();
+    playDeckCardAudio();
     checkDeckComplete();
   }
+}
+
+// 카드 전환 시 해당 카드 오디오 1회 자동재생
+function playDeckCardAudio() {
+  audioTimer = setTimeout(() => {
+    const w = WORDS[pageState[1].deckIndex];
+    if (w.audio) playAudio(w.audio);
+  }, 300);
 }
 
 // 각 카드 1회 이상 보면 다음 페이지 버튼 활성화
@@ -659,8 +671,13 @@ function checkDeckComplete() {
 function mcqOptions(pageNum) {
   const idx = MCQ_PAGES[pageNum];
   const answer = WORDS[idx].fr;
-  // 정답 + 목록상 다음 3단어를 옵션으로 구성, 제시 순서는 무작위
-  const distractors = [WORDS[(idx + 1) % WORDS.length].fr, WORDS[(idx + 2) % WORDS.length].fr, WORDS[(idx + 3) % WORDS.length].fr];
+  // 정답 제외 나머지 단어 중 무작위 3개를 오답으로 선택
+  const pool = WORDS.filter((_, i) => i !== idx).map(w => w.fr);
+  const distractors = [];
+  while (distractors.length < 3) {
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    if (!distractors.includes(pick)) distractors.push(pick);
+  }
   const opts = [answer, ...distractors];
   for (let i = opts.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -709,30 +726,36 @@ function mcqAnswer(pageNum, btn, opt) {
    ═══════════════════════════════════════ */
 function renderMatching(pageNum) {
   if (!pageState[pageNum]) {
-    pageState[pageNum] = { completed: false, matched: new Set(), selLeft: null, selRight: null };
+    // 좌/우 열 무작위 순서로 제시
+    const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    pageState[pageNum] = {
+      completed: false, matched: new Set(), selLeft: null, selRight: null, locked: false,
+      leftOrder: shuffle(MATCH_PAGES[pageNum].map(w => w.ko)),
+      rightOrder: shuffle(MATCH_PAGES[pageNum].map(w => w.fr)),
+    };
   }
   const st = pageState[pageNum];
-  const words = MATCH_PAGES[pageNum];
 
   const leftCol = document.getElementById('match-left-' + pageNum);
   leftCol.innerHTML = '';
-  words.forEach(w => {
+  st.leftOrder.forEach(ko => {
     const btn = document.createElement('button');
     btn.className = 'option-btn ko';
-    btn.textContent = w.ko;
+    btn.textContent = ko;
     btn.style.fontWeight = '700';
-    btn.onclick = () => matchClickLeft(pageNum, btn, w.ko);
-    if (st.matched.has(w.ko)) btn.classList.add('matched');
+    btn.onclick = () => matchClickLeft(pageNum, btn, ko);
+    if (st.matched.has(ko)) btn.classList.add('matched');
     leftCol.appendChild(btn);
   });
 
   const rightCol = document.getElementById('match-right-' + pageNum);
   rightCol.innerHTML = '';
-  words.forEach(w => {
+  st.rightOrder.forEach(fr => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
-    btn.textContent = w.fr;
-    btn.onclick = () => matchClickRight(pageNum, btn, w.fr);
+    btn.textContent = fr;
+    btn.onclick = () => matchClickRight(pageNum, btn, fr);
+    const w = MATCH_PAGES[pageNum].find(x => x.fr === fr);
     if (st.matched.has(w.ko)) btn.classList.add('matched');
     rightCol.appendChild(btn);
   });
@@ -741,18 +764,17 @@ function renderMatching(pageNum) {
 
 function updateMatchSelection(pageNum) {
   const st = pageState[pageNum];
-  const words = MATCH_PAGES[pageNum];
   document.querySelectorAll('#match-left-' + pageNum + ' .option-btn').forEach((btn, i) => {
-    btn.classList.toggle('selected', st.selLeft === words[i].ko && !st.matched.has(words[i].ko));
+    btn.classList.toggle('selected', st.selLeft === st.leftOrder[i] && !st.matched.has(st.leftOrder[i]));
   });
   document.querySelectorAll('#match-right-' + pageNum + ' .option-btn').forEach((btn, i) => {
-    btn.classList.toggle('selected', st.selRight === words[i].fr && !st.matched.has(words[i].ko));
+    btn.classList.toggle('selected', st.selRight === st.rightOrder[i] && !st.matched.has(MATCH_PAGES[pageNum].find(x => x.fr === st.rightOrder[i]).ko));
   });
 }
 
 function matchClickLeft(pageNum, btn, ko) {
   const st = pageState[pageNum];
-  if (st.matched.has(ko)) return;
+  if (st.matched.has(ko) || st.locked) return;
   // 한국어 버튼 누를 때 오디오 재생
   const w = MATCH_PAGES[pageNum].find(x => x.ko === ko);
   if (w.audio) playAudio(w.audio);
@@ -763,6 +785,7 @@ function matchClickLeft(pageNum, btn, ko) {
 
 function matchClickRight(pageNum, btn, fr) {
   const st = pageState[pageNum];
+  if (st.locked) return;
   if (st.selRight === fr) { st.selRight = null; updateMatchSelection(pageNum); return; }
   const w = MATCH_PAGES[pageNum].find(x => x.fr === fr);
   if (st.matched.has(w.ko)) return;
@@ -786,10 +809,17 @@ function tryMatch(pageNum) {
       updateBottomBar();
     }
   } else {
-    playSfx('wrong'); // 틀릴 경우 선택 초기화 후 재시도
-    st.selLeft = null;
-    st.selRight = null;
-    updateMatchSelection(pageNum);
+    playSfx('wrong'); // 틀린 답 cross out 표시
+    st.locked = true;
+    document.querySelectorAll('#match-left-' + pageNum + ' .option-btn').forEach(btn => { if (btn.classList.contains('selected')) btn.classList.add('wrong'); });
+    document.querySelectorAll('#match-right-' + pageNum + ' .option-btn').forEach(btn => { if (btn.classList.contains('selected')) btn.classList.add('wrong'); });
+    // 3초 후 초기화
+    setTimeout(() => {
+      st.selLeft = null;
+      st.selRight = null;
+      st.locked = false;
+      renderMatching(pageNum);
+    }, 3000);
   }
 }
 
@@ -804,7 +834,11 @@ async function handleMicClick(pageNum) {
   if (!isRecording) {
     await startRecording(pageNum);
   } else {
-    stopRecording();
+    // 실제 클릭 시간보다 0.5초 더 녹음해 발화 끊김 방지
+    pendingStop = true;
+    micBtn.classList.remove('recording');
+    micBtn.innerHTML = '<i class="ph ph-spinner" style="font-size:var(--btn);animation:spin 1s linear infinite;"></i>';
+    setTimeout(() => { if (pendingStop) stopRecording(); }, 500);
   }
 }
 
@@ -865,6 +899,7 @@ async function startRecording(pageNum) {
 }
 
 function stopRecording() {
+  pendingStop = false;
   if (activeRecorder && isRecording) {
     activeRecorder.stop();
     isRecording = false;
@@ -979,25 +1014,10 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
 function revealAnswerText(pageNum) {
   const el = document.getElementById('answer-' + pageNum);
   if (el) {
-    el.textContent = EXERCISES[pageNum].expected;
     el.classList.remove('invisible');
     el.classList.add('answer-reveal');
   }
   if (pageState[pageNum]) pageState[pageNum].answerShown = true;
-}
-
-function finishSpeakPage(pageNum) {
-  // 2회 실패 또는 성공시 한국어 오디오 공개 후 다음 페이지로 전환
-  const w = SPEAK_PAGES[pageNum];
-  const target = pageNum;
-  const advance = () => {
-    if (currentPage === target) goToPage(target + 1);
-  };
-  if (w.audio) {
-    audioTimer = setTimeout(() => { playAudio(w.audio, advance); }, 600);
-  } else {
-    audioTimer = setTimeout(advance, 600);
-  }
 }
 
 function evaluateResult(pageNum, isPass, transcript, score) {
@@ -1009,43 +1029,48 @@ function evaluateResult(pageNum, isPass, transcript, score) {
     playSfx('correct');
     state.passed = true;
     state.completed = true;
-    showFeedback(pageNum, MSG.SUCCESS_END, 'success', transcript, score);
+    showFeedback(pageNum, transcript, score, true);
     disableMic(pageNum);
-    finishSpeakPage(pageNum); // 성공시 한국어 오디오 공개 + 다음 페이지 전환
+    // 성공시 한국어 오디오 공개 (자동 전환 없음)
+    const w = SPEAK_PAGES[pageNum];
+    if (w.audio) audioTimer = setTimeout(() => { playAudio(w.audio); }, 500);
   } else {
     playSfx('wrong');
     if (state.attempts < ex.maxAttempts) {
-      // 1회 실패시 한국어 정답 텍스트 공개 후 재시도
+      // 1회 실패: 한국어 정답 텍스트 공개 후 재시도
       revealAnswerText(pageNum);
-      showFeedback(pageNum, MSG.FAIL_RETRY, 'fail', transcript, score);
+      showFeedback(pageNum, transcript, score, false);
       setTimeout(() => {
-        if (!state.completed) activateMic(pageNum);
+        if (!state.completed) {
+          micBtn.classList.remove('disabled');
+          micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
+        }
       }, 1500);
     } else {
-      // 2회 실패시 — 정답 텍스트 공개 + 한국어 오디오 공개 + 다음 페이지 전환
+      // 2회 실패: 정답 텍스트 공개 + 한국어 오디오 공개 (자동 전환 없음)
       state.completed = true;
       revealAnswerText(pageNum);
-      showFeedback(pageNum, MSG.ANSWER_REVEAL, 'fail', transcript, score);
+      showFeedback(pageNum, transcript, score, false);
       disableMic(pageNum);
-      finishSpeakPage(pageNum);
+      const w = SPEAK_PAGES[pageNum];
+      if (w.audio) audioTimer = setTimeout(() => { playAudio(w.audio); }, 500);
     }
   }
 
   updateBottomBar();
 }
 
-function showFeedback(pageNum, message, type, transcript, score) {
+function showFeedback(pageNum, transcript, score, isPass) {
   const el = document.getElementById('feedback-' + pageNum);
   if (!el) return;
-  var color = (type === 'success' ? '#16a34a' : '#f97316');
-  var html = '';
+  const color = isPass ? '#16a34a' : '#f97316';
+  let html = '';
   if (transcript) html += '<span style="font-weight:500;color:#6b7280;">« ' + transcript + ' »</span> ';
-  if (typeof score !== 'undefined' && score !== null) html += '<span style="font-weight:700;color:' + color + ';">' + score + '/100</span> ';
-  html += '<span>' + message + '</span>';
+  if (typeof score !== 'undefined' && score !== null) html += '<span style="font-weight:700;color:' + color + ';">' + score + '/100</span>';
   el.innerHTML = '<div style="text-align:center;">' + html + '</div>';
   el.className = 'feedback-area visible-fb';
-  el.style.color = type === 'success' ? '#16a34a' : '#f97316';
-  if (pageState[pageNum]) pageState[pageNum].feedback = { message, type, transcript: transcript || '', score: score };
+  el.style.color = isPass ? '#16a34a' : '#f97316';
+  if (pageState[pageNum]) pageState[pageNum].feedback = { transcript: transcript || '', score: score, passed: isPass };
 }
 
 /* ═══════════════════════════════════════
@@ -1070,7 +1095,7 @@ function restoreState(pageNum) {
   if (EXERCISES[pageNum]) {
     disableMic(pageNum);
     if (state.feedback) {
-      showFeedback(pageNum, state.feedback.message, state.feedback.type, state.feedback.transcript || '', state.feedback.score);
+      showFeedback(pageNum, state.feedback.transcript || '', state.feedback.score, state.feedback.passed);
     }
     if (state.answerShown) {
       const el = document.getElementById('answer-' + pageNum);
