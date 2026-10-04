@@ -75,7 +75,9 @@
     .option-btn.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; pointer-events: none; }
     .option-btn.wrong { color: #ef4444; text-decoration: line-through; opacity: 0.55; pointer-events: none; }
     .option-btn.matched { background: #dcfce7; border-color: #16a34a; color: #14532d; pointer-events: none; }
-    .answer-reveal { color: #5b21b6; font-weight: 700; }
+    /* 정답란 버튼 (시안 1): 항상 같은 형태 — not clickable(회색) / clickable(보라) 상태만 색상으로 구별 */
+    .answer-btn { background:#fff; border:0.45vh solid #d1d5db; color:#9ca3af; border-radius:1vw; padding:1vh 6vw; min-width:40%; font-weight:700; text-align:center; }
+    .answer-btn.clickable { border-color:#7c3aed; color:#5b21b6; cursor:pointer; }
     .deck-arrow {
       border: none; background: transparent; cursor: pointer; padding: 0; line-height: 1;
       font-size: clamp(1.5rem, max(5vw, 5vh), 99rem); transition: opacity 0.15s;
@@ -234,10 +236,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Entreprise</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">회사</p>
-          <button class="word-btn ko invisible" id="answer-btn-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(13)">회사</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(13)">회사</button>
         <button class="mic-btn disabled" id="mic-13" onclick="handleMicClick(13)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-13" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -248,10 +247,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Travailler</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-14" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">일하다</p>
-          <button class="word-btn ko invisible" id="answer-btn-14" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(14)">일하다</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-14" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(14)">일하다</button>
         <button class="mic-btn disabled" id="mic-14" onclick="handleMicClick(14)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-14" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -262,10 +258,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Banque</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-15" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">은행</p>
-          <button class="word-btn ko invisible" id="answer-btn-15" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(15)">은행</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-15" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(15)">은행</button>
         <button class="mic-btn disabled" id="mic-15" onclick="handleMicClick(15)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-15" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -276,10 +269,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Hôpital</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-16" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">병원</p>
-          <button class="word-btn ko invisible" id="answer-btn-16" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(16)">병원</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-16" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(16)">병원</button>
         <button class="mic-btn disabled" id="mic-16" onclick="handleMicClick(16)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-16" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -290,10 +280,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Aéroport</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-17" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">공항</p>
-          <button class="word-btn ko invisible" id="answer-btn-17" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(17)">공항</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-17" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(17)">공항</button>
         <button class="mic-btn disabled" id="mic-17" onclick="handleMicClick(17)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-17" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -304,10 +291,7 @@
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Dites le mot suivant en coréen.</p>
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Attendre</p>
-        <div style="display:grid;place-items:center;width:100%;">
-          <p class="ko invisible" id="answer-18" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;grid-area:1/1;">기다리다</p>
-          <button class="word-btn ko invisible" id="answer-btn-18" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);grid-area:1/1;" onclick="playAnswerAudio(18)">기다리다</button>
-        </div>
+        <button class="answer-btn ko invisible" id="answer-18" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);" onclick="playAnswerAudio(18)">기다리다</button>
         <button class="mic-btn disabled" id="mic-18" onclick="handleMicClick(18)"><i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i></button>
         <div class="feedback-area invisible-fb" id="feedback-18" style="font-size:clamp(0.8rem,max(1.5vw,1.5vh),1rem);font-weight:600;text-align:center;"></div>
       </div>
@@ -1029,14 +1013,17 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
    ═══════════════════════════════════════ */
 // 텍스트+오디오 공개 (2회 실패 또는 성공시): 기존 레슨 컨벤션대로 정답 텍스트 자체를 오디오 버튼으로 공개
 function revealAnswerAudio(pageNum) {
-  const p = document.getElementById('answer-' + pageNum);
-  const btn = document.getElementById('answer-btn-' + pageNum);
-  if (p) p.classList.add('invisible');
-  if (btn) btn.classList.remove('invisible');
+  const btn = document.getElementById('answer-' + pageNum);
+  if (btn) {
+    btn.classList.remove('invisible');
+    btn.classList.add('clickable');
+  }
 }
 
 // 번역란 오디오 버튼 재생
 function playAnswerAudio(pageNum) {
+  const btn = document.getElementById('answer-' + pageNum);
+  if (btn && !btn.classList.contains('clickable')) return;
   const ex = EXERCISES[pageNum];
   if (ex && ex.answer && ex.answer.audio) playAudio(ex.answer.audio);
 }
@@ -1045,7 +1032,7 @@ function revealAnswerText(pageNum) {
   const el = document.getElementById('answer-' + pageNum);
   if (el) {
     el.classList.remove('invisible');
-    el.classList.add('answer-reveal');
+    el.classList.remove('clickable');
   }
   if (pageState[pageNum]) pageState[pageNum].answerShown = true;
 }
@@ -1130,14 +1117,7 @@ function restoreState(pageNum) {
     if (state.feedback) {
       showFeedback(pageNum, state.feedback.transcript || '', state.feedback.score, state.feedback.passed);
     }
-    if (state.answerShown) {
-      const el = document.getElementById('answer-' + pageNum);
-      if (el) {
-        el.textContent = EXERCISES[pageNum].answer.ko;
-        el.classList.remove('invisible');
-        el.classList.add('answer-reveal');
-      }
-    }
+    if (state.answerShown) revealAnswerText(pageNum);
     if (state.completed) revealAnswerAudio(pageNum);
   }
 }
