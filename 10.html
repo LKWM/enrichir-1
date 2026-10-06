@@ -11,12 +11,12 @@
       '선생님': 'https://res.cloudinary.com/de76i94ia/video/upload/v1770222387/%E1%84%89%E1%85%A5%E1%86%AB%E1%84%89%E1%85%A2%E1%86%BC%E1%84%82%E1%85%B5%E1%86%B7_htf88y.mp3',
       '있다': 'https://res.cloudinary.com/de76i94ia/video/upload/v1779014037/%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%83%E1%85%A1_wyjh9m.mp3',
       '없다': 'https://res.cloudinary.com/de76i94ia/video/upload/v1779014035/%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%83%E1%85%A1_cko5im.mp3',
-      '거실': 'https://res.cloudinary.com/de76i94ia/video/upload/v1791188407/%E1%84%80%E1%85%A5%E1%84%89%E1%85%B5%E1%86%AF_hdlbpn.mp3',
-      '부엌': 'https://res.cloudinary.com/de76i94ia/video/upload/v1791188412/%E1%84%87%E1%85%AE%E1%84%8B%E1%85%A5%E1%86%BF_a9mjrf.mp3',
-      '화장실': 'https://res.cloudinary.com/de76i94ia/video/upload/v1791188428/%E1%84%92%E1%85%AA%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%89%E1%85%B5%E1%86%AF_d6huqk.mp3',
-      '침대': 'https://res.cloudinary.com/de76i94ia/video/upload/v1791188422/%E1%84%8E%E1%85%B5%E1%86%B7%E1%84%83%E1%85%A2_qt3ugc.mp3',
-      '책상': 'https://res.cloudinary.com/de76i94ia/video/upload/v1791188417/%E1%84%8E%E1%85%A2%E1%86%A8%E1%84%89%E1%85%A1%E1%86%BC_wmciaa.mp3',
-      '의자': 'https://res.cloudinary.com/de76i94ia/video/upload/v1786261251/%E1%84%8B%E1%85%B4%E1%84%8C%E1%85%A1_f3pgif.mp3',
+      '거실': '',
+      '부엌': '',
+      '화장실': '',
+      '침대': '',
+      '책상': '',
+      '의자': '',
   };
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -606,7 +606,7 @@ function goToPage(n) {
 }
 
 function nextPage() {
-  if (currentPage < 19) goToPage(currentPage + 1);
+  if (currentPage < 24) goToPage(currentPage + 1);
 }
 
 function prevPage() {
@@ -647,7 +647,7 @@ function updateBottomBar() {
    ═══════════════════════════════════════ */
 function handlePageEnter(n) {
   // Outro page
-  if (n === 19) {
+  if (n === 24) {
     playSfx('end');
     setTimeout(() => triggerLessonComplete(), 500);
     return;
