@@ -382,6 +382,25 @@ window.addEventListener("message", (event) => {
   lessonPermit = event.data.permit;
   lessonId = event.data.lesson_id;
 });
+// Gemini 호출 오류 — 원인 간단 명시 + 사용자 안내 (프랑스어)
+let geminiErrorStreak = 0;
+function geminiErrorMessage(error) {
+  const msg = (error && error.message) || String(error);
+  if (msg.indexOf('Lesson permit') !== -1) {
+    return "Permis d'accès indisponible. Veuillez actualiser la page et réessayer.";
+  }
+  const m = msg.match(/API status: (\d+)/);
+  if (m) {
+    const status = parseInt(m[1], 10);
+    if (status === 401 || status === 403) return "Permis d'accès expiré. Veuillez actualiser la page et réessayer.";
+    if (status === 429) return "Limite d'utilisation atteinte. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    if (status >= 500) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+  }
+  geminiErrorStreak++;
+  if (geminiErrorStreak >= 2) return "Erreur de connexion. Si le problème persiste, signalez un bug.";
+  return "Erreur de connexion. Veuillez réessayer.";
+}
 
 
 const CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -945,12 +964,13 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     // 자/모 단위 일치도 — 전사값이 정답의 80% 이상이면 통과
     score = jamoSimilarity(ex.answer.ko, transcript);
     isPass = score >= 80;
+    geminiErrorStreak = 0;
 
   } catch (error) {
     console.warn("Gemini API Error:", error);
-    transcript = "Erreur";
+    transcript = geminiErrorMessage(error);
     isPass = false;
-    score = 0;
+    score = null;
   }
 
   evaluateResult(pageNum, isPass, transcript, score);
