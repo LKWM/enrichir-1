@@ -79,6 +79,9 @@
     /* 정답란 버튼 (시안 1): 항상 같은 형태 — not clickable(회색) / clickable(보라) 상태만 색상으로 구별 */
     .answer-btn { background:#fff; border:0.45vh solid #d1d5db; color:#9ca3af; border-radius:1vw; padding:1vh 6vw; min-width:40%; font-weight:700; text-align:center; }
     .answer-btn.clickable { border-color:#7c3aed; color:#5b21b6; cursor:pointer; }
+    /* Valider 버튼: 항상 같은 형태 — 미선택·완료(disabled)=회색, 선택됨(enabled)=보라 */
+    .valider-btn { margin-top:0.5vh; border:none; border-radius:1vw; padding:1.2vh 7vw; font-family:'Nunito',sans-serif; font-size:clamp(0.85rem,max(2vw,2vh),99rem); font-weight:800; letter-spacing:0.06em; transition:background 0.2s,color 0.2s; background:linear-gradient(135deg,#7c3aed,#4c1d95); color:#fff; cursor:pointer; box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2); }
+    .valider-btn:disabled { background:#e9d5ff; color:#9ca3af; cursor:not-allowed; box-shadow:none; }
     .audio-q-btn { width:clamp(3rem,max(9vw,9vh),99rem); height:clamp(3rem,max(9vw,9vh),99rem); border-radius:50%; border:none; background:linear-gradient(135deg,#7c3aed,#a78bfa); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.2); flex-shrink:0; }
     .deck-arrow {
       border: none; background: transparent; cursor: pointer; padding: 0; line-height: 1;
@@ -233,7 +236,7 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p id="mcq-q-11" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">J’étudie à la maison.</p>
         <div id="mcq-opts-11" class="mcq-opts"></div>
-        <button id="valider-11" onclick="mcqValider(11)" disabled style="margin-top:0.5vh;background:#e9d5ff;color:#9ca3af;border:none;border-radius:1vw;padding:1.2vh 7vw;font-family:'Nunito',sans-serif;font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:not-allowed;transition:background 0.2s,color 0.2s;">Valider</button>
+        <button id="valider-11" onclick="mcqValider(11)" disabled class="valider-btn">Valider</button>
       </div>
     </div>
   </div>
@@ -244,7 +247,7 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p id="mcq-q-12" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">Je travaille à la banque.</p>
         <div id="mcq-opts-12" class="mcq-opts"></div>
-        <button id="valider-12" onclick="mcqValider(12)" disabled style="margin-top:0.5vh;background:#e9d5ff;color:#9ca3af;border:none;border-radius:1vw;padding:1.2vh 7vw;font-family:'Nunito',sans-serif;font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:not-allowed;transition:background 0.2s,color 0.2s;">Valider</button>
+        <button id="valider-12" onclick="mcqValider(12)" disabled class="valider-btn">Valider</button>
       </div>
     </div>
   </div>
@@ -255,7 +258,7 @@
       <div style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;display:flex;flex-direction:column;align-items:center;gap:1.5vh;width:100%;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);">
         <p id="mcq-q-13" style="font-size:clamp(1.3rem,max(3.5vw,3.5vh),2.3rem);font-weight:700;text-align:center;color:#1e1b2e;">J’attends à l’hôpital.</p>
         <div id="mcq-opts-13" class="mcq-opts"></div>
-        <button id="valider-13" onclick="mcqValider(13)" disabled style="margin-top:0.5vh;background:#e9d5ff;color:#9ca3af;border:none;border-radius:1vw;padding:1.2vh 7vw;font-family:'Nunito',sans-serif;font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:not-allowed;transition:background 0.2s,color 0.2s;">Valider</button>
+        <button id="valider-13" onclick="mcqValider(13)" disabled class="valider-btn">Valider</button>
       </div>
     </div>
   </div>
@@ -371,7 +374,14 @@ const EXERCISES = {
 };
 
 const TOTAL_PAGES = 19;
-const GEMINI_URL = 'https://coreeno.base44.app/api/functions/Geminichat';
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+let lessonPermit = null;
+let lessonId = null;
+window.addEventListener("message", (event) => {
+  if (event.data?.type !== "coreeno:permit") return;
+  lessonPermit = event.data.permit;
+  lessonId = event.data.lesson_id;
+});
 
 
 const CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -917,10 +927,11 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
   let score = 0;
 
   try {
+    if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
     const res = await fetch(GEMINI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ ...payload, permit: lessonPermit, lesson_id: lessonId })
     });
 
     if (!res.ok) throw new Error("API status: " + res.status);
