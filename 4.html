@@ -60,7 +60,7 @@
       75%  { box-shadow: 0 0 0 1.2vh rgba(124,58,237,0.35); background: #ddd6fe; }
       100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.0); background: #f5f3ff; }
     }
-    .goal-glow { animation: goalGlow 1.6s ease-in-out 1; }
+    .goal-glow { animation: goalGlow 2s ease-in-out 1; }
     /* 낮은 가로 화면: 한국어 칸과 번역 칸을 좌우로 나란히 배치하고 높이 기준으로 축소 (칸은 그대로 별도) */
     @media (orientation: landscape) and (max-height: 520px) {
       .objectif-cols { flex-direction: row; gap: 1.2vw; align-items: stretch; }
@@ -129,7 +129,7 @@
   <div class="page flex-col bg-violet-50" id="page-1">
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
       <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Discutez en coréen avec Chloé et atteignez tous les objectifs ci-dessous. Vous devez atteindre tous les objectifs en 10 tours maximum.</p>
-      <div style="display:flex;flex-direction:column;gap:1.4vh;width:100%;">
+      <div style="display:flex;flex-direction:column;gap:2vh;width:100%;">
         <div class="objectif-card">
           <span class="objectif-badge" id="goal-badge-1">1</span>
           <div class="objectif-cols">
@@ -180,19 +180,22 @@
         </div>
         <div id="objectif-dropdown" style="position:absolute;top:100%;left:0;width:100%;z-index:120;margin-top:0.8vh;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.2vh 2vw;box-shadow:0 1vh 3vh rgba(124,58,237,0.18);"></div>
       </div>
-      <!-- 남은 턴 수 (오른쪽 정렬) -->
-      <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;">Nombre de tours restants : 10</p>
       <!-- 대화 창 -->
       <div id="chat-area" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.2vh;padding:1vh 0.5vw;width:100%;">
-        <p id="live-status" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;"></p>
+        <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « Allô ? » pour tester le microphone.</p>
+      <p id="live-status" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;"></p>
       </div>
     </div>
   </div>
 
   <!-- ════════ 대화 하단 존 (공간 항상 확보 — 종료 시 Continuer / 시작 실패 시 Réessayer) ════════ -->
-  <div id="conv-bottom" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:center;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
+  <div id="conv-bottom" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:center;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;position:fixed;">
+    <div id="volume-ctrl" style="display:flex;align-items:center;gap:1.2vw;position:absolute;left:2.5vw;">
+      <i class="ph ph-speaker-high" style="font-size:clamp(1rem,max(3vw,3vh),99rem);color:#7c3aed;"></i>
+      <input type="range" id="volume-slider" min="0" max="100" value="50" style="width:min(30vw,9rem);accent-color:#7c3aed;height:1.2vh;cursor:pointer;">
+    </div>
     <button id="conv-retry" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="startConversation()">Réessayer</button>
-    <button id="conv-continue" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="continueToOutro()">Continuer</button>
+    <button id="conv-continue" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="continueToOutro()">Terminer</button>
   </div>
 
   <!-- ════════ PAGE 3 — OUTRO ════════ -->
@@ -208,6 +211,7 @@
 let currentPage = 0;
 const TOTAL_PAGES = 4;
 let toneReady = false;
+let ringSynth = null, hangupSynth = null;
 let correctSound, errorSound, completionSynth, transitionSynth, startSynth;
 
 // ================================================================
@@ -258,6 +262,7 @@ const MAX_TURNS = 10;
 // ================================================================
 let liveSession = null;   // { ws, model, voiceName }
 let micStream = null, micCtx = null, micWorklet = null;
+let micGated = false;   // true = 에이전트 발화 중 (유저 오디오 전송 차단)
 let outCtx = null;         // 24kHz 재생용
 
 let conversationEnded = false;
@@ -284,6 +289,10 @@ async function initTone() {
   transitionSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
   transitionSynth.volume.value = -15;
   startSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.15 } }).toDestination();
+  ringSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.25, sustain: 0, release: 0.1 } }).toDestination();
+  ringSynth.volume.value = -14;
+  hangupSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.12, sustain: 0, release: 0.05 } }).toDestination();
+  hangupSynth.volume.value = -12;
   toneReady = true;
 }
 
@@ -304,6 +313,15 @@ function playSfx(type) {
         break;
       case 'end':
         completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+        break;
+      case 'dial':   // 전화 걸리는 소리 (440+480Hz 이중 링)
+        ringSynth.triggerAttackRelease(["A4","B4"], "0.4s", Tone.now());
+        ringSynth.triggerAttackRelease(["A4","B4"], "0.4s", Tone.now() + 0.6);
+        break;
+      case 'hangup': // 전화 끊기는 소리 (480+620Hz 3회 비지톤)
+        hangupSynth.triggerAttackRelease(["B4","Eb5"], "0.15s", Tone.now());
+        hangupSynth.triggerAttackRelease(["B4","Eb5"], "0.15s", Tone.now() + 0.3);
+        hangupSynth.triggerAttackRelease(["B4","Eb5"], "0.15s", Tone.now() + 0.6);
         break;
     }
   } catch (e) { console.warn('sfx error:', e.message); }
@@ -471,11 +489,6 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#objectif-wrap')) toggleObjectifDropdown(true);
 });
 
-function updateTurnsDisplay() {
-  const left = Math.max(0, MAX_TURNS - turnsUsed);
-  document.getElementById('turns-remaining').textContent = 'Nombre de tours restants : ' + left;
-}
-
 // <꺽쇠> 마커 처리 — user facing 아님, UI 조정에만 사용
 const RE_MARKER = /<(목표\s*[1-4]\s*통과|대화\s*종료)\s*>/;
 
@@ -512,7 +525,7 @@ function goalPassed(n) {
   if (shownIdx === idx) { badge.textContent = '✅'; badge.classList.add('done'); }
   banner.classList.remove('goal-glow'); void banner.offsetWidth; banner.classList.add('goal-glow');
   renderObjectifDropdown();
-  setTimeout(() => { updateObjectifBanner(); }, 1700);
+  setTimeout(() => { updateObjectifBanner(); }, 4000);  // 반짝임 2초 + 대기 2초 후 다음 목표
 }
 
 // ================================================================
@@ -528,6 +541,7 @@ async function startConversation() {
   liveFailed = false;
   hadConversation = false;
   endPending = false;
+  micGated = false;
   agentGotTranscript = false;
   showLiveStatus(null);
 
@@ -567,8 +581,10 @@ function makeLiveHandler() {
     const sc = msg.serverContent;
     if (!sc) return;
 
-    if (sc.interrupted) stopAgentAudio();
+    if (sc.interrupted) { stopAgentAudio(); micGated = false; }
     if (sc.modelTurn || sc.outputTranscription || sc.inputTranscription) hadConversation = true;
+    // 에이전트 턴 시작 → 마이크 차단 (주고받기 한 턴씩)
+    if (sc.modelTurn || sc.outputTranscription) micGated = true;
 
     const parts = sc.modelTurn?.parts || [];
     for (const p of parts) {
@@ -622,6 +638,9 @@ function onLiveReady() {
   liveFailed = false;
   // 시작 알림 전송 — 에이전트가 먼저 발화할 수 있도록
   liveSession.ws.send(JSON.stringify({ clientContent: { turns: [{ role: "user", parts: [{ text: "시작" }] }] } }));
+  // 연결됨: 전화 걸리는 소리 + 마이크 테스트 안내 → 유저가 먼저 말하며 대화 시작
+  playSfx('dial');
+  document.getElementById('mic-hint').style.display = 'block';
   startMic();
   updateConvBottom();
 }
@@ -703,6 +722,7 @@ async function startMic() {
     const src = micCtx.createMediaStreamSource(micStream);
     micWorklet = new AudioWorkletNode(micCtx, 'pcm-processor');
     micWorklet.port.onmessage = (e) => {
+      if (micGated) return;   // 에이전트가 말하는 중에는 오디오를 보내지 않는다 (동시 발화·끊김 방지)
       if (liveSession && liveSession.ws && liveSession.ws.readyState === WebSocket.OPEN) {
         const b64 = arrayBufferToBase64(e.data);
         liveSession.ws.send(JSON.stringify({
@@ -715,6 +735,7 @@ async function startMic() {
     console.warn('Mic error:', e);
     stopMic();
     liveFailed = true;
+    document.getElementById('mic-hint').style.display = 'none';
     showLiveStatus("Erreur de connexion. Veuillez réessayer.");
     updateConvBottom();
   }
@@ -743,12 +764,17 @@ function arrayBufferToBase64(buf) {
 // ================================================================
 let nextPlayTime = 0;
 let activeSources = [];
+let masterGain = null;
+let volumeLevel = 0.5;   // 기본 볼륨 50%
 let lastAgentAudioEnd = 0;
 
 function ensureOutCtx() {
   if (!outCtx || outCtx.state === 'closed') {
     outCtx = new AudioContext({ sampleRate: 24000 });
     nextPlayTime = 0;
+    masterGain = outCtx.createGain();
+    masterGain.gain.value = volumeLevel;
+    masterGain.connect(outCtx.destination);
   }
   if (outCtx.state === 'suspended') outCtx.resume();
   return outCtx;
@@ -769,7 +795,7 @@ function enqueueAgentPcm(b64) {
   buf.copyToChannel(float, 0);
   const src = ctx.createBufferSource();
   src.buffer = buf;
-  src.connect(ctx.destination);
+  src.connect(masterGain);
   // 첫 청크는 약간(60ms)의 선행 버퍼를 두고 시작, 이후는 앞 청크 끝에 정확히 이어 붙임
   const now = ctx.currentTime;
   if (nextPlayTime < now + 0.02) nextPlayTime = now + 0.06;
@@ -789,6 +815,12 @@ function agentAudioPlaying() {
 }
 
 // 인터럽트 시 즉시 중단 (이미 예약된 청크까지 모두 정지)
+function setVolume(v) {   // 0~1
+  volumeLevel = v;
+  if (masterGain && outCtx && outCtx.state !== 'closed') masterGain.gain.value = v;
+}
+document.getElementById('volume-slider').addEventListener('input', (e) => setVolume(e.target.value / 100));
+
 function stopAgentAudio() {
   activeSources.forEach(src => { try { src.onended = null; src.stop(); } catch (e) {} });
   activeSources = [];
@@ -798,7 +830,8 @@ function stopAgentAudio() {
 // 종료 예약이 걸려 있으면, 마지막 발화 재생이 끝난 뒤에 종료 처리
 let endPending = false;
 function onAgentAudioDrained() {
-  if (endPending) finalizeEnd();
+  if (endPending) { finalizeEnd(); return; }
+  micGated = false;   // 에이전트 음성 재생 완료 → 마이크 재개
 }
 
 // ================================================================
@@ -808,6 +841,7 @@ let agentFallbackText = '';
 
 function onUserTranscript(chunk) {
   userSpokeInTurn = true;
+  document.getElementById('mic-hint').style.display = 'none';
   if (!userBubbleEl) appendUserBubble();
   userTurnText += chunk;
   userBubbleEl.textContent = userTurnText.trim();
@@ -823,7 +857,6 @@ function onTurnComplete() {
   // 한 번의 주고받기(학생 발화 → 에이전트 응답) = 1턴
   if (userSpokeInTurn) {
     turnsUsed++;
-    updateTurnsDisplay();
     userSpokeInTurn = false;
   }
   userTurnText = '';
@@ -832,6 +865,8 @@ function onTurnComplete() {
   agentTurnText = '';
   agentFallbackText = '';
   agentGotTranscript = false;
+  // 에이전트 턴 종료 → 예약된 음성이 모두 끝나면 마이크 재개 (음성이 없으면 즉시 재개)
+  if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) micGated = false; }
   // 10턴을 모두 사용했다면 서버가 소켓을 닫지 않더라도 종료 처리
   if (turnsUsed >= MAX_TURNS) endConversation();
 }
@@ -854,7 +889,9 @@ function finalizeEnd() {
   if (conversationEnded) return;
   conversationEnded = true;
   endPending = false;
+  micGated = true;
   if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
+  playSfx('hangup');   // 전화 끊기는 소리
   updateConvBottom();
 }
 
@@ -869,6 +906,7 @@ function teardownLive() {
     try { liveSession.ws.close(); } catch (e) {}
   }
   stopAgentAudio();
+  masterGain = null;
   if (outCtx) { try { outCtx.close(); } catch (e) {} outCtx = null; }
   document.getElementById('conv-bottom').style.display = 'none';
 }
@@ -896,7 +934,6 @@ window.addEventListener('pagehide', () => { teardownLive(); });
 window.addEventListener('beforeunload', () => { teardownLive(); });
 
 updateObjectifBanner();
-updateTurnsDisplay();
 </script>
 </body>
 </html>
