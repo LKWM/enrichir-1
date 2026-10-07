@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  // ================================================================
+  // 클로에 프로필 이미지 — 이미지 링크 추가 시 자동 연동 (원형 크롭 적용)
+  // ================================================================
+  const CHLOE_IMG = '';
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Enrichir son expression (1) — Chapitre 1 — Mise en pratique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <style>
+    :root { --nav-h: max(12vmin, 10vh); --btn: calc(var(--nav-h) * 0.5); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+    .page {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2.5vh 2.5vw; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden;
+    }
+    .page.active { opacity: 1; pointer-events: auto; }
+    .ko { font-family: 'Noto Sans KR', sans-serif; }
+    .invisible { visibility: hidden; }
+    .nav-btn {
+      width: var(--btn); height: var(--btn);
+      border-radius: 50%; border: none; background: #7c3aed; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      font-size: calc(var(--btn) * 0.4167); transition: opacity 0.15s;
+    }
+    .nav-btn:disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
+    .cta-btn {
+      background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff; border: none; border-radius: 1.2vw;
+      padding: 1.8vh 8vw; font-family: 'Nunito',sans-serif;
+      font-size: clamp(0.9rem, max(2.5vw,2.5vh), 99rem); font-weight: 800; letter-spacing: 0.06em; cursor: pointer;
+      box-shadow: 0 0.5vh 1.8vh rgba(124,58,237,0.2); transition: transform 0.15s;
+    }
+    .cta-btn:hover { transform: scale(1.04); }
+    .cta-btn:active { transform: scale(0.97); }
+    .objectif-card {
+      background: #fff; border: 0.15vh solid #e9d5ff; border-radius: 1.2vw;
+      padding: 1.6vh 3vw; width: 100%; display: flex; align-items: center; gap: 2vw;
+      box-shadow: 0 0.4vh 1.5vh rgba(124,58,237,0.08);
+    }
+    .objectif-badge {
+      min-width: clamp(1.4rem, max(4vw,4vh), 99rem); height: clamp(1.4rem, max(4vw,4vh), 99rem);
+      border-radius: 50%; background: #ede9fe; color: #7c3aed; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-size: clamp(0.75rem, max(2vw,2vh), 99rem);
+    }
+    .chat-row { display: flex; align-items: flex-end; gap: 1.5vw; width: 100%; }
+    .chat-row.user { flex-direction: row-reverse; }
+    .avatar {
+      width: clamp(1.9rem, max(6vw,6vh), 99rem); height: clamp(1.9rem, max(6vw,6vh), 99rem);
+      border-radius: 50%; flex-shrink: 0; overflow: hidden;
+      background: #e5e7eb; display: flex; align-items: center; justify-content: center;
+      border: 0.2vh solid #d1d5db;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .avatar .emoji { font-size: clamp(0.95rem, max(3vw,3vh), 99rem); }
+    .bubble {
+      background: #fff; border: 0.15vh solid #e9d5ff; border-radius: 1.2vw;
+      padding: 1.4vh 2.5vw; max-width: 74%;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: clamp(0.95rem, max(2.4vw,2.4vh), 1.35rem); font-weight: 500; color: #1e1b2e;
+      line-height: 1.55; word-break: break-word; text-align: left;
+      box-shadow: 0 0.4vh 1.5vh rgba(124,58,237,0.06);
+    }
+    .bubble.mine { background: #ede9fe; border-color: #c4b5fd; }
+    @keyframes micpulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+    .mic-live { animation: micpulse 1.2s infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; }
+  </style>
+</head>
+<body class="bg-violet-50">
+
+  <!-- ════════ PROGRESS BAR ════════ -->
+  <div id="progress-bar-container" style="position:fixed;top:0;left:0;width:100%;height:0.4vh;background:#ede9fe;z-index:200;display:none;">
+    <div id="progress-bar" style="height:100%;background:#7c3aed;width:0%;transition:width 0.3s ease;"></div>
+  </div>
+
+  <!-- ════════ PAGE 0 — COVER ════════ -->
+  <div class="page active flex-col bg-violet-50" id="page-0">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <div class="flex flex-col items-center" style="gap:3vh;">
+        <div style="width:clamp(3.5rem,max(12vw,12vh),99rem);height:clamp(3.5rem,max(12vw,12vh),99rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
+          <i class="ph ph-chats-circle" style="font-size:clamp(1.75rem,max(6vw,6vh),99rem);color:#fff;"></i>
+        </div>
+        <p style="font-size:clamp(1.05rem,max(2.6vw,2.6vh),99rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;line-height:1.5;margin-bottom:1.5vh;"><span style="white-space:nowrap;">Chapitre 1 :</span> <span style="display:inline-block;">Le lieu et l'action</span></p>
+        <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Mise en pratique 🗣️ Conversation libre</p>
+        <h1 style="font-size:clamp(1.5rem,max(5vw,5vh),99rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;margin-top:-1.5vh;">Discuter avec Chloé</h1>
+        <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(0.9rem,max(2.5vw,2.5vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE 1 — GOALS ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-1" style="justify-content:flex-start;padding-top:6vh;">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
+      <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Discutez en coréen avec Chloé et atteignez tous les objectifs ci-dessous. Vous devez atteindre tous les objectifs en 10 tours maximum.</p>
+      <div style="display:flex;flex-direction:column;gap:1.4vh;width:100%;">
+        <div class="objectif-card">
+          <span class="objectif-badge">1</span>
+          <p class="ko" style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.25rem);font-weight:700;color:#1e1b2e;text-align:left;">자기소개하기 <span style="color:#6b7280;font-weight:500;">/ Se présenter</span></p>
+        </div>
+        <div class="objectif-card">
+          <span class="objectif-badge">2</span>
+          <p class="ko" style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.25rem);font-weight:700;color:#1e1b2e;text-align:left;">오늘 무엇을 하는지 말하기 <span style="color:#6b7280;font-weight:500;">/ Dire ce que je fais aujourd’hui</span></p>
+        </div>
+        <div class="objectif-card">
+          <span class="objectif-badge">3</span>
+          <p class="ko" style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.25rem);font-weight:700;color:#1e1b2e;text-align:left;">어디에서 이 활동을 하는지 말하기 <span style="color:#6b7280;font-weight:500;">/ Dire où je fais cette activité</span></p>
+        </div>
+        <div class="objectif-card">
+          <span class="objectif-badge">4</span>
+          <p class="ko" style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.25rem);font-weight:700;color:#1e1b2e;text-align:left;">클로에가 무엇을 하는지 묻기 <span style="color:#6b7280;font-weight:500;">/ Demander à Chloé ce qu’elle fait</span></p>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;">
+        <button class="cta-btn" onclick="startConversation()">Commencer la conversation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE 2 — CONVERSATION ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-2" style="justify-content:flex-start;padding-top:3vh;">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;flex:1;min-height:0;">
+      <!-- 목표 배너 (순서대로 하나씩) -->
+      <div id="objectif-banner" style="background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.4vh 3vw;width:100%;display:flex;align-items:center;gap:2vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08);flex-shrink:0;">
+        <span class="objectif-badge" id="objectif-badge">1</span>
+        <p class="ko" id="objectif-text" style="font-size:clamp(0.85rem,max(2.2vw,2.2vh),1.2rem);font-weight:700;color:#1e1b2e;text-align:left;">자기소개하기 <span style="color:#6b7280;font-weight:500;">/ Se présenter</span></p>
+      </div>
+      <!-- 남은 턴 수 (오른쪽 정렬) -->
+      <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;">Nombre de tours restants : 10</p>
+      <!-- 대화 창 -->
+      <div id="chat-area" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.2vh;padding:1vh 0.5vw;width:100%;">
+        <p id="live-status" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 대화 하단 존 (하단바 형식 — 항상 공간 확보) ════════ -->
+  <div id="conv-bottom" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:center;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
+    <!-- 대화 중: 마이크 상태 인디케이터 -->
+    <div id="conv-mic" style="display:none;align-items:center;justify-content:center;gap:1.5vw;color:#7c3aed;">
+      <i class="ph-fill ph-microphone mic-live" style="font-size:calc(var(--btn) * 0.6);"></i>
+    </div>
+    <!-- 시작 실패: 재시도 -->
+    <button id="conv-retry" class="cta-btn invisible" style="padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);display:none;" onclick="startConversation()">Réessayer</button>
+    <!-- 대화 종료: Continuer -->
+    <button id="conv-continue" class="cta-btn invisible" style="padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);display:none;" onclick="continueToOutro()">Continuer</button>
+  </div>
+
+  <!-- ════════ PAGE 3 — OUTRO ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-3">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
+        <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Vous avez réussi à discuter en coréen en utilisant les phrases apprises dans ce chapitre. Excellent travail ! Rendez-vous au prochain chapitre !</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ BOTTOM NAV (표준 하단바 — Page 1) ════════ -->
+  <div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:space-between;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;">
+    <button class="nav-btn" id="prev-btn" onclick="prevPage()"><i class="ph ph-caret-left"></i></button>
+    <span id="page-num" style="font-size:calc(var(--btn) * 0.4167);font-weight:700;color:#4a4466;"></span>
+    <button class="nav-btn" id="next-btn" onclick="nextPage()" disabled><i class="ph ph-caret-right"></i></button>
+  </div>
+
+<script>
+let currentPage = 0;
+const TOTAL_PAGES = 4;
+let toneReady = false;
+let correctSound, errorSound, completionSynth, transitionSynth, startSynth;
+
+// ================================================================
+// Permit (부모 postMessage 수신 — 3강 확정 방식과 동일)
+// ================================================================
+const LIVE_URL = 'https://coreeno.base44.app/functions/GeminiLive';
+let lessonPermit = null;
+let lessonId = null;
+window.addEventListener('message', (event) => {
+  if (event.data?.type !== "coreeno:permit") return;
+  lessonPermit = event.data.permit;
+  lessonId = event.data.lesson_id;
+});
+
+let geminiErrorStreak = 0;
+function geminiErrorMessage(error) {
+  const msg = (error && error.message) || String(error);
+  if (msg.indexOf('Lesson permit') !== -1) {
+    return "Permis d'accès indisponible. Veuillez actualiser la page et réessayer.";
+  }
+  const m = msg.match(/API status: (\d+)/);
+  if (m) {
+    const status = parseInt(m[1], 10);
+    if (status === 401 || status === 403) return "Permis d'accès expiré. Veuillez actualiser la page et réessayer.";
+    if (status === 404) return "La configuration vocale de cette leçon est indisponible. Veuillez contacter l'administrateur.";
+    if (status === 429) return "Limite d'utilisation atteinte. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    if (status >= 500) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+  }
+  geminiErrorStreak++;
+  if (geminiErrorStreak >= 2) return "Erreur de connexion. Si le problème persiste, signalez un bug.";
+  return "Erreur de connexion. Veuillez réessayer.";
+}
+
+// ================================================================
+// 목표 정의 (실라버스 verbatim)
+// ================================================================
+const OBJECTIFS = [
+  { n: 1, ko: '자기소개하기', fr: 'Se présenter' },
+  { n: 2, ko: '오늘 무엇을 하는지 말하기', fr: 'Dire ce que je fais aujourd’hui' },
+  { n: 3, ko: '어디에서 이 활동을 하는지 말하기', fr: 'Dire où je fais cette activité' },
+  { n: 4, ko: '클로에가 무엇을 하는지 묻기', fr: 'Demander à Chloé ce qu’elle fait' },
+];
+const MAX_TURNS = 10;
+
+// ================================================================
+// 라이브 세션 상태
+// ================================================================
+let liveSession = null;   // { ws, model, voiceName }
+let micStream = null, micCtx = null, micWorklet = null;
+let outCtx = null;         // 24kHz 재생용
+let audioQueue = [], outPlaying = false;
+let conversationEnded = false;
+let conversationStarted = false;
+let objectifIndex = 0;     // 현재 목표 (0-3)
+let turnsUsed = 0;
+let userSpokeInTurn = false;
+let userBubbleEl = null, userTurnText = '';
+let agentBubbleEl = null, agentTurnText = '';
+let agentGotTranscript = false;  // outputTranscription 도착 여부 (modelTurn.text 폴백 판별)
+let resumptionHandle = null;
+let reconnecting = false;
+let liveFailed = false;
+
+// ================================================================
+// 효과음 (기존 레슨과 동일)
+// ================================================================
+async function initTone() {
+  await Tone.start();
+  correctSound = new Tone.Synth({ oscillator: { type: "sine" } }).toDestination();
+  errorSound = new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination();
+  completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  transitionSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+  transitionSynth.volume.value = -15;
+  startSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.15 } }).toDestination();
+  toneReady = true;
+}
+
+function playSfx(type) {
+  if (!toneReady) return;
+  try {
+    switch(type) {
+      case 'pageTurn':
+        transitionSynth.triggerAttackRelease('C6', '0.05s');
+        break;
+      case 'correct':
+        correctSound.triggerAttackRelease('C5', '0.2s');
+        break;
+      case 'start':
+        startSynth.triggerAttackRelease("E4", "16n", Tone.now());
+        startSynth.triggerAttackRelease("A4", "16n", Tone.now() + 0.12);
+        startSynth.triggerAttackRelease("C#5", "8n", Tone.now() + 0.24);
+        break;
+      case 'end':
+        completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+        break;
+    }
+  } catch (e) { console.warn('sfx error:', e.message); }
+}
+
+// ================================================================
+// 페이지 전환 (기존 레슨과 동일 방식)
+// ================================================================
+async function startLesson() {
+  await initTone();
+  playSfx('start');
+  document.getElementById('progress-bar-container').style.display = 'block';
+  document.getElementById('bottom-nav').style.display = 'flex';
+  goToPage(1);
+}
+
+function goToPage(n) {
+  if (n === currentPage) return;
+  playSfx('pageTurn');
+
+  // 대화 페이지를 벗어나는 경우 라이브 리소스 정리
+  if (currentPage === 2 && n !== 2) teardownLive();
+
+  const oldPage = document.getElementById('page-' + currentPage);
+  if (oldPage) oldPage.classList.remove('active');
+  currentPage = n;
+  const newPage = document.getElementById('page-' + n);
+  if (newPage) newPage.classList.add('active');
+
+  updateProgress();
+  updateBottomBar();
+  handlePageEnter(n);
+}
+
+function nextPage() { if (currentPage === 1) goToPage(2); }
+function prevPage() { if (currentPage > 0 && currentPage !== 2) goToPage(currentPage - 1); }
+
+function updateProgress() {
+  const pct = (currentPage / (TOTAL_PAGES - 1)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function updateBottomBar() {
+  const nav = document.getElementById('bottom-nav');
+  const convBar = document.getElementById('conv-bottom');
+  const activePage = document.getElementById('page-' + currentPage);
+
+  if (currentPage === 2) {
+    // 대화 페이지: 표준 하단바 숨김, 대화 전용 하단 존 표시 (공간 항상 확보)
+    nav.style.display = 'none';
+    convBar.style.display = 'flex';
+    if (activePage) activePage.style.paddingBottom = 'calc(var(--nav-h) + 2.5vh)';
+    updateConvBottom();
+    return;
+  }
+  convBar.style.display = 'none';
+  if (activePage) activePage.style.paddingBottom = '';
+
+  if (currentPage === 0 || currentPage === 3) {
+    nav.style.display = 'none';
+    return;
+  }
+  nav.style.display = 'flex';
+  if (activePage) activePage.style.paddingBottom = 'calc(var(--nav-h) + 2.5vh)';
+  document.getElementById('page-num').textContent = (currentPage + 1) + '/' + TOTAL_PAGES;
+  document.getElementById('prev-btn').disabled = (currentPage === 1);
+  // Page 1의 다음 버튼은 항상 잠김 — 대화는 <Commencer la conversation>로만 시작
+  document.getElementById('next-btn').disabled = true;
+}
+
+function handlePageEnter(n) {
+  if (n === 3) {
+    playSfx('end');
+    setTimeout(() => triggerLessonComplete(), 500);
+  }
+}
+
+function triggerLessonComplete() {
+  window.parent.postMessage({ type: 'lesson_complete' }, '*');
+}
+
+// ================================================================
+// 대화 UI
+// ================================================================
+function showLiveStatus(text) {
+  const el = document.getElementById('live-status');
+  if (text) { el.textContent = text; el.style.display = 'block'; }
+  else { el.style.display = 'none'; }
+}
+
+function scrollChat() {
+  const el = document.getElementById('chat-area');
+  el.scrollTop = el.scrollHeight;
+}
+
+function appendAgentBubble() {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'chat-row';
+  const av = document.createElement('div');
+  av.className = 'avatar';
+  if (CHLOE_IMG) {
+    const img = document.createElement('img');
+    img.src = CHLOE_IMG; img.alt = 'Chloé';
+    av.appendChild(img);
+  } else {
+    const i = document.createElement('i');
+    i.className = 'ph ph-user';
+    i.style.fontSize = 'clamp(0.95rem, max(3vw,3vh), 99rem)';
+    i.style.color = '#9ca3af';
+    av.appendChild(i);
+  }
+  const b = document.createElement('div');
+  b.className = 'bubble ko';
+  row.appendChild(av); row.appendChild(b);
+  area.appendChild(row);
+  agentBubbleEl = b;
+  scrollChat();
+}
+
+function appendUserBubble() {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'chat-row user';
+  const av = document.createElement('div');
+  av.className = 'avatar';
+  const sp = document.createElement('span');
+  sp.className = 'emoji';
+  sp.textContent = '👤';
+  av.appendChild(sp);
+  const b = document.createElement('div');
+  b.className = 'bubble mine ko';
+  row.appendChild(av); row.appendChild(b);
+  area.appendChild(row);
+  userBubbleEl = b;
+  scrollChat();
+}
+
+function updateObjectifBanner() {
+  const o = OBJECTIFS[objectifIndex];
+  document.getElementById('objectif-badge').textContent = o.n;
+  document.getElementById('objectif-text').innerHTML =
+    o.ko + ' <span style="color:#6b7280;font-weight:500;">/ ' + o.fr + '</span>';
+}
+
+function updateTurnsDisplay() {
+  const left = Math.max(0, MAX_TURNS - turnsUsed);
+  document.getElementById('turns-remaining').textContent = 'Nombre de tours restants : ' + left;
+}
+
+// <꺽쇠> 마커 처리 — user facing 아님, UI 조정에만 사용
+const RE_MARKER = /<(목표\s*[1-4]\s*통과|대화\s*종료)\s*>/;
+
+function processAgentText(chunk) {
+  agentTurnText += chunk;
+  let m;
+  while ((m = agentTurnText.match(RE_MARKER))) {
+    const marker = m[1];
+    agentTurnText = agentTurnText.replace(m[0], '').replace(/^\s+/, '');
+    if (marker.indexOf('목표') !== -1) {
+      const n = parseInt(marker.match(/[1-4]/)[0], 10);
+      goalPassed(n);
+    } else if (marker.indexOf('대화 종료') !== -1) {
+      endConversation();
+    }
+  }
+  // 미완성 꺽쇠 조각은 표시에서 제외 (다음 청크에서 완성될 수 있음)
+  let display = agentTurnText;
+  const openIdx = display.lastIndexOf('<');
+  if (openIdx !== -1 && display.indexOf('>', openIdx) === -1) {
+    display = display.slice(0, openIdx);
+  }
+  if (agentBubbleEl) { agentBubbleEl.textContent = display.trim(); scrollChat(); }
+}
+
+function goalPassed(n) {
+  playSfx('correct');
+  const idx = n - 1;
+  if (idx < OBJECTIFS.length - 1) {
+    objectifIndex = idx + 1;
+    updateObjectifBanner();
+  }
+  // 마지막 목표 통과 시 배너는 마지막 목표를 유지 (레이아웃 안정)
+}
+
+// ================================================================
+// Live 토큰 발급 + WebSocket
+// ================================================================
+async function startConversation() {
+  if (conversationEnded) return;
+  // 재시도: 이전 세션 리소스 정리 후 새로 시작
+  if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
+  liveSession = null;
+  stopMic();
+  conversationStarted = false;
+  liveFailed = false;
+  agentGotTranscript = false;
+  showLiveStatus(null);
+
+  // 대화 페이지로 전환 (하단 공간 확보된 화면)
+  if (currentPage !== 2) goToPage(2);
+  updateConvBottom();
+
+  try {
+    if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
+    const res = await fetch(LIVE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ permit: lessonPermit, lesson_id: lessonId })
+    });
+    if (!res.ok) throw new Error("API status: " + res.status);
+    const data = await res.json();
+    connectLive(data);
+  } catch (error) {
+    console.warn("GeminiLive Error:", error);
+    liveFailed = true;
+    showLiveStatus(geminiErrorMessage(error));
+    updateConvBottom();
+  }
+}
+
+function makeLiveHandler() {
+  return async (e) => {
+   try {
+    const text = typeof e.data === "string" ? e.data : await e.data.text();
+    let msg;
+    try { msg = JSON.parse(text); } catch (err) { return; }
+
+    if (msg.setupComplete) onLiveReady();
+    if (msg.sessionResumptionUpdate?.newHandle) resumptionHandle = msg.sessionResumptionUpdate.newHandle;
+    if (msg.goAway) onGoAway();
+
+    const sc = msg.serverContent;
+    if (!sc) return;
+
+    if (sc.interrupted) stopAgentAudio();
+
+    const parts = sc.modelTurn?.parts || [];
+    for (const p of parts) {
+      if (p.inlineData?.data) enqueueAgentPcm(p.inlineData.data);   // AI 음성 (24kHz)
+      if (p.text) agentFallbackText += p.text;                       // 자막 폴백
+    }
+    if (sc.inputTranscription?.text) {
+      onUserTranscript(sc.inputTranscription.text);
+    }
+    if (sc.outputTranscription?.text) {
+      agentGotTranscript = true;
+      if (!agentBubbleEl) appendAgentBubble();
+      processAgentText(sc.outputTranscription.text);
+    }
+    if (sc.turnComplete) onTurnComplete();
+   } catch (err) { console.warn('live handler error:', err.message); }
+  };
+}
+
+function connectLive(data) {
+  const ws = new WebSocket(`${data.websocket_url}?access_token=${data.token}`);
+  liveSession = { ws, model: data.model, voiceName: data.voice_name };
+
+  ws.onopen = () => {
+    // setup에는 model만 전송 (서버 잠금 설정 외 전송 금지)
+    ws.send(JSON.stringify({ setup: { model: `models/${data.model}` } }));
+  };
+
+  ws.onmessage = makeLiveHandler();
+
+  ws.onerror = () => { /* onclose에서 일괄 처리 */ };
+  ws.onclose = () => {
+    if (!conversationEnded && !reconnecting && conversationStarted) {
+      stopMic();
+      liveFailed = true;
+      showLiveStatus(geminiErrorMessage(new Error('Erreur de connexion.')));
+      updateConvBottom();
+    }
+  };
+}
+
+function onLiveReady() {
+  if (conversationStarted) return;
+  conversationStarted = true;
+  liveFailed = false;
+  // 시작 알림 전송 — 에이전트가 먼저 발화할 수 있도록
+  liveSession.ws.send(JSON.stringify({ clientContent: { turns: [{ role: "user", parts: [{ text: "시작" }] }] } }));
+  startMic();
+  updateConvBottom();
+}
+
+// ================================================================
+// goAway — 세션 연장 (handle 저장 → 새 토큰 → 재접속)
+// ================================================================
+async function onGoAway() {
+  if (conversationEnded || reconnecting) return;
+  reconnecting = true;
+  stopMic();
+  const handle = resumptionHandle;
+  resumptionHandle = null;
+  // 기존 ws의 핸들러 무력화 (종료 이벤트가 오류로 표시되지 않도록)
+  if (liveSession && liveSession.ws) {
+    liveSession.ws.onclose = null;
+    liveSession.ws.onerror = null;
+  }
+  try {
+    const res = await fetch(LIVE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ permit: lessonPermit, lesson_id: lessonId })
+    });
+    if (!res.ok) throw new Error("API status: " + res.status);
+    const data = await res.json();
+    const ws = new WebSocket(`${data.websocket_url}?access_token=${data.token}`);
+    liveSession = { ws, model: data.model, voiceName: data.voice_name };
+    ws.onopen = () => {
+      const setup = { model: `models/${data.model}` };
+      if (handle) setup.sessionResumption = { handle };   // 거부되면 서버가 새 세션으로 시작
+      ws.send(JSON.stringify({ setup }));
+    };
+    ws.onmessage = makeLiveHandler();
+    ws.onerror = () => {};
+    ws.onclose = () => {
+      if (!conversationEnded && !reconnecting) {
+        stopMic();
+        liveFailed = true;
+        showLiveStatus(geminiErrorMessage(new Error('Erreur de connexion.')));
+        updateConvBottom();
+      }
+    };
+    reconnecting = false;
+  } catch (e) {
+    reconnecting = false;
+    liveFailed = true;
+    showLiveStatus(geminiErrorMessage(e));
+    updateConvBottom();
+  }
+}
+
+// ================================================================
+// 마이크 (16kHz PCM16, AudioWorklet, 100ms 청크)
+// ================================================================
+const WORKLET_CODE = `
+class PCMProcessor extends AudioWorkletProcessor {
+  constructor() { super(); this._buf = []; }
+  process(inputs) {
+    const ch = inputs[0][0];
+    if (ch) {
+      for (let i = 0; i < ch.length; i++) this._buf.push(ch[i]);
+      while (this._buf.length >= 1600) {
+        const seg = this._buf.splice(0, 1600);
+        const pcm = new Int16Array(1600);
+        for (let i = 0; i < 1600; i++) {
+          let s = Math.max(-1, Math.min(1, seg[i]));
+          pcm[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        this.port.postMessage(pcm.buffer);
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('pcm-processor', PCMProcessor);
+`;
+
+async function startMic() {
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    micCtx = new AudioContext({ sampleRate: 16000 });
+    const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    await micCtx.audioWorklet.addModule(url);
+    const src = micCtx.createMediaStreamSource(micStream);
+    micWorklet = new AudioWorkletNode(micCtx, 'pcm-processor');
+    micWorklet.port.onmessage = (e) => {
+      if (liveSession && liveSession.ws && liveSession.ws.readyState === WebSocket.OPEN) {
+        const b64 = arrayBufferToBase64(e.data);
+        liveSession.ws.send(JSON.stringify({
+          realtimeInput: { audio: { data: b64, mimeType: "audio/pcm;rate=16000" } }
+        }));
+      }
+    };
+    src.connect(micWorklet);
+  } catch (e) {
+    console.warn('Mic error:', e);
+    stopMic();
+    liveFailed = true;
+    showLiveStatus("Erreur de connexion. Veuillez réessayer.");
+    updateConvBottom();
+  }
+}
+
+function stopMic() {
+  if (micWorklet) { try { micWorklet.disconnect(); } catch (e) {} micWorklet = null; }
+  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+  if (micCtx) { try { micCtx.close(); } catch (e) {} micCtx = null; }
+}
+
+function arrayBufferToBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(bin);
+}
+
+// ================================================================
+// 수신 오디오 재생 (24kHz PCM 큐)
+// ================================================================
+function enqueueAgentPcm(b64) {
+  const raw = atob(b64);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+  const int16 = new Int16Array(bytes.buffer);
+  const float = new Float32Array(int16.length);
+  for (let i = 0; i < int16.length; i++) float[i] = int16[i] / 32768;
+  audioQueue.push(float);
+  if (!outPlaying) playNextAgentChunk();
+}
+
+async function playNextAgentChunk() {
+  if (!audioQueue.length) { outPlaying = false; return; }
+  outPlaying = true;
+  if (!outCtx) outCtx = new AudioContext({ sampleRate: 24000 });
+  if (outCtx.state === 'suspended') await outCtx.resume();
+  const buf = outCtx.createBuffer(1, audioQueue[0].length, 24000);
+  buf.copyToChannel(audioQueue.shift(), 0);
+  const node = outCtx.createBufferSource();
+  node.buffer = buf;
+  node.connect(outCtx.destination);
+  node.onended = playNextAgentChunk;
+  node.start();
+}
+
+function stopAgentAudio() {
+  audioQueue = [];
+  outPlaying = false;
+  if (outCtx) {
+    outCtx.close().catch(() => {});
+    outCtx = null;
+  }
+}
+
+// ================================================================
+// 전사 처리
+// ================================================================
+let agentFallbackText = '';
+
+function onUserTranscript(chunk) {
+  userSpokeInTurn = true;
+  if (!userBubbleEl) appendUserBubble();
+  userTurnText += chunk;
+  userBubbleEl.textContent = userTurnText.trim();
+  scrollChat();
+}
+
+function onTurnComplete() {
+  // 에이전트 턴 종료 → 마이크 재개 (VAD가 자동 인식)
+  // 자막 폴백: outputTranscription이 없으면 modelTurn.text 사용
+  if (agentBubbleEl && !agentGotTranscript && agentFallbackText) {
+    processAgentText(agentFallbackText);
+  }
+  // 한 번의 주고받기(학생 발화 → 에이전트 응답) = 1턴
+  if (userSpokeInTurn) {
+    turnsUsed++;
+    updateTurnsDisplay();
+    userSpokeInTurn = false;
+  }
+  userTurnText = '';
+  userBubbleEl = null;
+  agentBubbleEl = null;
+  agentTurnText = '';
+  agentFallbackText = '';
+  agentGotTranscript = false;
+}
+
+// ================================================================
+// 대화 종료 / 정리
+// ================================================================
+function endConversation() {
+  if (conversationEnded) return;
+  conversationEnded = true;
+  stopMic();
+  if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
+  stopAgentAudio();
+  updateConvBottom();
+}
+
+function continueToOutro() {
+  goToPage(3);
+}
+
+function teardownLive() {
+  stopMic();
+  if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
+  stopAgentAudio();
+  document.getElementById('conv-bottom').style.display = 'none';
+}
+
+function updateConvBottom() {
+  const mic = document.getElementById('conv-mic');
+  const retry = document.getElementById('conv-retry');
+  const cont = document.getElementById('conv-continue');
+  mic.style.display = 'none';
+  retry.style.display = 'none';
+  cont.style.display = 'none';
+  if (conversationEnded) { cont.style.display = 'inline-flex'; return; }
+  if (liveFailed) { retry.style.display = 'inline-flex'; return; }
+  if (conversationStarted) { mic.style.display = 'flex'; }
+}
+
+// ================================================================
+// 페이지 이탈 시 정리
+// ================================================================
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopMic();
+  } else if (currentPage === 2 && conversationStarted && !conversationEnded) {
+    startMic();
+  }
+});
+window.addEventListener('pagehide', () => { teardownLive(); });
+window.addEventListener('beforeunload', () => { teardownLive(); });
+
+updateObjectifBanner();
+updateTurnsDisplay();
+</script>
+</body>
+</html>
