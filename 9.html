@@ -316,7 +316,33 @@
 /* ═══════════════════════════════════════
    CONFIG
    ═══════════════════════════════════════ */
-const GEMINI_URL = 'https://coreeno.base44.app/api/functions/Geminichat';
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+let lessonPermit = null;
+let lessonId = null;
+window.addEventListener("message", (event) => {
+  if (event.data?.type !== "coreeno:permit") return;
+  lessonPermit = event.data.permit;
+  lessonId = event.data.lesson_id;
+});
+// Gemini 호출 오류 — 원인 간단 명시 + 사용자 안내 (프랑스어)
+let geminiErrorStreak = 0;
+function geminiErrorMessage(error) {
+  const msg = (error && error.message) || String(error);
+  if (msg.indexOf('Lesson permit') !== -1) {
+    return "Permis d'accès indisponible. Veuillez actualiser la page et réessayer.";
+  }
+  const m = msg.match(/API status: (\d+)/);
+  if (m) {
+    const status = parseInt(m[1], 10);
+    if (status === 401 || status === 403) return "Permis d'accès expiré. Veuillez actualiser la page et réessayer.";
+    if (status === 429) return "Limite d'utilisation atteinte. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    if (status >= 500) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+  }
+  geminiErrorStreak++;
+  if (geminiErrorStreak >= 2) return "Erreur de connexion. Si le problème persiste, signalez un bug.";
+  return "Erreur de connexion. Veuillez réessayer.";
+}
 const TOTAL_PAGES = 16; // Syllabus P1-P16
 
 const PAGE_AUDIO = {
@@ -794,10 +820,11 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
   let score = 0;
 
   try {
+    if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
     const res = await fetch(GEMINI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ ...payload, permit: lessonPermit, lesson_id: lessonId })
     });
 
     if (!res.ok) throw new Error("API status: " + res.status);
@@ -811,12 +838,13 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     // Score = jamo(consonant/vowel)-decomposed Levenshtein similarity vs the expected answer
     score = jamoSimilarity(ex.expected, transcript);
     isPass = score >= 80;
+    geminiErrorStreak = 0;
 
   } catch (error) {
     console.warn("Gemini API Error:", error);
-    transcript = "Erreur";
+    transcript = geminiErrorMessage(error);
     isPass = false;
-    score = 0;
+    score = null;
   }
 
   evaluateResult(pageNum, isPass, transcript, score);
