@@ -65,9 +65,35 @@
     @media (orientation: landscape) and (max-height: 520px) {
       .objectif-cols { flex-direction: row; gap: 1.2vw; align-items: stretch; }
       .objectif-ko, .objectif-fr { flex: 1; display: flex; align-items: center; font-size: clamp(0.6rem, 3.4vh, 1.1rem); padding: 0.6vh 1.2vw; }
+      .objectif-ex { font-size: clamp(0.55rem, 2.4vh, 0.85rem); padding: 0.4vh 1vw; }
       .objectif-card { padding: 0.8vh 2vw; }
       .objectif-badge { min-width: 6vh; height: 6vh; font-size: 3.2vh; }
       .objectif-badge.done { font-size: 4vh; }
+    }
+    .objectif-ex {
+      background: #fff; border: 0.15vh solid #fde8e8; border-radius: 0.8vw;
+      padding: 0.8vh 2vw; text-align: left; line-height: 1.4; color: #6b7280;
+      font-size: clamp(0.75rem, max(1.9vw,1.9vh), 1.05rem); font-weight: 500;
+    }
+    .res-card {
+      background:#fff; border:0.15vh solid #e9d5ff; border-radius:1.2vw;
+      padding:1.2vh 2.5vw; width:100%; display:flex; flex-direction:column; gap:0.6vh;
+      box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.08); flex-shrink:0;
+    }
+    .res-head { display:flex; align-items:center; gap:2vw; }
+    .res-emoji { font-size:clamp(1rem,max(3vw,3vh),99rem); flex-shrink:0; }
+    .res-ko { flex:1; font-family:'Noto Sans KR',sans-serif; font-weight:700; color:#1e1b2e; text-align:left; line-height:1.35; font-size:clamp(0.8rem,max(2vw,2vh),1.15rem); }
+    .res-fr { flex:1; font-weight:500; color:#6b7280; text-align:left; line-height:1.35; font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem); }
+    @media (orientation: landscape) and (max-height: 520px) {
+      #page-3 > div { gap: 1.2vh; }
+      #resultat-title { font-size: clamp(0.8rem, 2.6vh, 1.2rem) !important; }
+      #resultat-list { gap: 0.8vh; }
+      .res-card { padding: 0.7vh 1.5vw; gap: 0.3vh; }
+      .res-emoji { font-size: 2.8vh; }
+      .res-ko { font-size: clamp(0.6rem, 2.7vh, 0.95rem); }
+      .res-fr { font-size: clamp(0.55rem, 2.5vh, 0.85rem); }
+      #resultat-list + div { padding: 1vh 2.5vw; }
+      #resultat-text { font-size: clamp(0.75rem, 2vh, 1rem) !important; }
     }
     #objectif-dropdown { display: none; flex-direction: column; gap: 1vh; }
     #objectif-dropdown.open { display: flex; }
@@ -104,11 +130,6 @@
   </style>
 </head>
 <body class="bg-violet-50">
-
-  <!-- ════════ PROGRESS BAR ════════ -->
-  <div id="progress-bar-container" style="position:fixed;top:0;left:0;width:100%;height:0.4vh;background:#ede9fe;z-index:200;display:none;">
-    <div id="progress-bar" style="height:100%;background:#7c3aed;width:0%;transition:width 0.3s ease;"></div>
-  </div>
 
   <!-- ════════ PAGE 0 — COVER ════════ -->
   <div class="page active flex-col bg-violet-50" id="page-0">
@@ -154,8 +175,8 @@
         <div class="objectif-card">
           <span class="objectif-badge" id="goal-badge-4">4</span>
           <div class="objectif-cols">
-            <p class="objectif-ko">클로에가 무엇을 하는지 묻기</p>
-            <p class="objectif-fr">Demander à Chloé ce qu’elle fait</p>
+            <p class="objectif-ko">내일 무엇을 하는지 말하기</p>
+            <p class="objectif-fr">Dire ce que je fais demain</p>
           </div>
         </div>
       </div>
@@ -180,6 +201,8 @@
         </div>
         <div id="objectif-dropdown" style="position:absolute;top:100%;left:0;width:100%;z-index:120;margin-top:0.8vh;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.2vh 2vw;box-shadow:0 1vh 3vh rgba(124,58,237,0.18);"></div>
       </div>
+      <!-- 남은 턴 수 (오른쪽 정렬) -->
+      <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;">Nombre de tours restants : 10</p>
       <!-- 대화 창 -->
       <div id="chat-area" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.2vh;padding:1vh 0.5vw;width:100%;">
         <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « Allô ? » pour tester le microphone.</p>
@@ -190,19 +213,17 @@
 
   <!-- ════════ 대화 하단 존 (공간 항상 확보 — 종료 시 Continuer / 시작 실패 시 Réessayer) ════════ -->
   <div id="conv-bottom" style="position:fixed;bottom:0;left:0;width:100%;height:var(--nav-h);display:none;align-items:center;justify-content:center;padding:0 2.5vw;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:0.15vh solid #e9d5ff;z-index:150;position:fixed;">
-    <div id="volume-ctrl" style="display:flex;align-items:center;gap:1.2vw;position:absolute;left:2.5vw;">
-      <i class="ph ph-speaker-high" style="font-size:clamp(1rem,max(3vw,3vh),99rem);color:#7c3aed;"></i>
-      <input type="range" id="volume-slider" min="0" max="100" value="50" style="width:min(30vw,9rem);accent-color:#7c3aed;height:1.2vh;cursor:pointer;">
-    </div>
     <button id="conv-retry" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="startConversation()">Réessayer</button>
     <button id="conv-continue" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="continueToOutro()">Terminer</button>
   </div>
 
-  <!-- ════════ PAGE 3 — OUTRO ════════ -->
+  <!-- ════════ PAGE 3 — RÉSULTAT (노션 [Résultat]) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-3">
-    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
-      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:2vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);">
-        <p style="font-size:clamp(0.9rem,max(2.3vw,2.3vh),1.3rem);font-weight:500;line-height:1.7;text-align:center;color:#1e1b2e;">Vous avez réussi à discuter en coréen en utilisant les phrases apprises dans ce chapitre. Excellent travail ! Rendez-vous au prochain chapitre !</p>
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2vh;">
+      <p id="resultat-title" class="ko" style="font-size:clamp(1.05rem,max(2.8vw,2.8vh),1.5rem);font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#7c3aed;text-align:center;">Résultat</p>
+      <div id="resultat-list" style="display:flex;flex-direction:column;gap:1.2vh;width:100%;"></div>
+      <div style="background:rgba(255,255,255,0.7);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.8vh 3vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);flex-shrink:0;">
+        <p id="resultat-text" style="font-size:clamp(0.85rem,max(2.2vw,2.2vh),1.2rem);font-weight:500;line-height:1.6;text-align:center;color:#1e1b2e;"></p>
       </div>
     </div>
   </div>
@@ -250,10 +271,14 @@ function geminiErrorMessage(error) {
 // 목표 정의 (실라버스 verbatim)
 // ================================================================
 const OBJECTIFS = [
-  { n: 1, ko: '자기소개하기', fr: 'Se présenter' },
-  { n: 2, ko: '오늘 무엇을 하는지 말하기', fr: 'Dire ce que je fais aujourd’hui' },
-  { n: 3, ko: '어디에서 이 활동을 하는지 말하기', fr: 'Dire où je fais cette activité' },
-  { n: 4, ko: '클로에가 무엇을 하는지 묻기', fr: 'Demander à Chloé ce qu’elle fait' },
+  { n: 1, ko: '자기소개하기', fr: 'Se présenter',
+    exko: '저는 정훈이에요.', exfr: 'Je suis Junghoon' },
+  { n: 2, ko: '오늘 무엇을 하는지 말하기', fr: 'Dire ce que je fais aujourd’hui',
+    exko: '저는 오늘 한국어를 공부해요.', exfr: 'J’étudie le coréen aujourd’hui' },
+  { n: 3, ko: '어디에서 이 활동을 하는지 말하기', fr: 'Dire où je fais cette activité',
+    exko: '학교에서 공부해요.', exfr: 'J’étudie à l’école' },
+  { n: 4, ko: '내일 무엇을 하는지 말하기', fr: 'Dire ce que je fais demain',
+    exko: '내일 집에서 공부해요.', exfr: 'Demain, j’étudie à la maison' },
 ];
 const MAX_TURNS = 10;
 
@@ -263,6 +288,7 @@ const MAX_TURNS = 10;
 let liveSession = null;   // { ws, model, voiceName }
 let micStream = null, micCtx = null, micWorklet = null;
 let micGated = false;   // true = 에이전트 발화 중 (유저 오디오 전송 차단)
+let turnInProg = false;  // 에이전트 턴 진행 중 (turnComplete 전까지 — 마지막 발화 포함)
 let outCtx = null;         // 24kHz 재생용
 
 let conversationEnded = false;
@@ -333,7 +359,6 @@ function playSfx(type) {
 async function startLesson() {
   await initTone();
   playSfx('start');
-  document.getElementById('progress-bar-container').style.display = 'block';
   goToPage(1);
 }
 
@@ -350,16 +375,12 @@ function goToPage(n) {
   const newPage = document.getElementById('page-' + n);
   if (newPage) newPage.classList.add('active');
 
-  updateProgress();
   updateBottomBar();
   handlePageEnter(n);
 }
 
 
-function updateProgress() {
-  const pct = (currentPage / (TOTAL_PAGES - 1)) * 100;
-  document.getElementById('progress-bar').style.width = pct + '%';
-}
+
 
 function updateBottomBar() {
   const convBar = document.getElementById('conv-bottom');
@@ -377,9 +398,44 @@ function updateBottomBar() {
 
 function handlePageEnter(n) {
   if (n === 3) {
+    renderResultat();
     playSfx('end');
     setTimeout(() => triggerLessonComplete(), 500);
   }
+}
+
+// [Résultat] 각 objectif 통과 여부를 이모지로 공개, 오답이 있는 경우 틀린 objectif에만 예시 공개
+function renderResultat() {
+  const list = document.getElementById('resultat-list');
+  list.innerHTML = '';
+  let allPassed = true;
+  OBJECTIFS.forEach((o, i) => {
+    const passed = passedGoals[i];
+    if (!passed) allPassed = false;
+    const card = document.createElement('div');
+    card.className = 'res-card';
+    const head = document.createElement('div');
+    head.className = 'res-head';
+    const emoji = document.createElement('span');
+    emoji.className = 'res-emoji';
+    emoji.textContent = passed ? '✅' : '❌';
+    const ko = document.createElement('p');
+    ko.className = 'res-ko'; ko.textContent = o.ko;
+    const fr = document.createElement('p');
+    fr.className = 'res-fr'; fr.textContent = o.fr;
+    head.appendChild(emoji); head.appendChild(ko); head.appendChild(fr);
+    card.appendChild(head);
+    if (!passed) {
+      const ex = document.createElement('p');
+      ex.className = 'objectif-ex';
+      ex.textContent = '\u201c' + o.exko + '\u201d (' + o.exfr + ')';
+      card.appendChild(ex);
+    }
+    list.appendChild(card);
+  });
+  document.getElementById('resultat-text').textContent = allPassed
+    ? 'Bravo ! On se voit dans le prochain chapitre !'
+    : 'Bien joué ! Si certaines phrases sont encore difficiles, consultez les exemples ci-dessus.';
 }
 
 function triggerLessonComplete() {
@@ -490,28 +546,30 @@ document.addEventListener('click', (e) => {
 });
 
 // <꺽쇠> 마커 처리 — user facing 아님, UI 조정에만 사용
-const RE_MARKER = /<(목표\s*[1-4]\s*통과|대화\s*종료)\s*>/;
+// 상태 메시지(통과/종료)는 UI 체크용 — 화면 노출 금지. 형식 변형(공백 포함)도 인정한다.
+const RE_GOAL = /<\s*목표\s*([1-4])\s*통과\s*>/g;
+const RE_END = /<\s*대화\s*종료\s*>/g;
 
 function processAgentText(chunk) {
   agentTurnText += chunk;
-  let m;
-  while ((m = agentTurnText.match(RE_MARKER))) {
-    const marker = m[1];
-    agentTurnText = agentTurnText.replace(m[0], '').replace(/^\s+/, '');
-    if (marker.indexOf('목표') !== -1) {
-      const n = parseInt(marker.match(/[1-4]/)[0], 10);
-      goalPassed(n);
-    } else if (marker.indexOf('대화 종료') !== -1) {
-      endConversation();
-    }
-  }
+  // 알려진 마커(목표 N 통과 / 대화 종료)만 동작으로 처리하고 텍스트에서 제거
+  agentTurnText = agentTurnText.replace(RE_GOAL, (_, n) => { goalPassed(parseInt(n, 10)); return ''; });
+  let ended = false;
+  agentTurnText = agentTurnText.replace(RE_END, () => { ended = true; return ''; });
+  if (ended) endConversation();
+  // <꺽쇠> 안의 모든 메시지(기타 상태 텍스트 포함)는 UI 체크용이므로 화면에서 제외
+  let display = agentTurnText.replace(/<[^<>]*>/g, '');
   // 미완성 꺽쇠 조각은 표시에서 제외 (다음 청크에서 완성될 수 있음)
-  let display = agentTurnText;
   const openIdx = display.lastIndexOf('<');
   if (openIdx !== -1 && display.indexOf('>', openIdx) === -1) {
     display = display.slice(0, openIdx);
   }
   if (agentBubbleEl) { agentBubbleEl.textContent = display.trim(); scrollChat(); }
+}
+
+function updateTurnsDisplay() {
+  const left = Math.max(0, MAX_TURNS - turnsUsed);
+  document.getElementById('turns-remaining').textContent = 'Nombre de tours restants : ' + left;
 }
 
 function goalPassed(n) {
@@ -581,10 +639,10 @@ function makeLiveHandler() {
     const sc = msg.serverContent;
     if (!sc) return;
 
-    if (sc.interrupted) { stopAgentAudio(); micGated = false; }
+    if (sc.interrupted) { stopAgentAudio(); micGated = false; turnInProg = false; if (endPending) checkEndAfterTurn(); }
     if (sc.modelTurn || sc.outputTranscription || sc.inputTranscription) hadConversation = true;
     // 에이전트 턴 시작 → 마이크 차단 (주고받기 한 턴씩)
-    if (sc.modelTurn || sc.outputTranscription) micGated = true;
+    if (sc.modelTurn || sc.outputTranscription) { micGated = true; turnInProg = true; }
 
     const parts = sc.modelTurn?.parts || [];
     for (const p of parts) {
@@ -622,7 +680,9 @@ function connectLive(data) {
 // 소켓이 닫힌 경우: 대화가 이미 진행됐다면(에이전트가 발화했거나 학생이 말한 뒤) 정상 종료로 간주하고
 // 마지막 발화 재생 후 Continuer를 띄운다. 대화가 시작되기도 전에 끊긴 경우만 연결 오류로 처리.
 function onSocketClosed() {
-  if (conversationEnded || endPending || reconnecting) return;
+  if (conversationEnded || reconnecting) return;
+  // 종료 대기 중 소켓이 닫히면: 서버가 더 보낼 수 없으므로 남은 오디오 재생까지만 기다린다
+  if (endPending) { turnInProg = false; checkEndAfterTurn(); return; }
   if (conversationStarted && hadConversation) { endConversation(); return; }
   if (conversationStarted) {
     stopMic();
@@ -765,7 +825,7 @@ function arrayBufferToBase64(buf) {
 let nextPlayTime = 0;
 let activeSources = [];
 let masterGain = null;
-let volumeLevel = 0.5;   // 기본 볼륨 50%
+const VOLUME_DEFAULT = 0.5;   // 기본 음량 50% (시끄러움 지적) — 이후 크기는 디바이스 볼륨으로 조절
 let lastAgentAudioEnd = 0;
 
 function ensureOutCtx() {
@@ -773,7 +833,7 @@ function ensureOutCtx() {
     outCtx = new AudioContext({ sampleRate: 24000 });
     nextPlayTime = 0;
     masterGain = outCtx.createGain();
-    masterGain.gain.value = volumeLevel;
+    masterGain.gain.value = VOLUME_DEFAULT;
     masterGain.connect(outCtx.destination);
   }
   if (outCtx.state === 'suspended') outCtx.resume();
@@ -815,12 +875,6 @@ function agentAudioPlaying() {
 }
 
 // 인터럽트 시 즉시 중단 (이미 예약된 청크까지 모두 정지)
-function setVolume(v) {   // 0~1
-  volumeLevel = v;
-  if (masterGain && outCtx && outCtx.state !== 'closed') masterGain.gain.value = v;
-}
-document.getElementById('volume-slider').addEventListener('input', (e) => setVolume(e.target.value / 100));
-
 function stopAgentAudio() {
   activeSources.forEach(src => { try { src.onended = null; src.stop(); } catch (e) {} });
   activeSources = [];
@@ -830,7 +884,7 @@ function stopAgentAudio() {
 // 종료 예약이 걸려 있으면, 마지막 발화 재생이 끝난 뒤에 종료 처리
 let endPending = false;
 function onAgentAudioDrained() {
-  if (endPending) { finalizeEnd(); return; }
+  if (endPending) { checkEndAfterTurn(); return; }   // 종료 대기 중이면 마지막 발화 재생까지 끝난 뒤 종료
   micGated = false;   // 에이전트 음성 재생 완료 → 마이크 재개
 }
 
@@ -857,6 +911,7 @@ function onTurnComplete() {
   // 한 번의 주고받기(학생 발화 → 에이전트 응답) = 1턴
   if (userSpokeInTurn) {
     turnsUsed++;
+    updateTurnsDisplay();
     userSpokeInTurn = false;
   }
   userTurnText = '';
@@ -866,7 +921,10 @@ function onTurnComplete() {
   agentFallbackText = '';
   agentGotTranscript = false;
   // 에이전트 턴 종료 → 예약된 음성이 모두 끝나면 마이크 재개 (음성이 없으면 즉시 재개)
+  turnInProg = false;
   if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) micGated = false; }
+  // 종료 대기 중이면: 턴 완료 + 재생 완료 후 종료 처리
+  if (endPending) { checkEndAfterTurn(); return; }
   // 10턴을 모두 사용했다면 서버가 소켓을 닫지 않더라도 종료 처리
   if (turnsUsed >= MAX_TURNS) endConversation();
 }
@@ -875,14 +933,20 @@ function onTurnComplete() {
 // 대화 종료 / 정리
 // ================================================================
 // 종료 요청 (<대화 종료> 마커 / 서버의 소켓 종료 / 최대 턴 도달 등 어떤 경로든 동일하게 처리)
-// 마지막 발화가 끊기지 않도록 재생이 끝난 뒤 Continuer를 띄운다.
+// 마커는 마지막 발화의 텍스트보다 먼저 도착할 수 있다 — 턴이 끝나고(turnComplete)
+// 오디오 재생까지 끝난 뒤에만 종료한다. 그 전에 소켓을 닫으면 발화가 중간에 잘린다.
 function endConversation() {
   if (conversationEnded || endPending) return;
   endPending = true;
   stopMic();   // 마이크는 즉시 중단 (더 이상 입력 받지 않음)
-  if (!agentAudioPlaying()) { finalizeEnd(); return; }
-  // 안전장치: 재생 종료 이벤트가 오지 않아도 최대 15초 후 강제 종료 처리
+  checkEndAfterTurn();
+  // 안전장치: turnComplete/재생 종료 이벤트가 오지 않아도 최대 15초 후 강제 종료 처리
   setTimeout(() => { if (!conversationEnded) finalizeEnd(); }, 15000);
+}
+
+// 종료 가능 조건: 에이전트 턴 완료 + 예약된 오디오 재생까지 완료
+function checkEndAfterTurn() {
+  if (endPending && !turnInProg && !agentAudioPlaying()) finalizeEnd();
 }
 
 function finalizeEnd() {
@@ -934,6 +998,7 @@ window.addEventListener('pagehide', () => { teardownLive(); });
 window.addEventListener('beforeunload', () => { teardownLive(); });
 
 updateObjectifBanner();
+updateTurnsDisplay();
 </script>
 </body>
 </html>
