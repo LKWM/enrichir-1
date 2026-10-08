@@ -563,9 +563,8 @@ const GOAL_PHRASES = [
   { n: 3, re: /정말요|알겠어요/ },                // Turn 4-1 / 4-3
   { n: 4, re: /오늘 이야기 나눠서 즐거웠어요/ },    // Turn 5-1
 ];
-const RE_BYE_PHRASE = /다음에 또 만나/;            // 에이전트 작별 인사(Turn 5-1/5-2) — 즉시 종료 아님, 작별 안내 표시
-const RE_USER_BYE = /안녕히 가세요/;               // 유저 작별 인사 — 감지 즉시 에이전트 응답 없이 종료
-let agentSaidBye = false, byeShown = false;
+const RE_BYE_PHRASE = /다음에 또 만나/;            // 에이전트 작별 인사(Turn 5-1/5-2) = 마지막 턴의 종료 메시지
+let agentSaidBye = false, byeShown = false, awaitingUserBye = false;   // 작별 인사 이후 유저 발화 1회 = 대화 종료 대기 상태
 
 function processAgentText(chunk) {
   agentTurnText += chunk;
@@ -581,6 +580,7 @@ function processAgentText(chunk) {
 function maybeShowByeMsg() {
   if (!agentSaidBye || byeShown || conversationEnded || endPending || turnInProg || agentAudioPlaying()) return;
   byeShown = true;
+  awaitingUserBye = true;   // 이후 유저가 무슨 말을 하든 전사 도착 즉시 종료 (안내 문구는 예시일 뿐)
   const m = document.getElementById('bye-msg');
   document.getElementById('chat-area').appendChild(m);
   m.style.display = 'block';
@@ -984,8 +984,9 @@ function onUserTranscript(chunk) {
   userTurnText += chunk;
   userBubbleEl.textContent = userTurnText.trim();
   scrollChat();
-  // 유저 작별 인사 → 에이전트 응답 없이 즉시 종료 (소켓을 먼저 닫아 응답 차단)
-  if (RE_USER_BYE.test(userTurnText)) endConversation(true);
+  // 작별 인사(마지막 턴 종료 메시지) 이후의 첫 유저 발화 — 내용과 무관하게 전사가 도착하면
+  // 에이전트 응답 없이 즉시 종료 (소켓을 먼저 닫아 응답 차단, 종료 안내 문구는 엔드포인트로 전송하지 않음)
+  if (awaitingUserBye) endConversation(true);
 }
 
 function onTurnComplete() {
