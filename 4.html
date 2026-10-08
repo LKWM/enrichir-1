@@ -208,6 +208,7 @@
         <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « 여보세요 » pour tester le microphone.</p>
       <p id="live-status" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;"></p>
       <p id="turns-exhausted-msg" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;padding:1vh 2vw;">Vous avez utilisé toutes les interactions disponibles pour cette conversation.</p>
+      <p id="bye-msg" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;padding:1vh 2vw;">Dites « 안녕히 가세요 » pour terminer la conversation.</p>
       </div>
     </div>
   </div>
@@ -464,6 +465,7 @@ function scrollChat() {
 }
 
 function appendAgentBubble() {
+  hideByeMsg();
   const area = document.getElementById('chat-area');
   const row = document.createElement('div');
   row.className = 'chat-row';
@@ -489,6 +491,7 @@ function appendAgentBubble() {
 }
 
 function appendUserBubble() {
+  hideByeMsg();
   const area = document.getElementById('chat-area');
   const row = document.createElement('div');
   row.className = 'chat-row user';
@@ -556,20 +559,39 @@ document.addEventListener('click', (e) => {
 // (텍스트 상태 마커는 음성으로 읽히는 문제가 있어 폐기 — 문구는 전사 누적 버퍼에서 감시, 청크 분할 대응)
 const GOAL_PHRASES = [
   { n: 1, re: /반가워요/ },                       // Turn 2-1
-  { n: 2, re: /그렇군요/ },                       // Turn 3-1
+  { n: 2, re: /그렇군요|알겠어요/ },               // Turn 3-1 — 알겠어요는 Goal 2와 3을 동시 통과
   { n: 3, re: /정말요|알겠어요/ },                // Turn 4-1 / 4-3
   { n: 4, re: /오늘 이야기 나눠서 즐거웠어요/ },    // Turn 5-1
 ];
-const RE_END_PHRASE = /다음에 또 만나/;            // Turn 5-1/5-2 — 종료 문구
+const RE_BYE_PHRASE = /다음에 또 만나/;            // 에이전트 작별 인사(Turn 5-1/5-2) — 즉시 종료 아님, 작별 안내 표시
+const RE_USER_BYE = /안녕히 가세요/;               // 유저 작별 인사 — 감지 즉시 에이전트 응답 없이 종료
+let agentSaidBye = false, byeShown = false;
 
 function processAgentText(chunk) {
   agentTurnText += chunk;
   // 목표 문구 감지 → 통과 처리 (문구는 화면에 그대로 표시)
   for (const g of GOAL_PHRASES) { if (g.re.test(agentTurnText)) goalPassed(g.n); }
-  // 종료 문구 감지 → 이번 턴의 발화 재생까지 끝난 뒤 종료 (이후 유저 발화를 요구하지 않음)
-  if (RE_END_PHRASE.test(agentTurnText)) endConversation();
+  // 에이전트 작별 인사 감지 → 발화는 끝까지 재생한 뒤 작별 안내 메시지 표시 (즉시 종료하지 않음)
+  if (RE_BYE_PHRASE.test(agentTurnText)) agentSaidBye = true;
   let display = agentTurnText.replace(/<[^<>]*>/g, '');   // 방어: 꺽쇠 안내문 노출 제거
   if (agentBubbleEl) { agentBubbleEl.textContent = display.trim(); scrollChat(); }
+}
+
+// 에이전트 작별 인사 후 대화창 하단에 종료 안내 표시 (턴수 부족 메시지와 동일 위치·양식)
+function maybeShowByeMsg() {
+  if (!agentSaidBye || byeShown || conversationEnded || endPending || turnInProg || agentAudioPlaying()) return;
+  byeShown = true;
+  const m = document.getElementById('bye-msg');
+  document.getElementById('chat-area').appendChild(m);
+  m.style.display = 'block';
+  scrollChat();
+}
+
+// 새 말풍선이 오면 작별 안내는 더 이상 마지막 요소가 아니므로 숨김 (감지 자체는 유지)
+function hideByeMsg() {
+  if (!byeShown && document.getElementById('bye-msg').style.display === 'none') return;
+  byeShown = false;
+  document.getElementById('bye-msg').style.display = 'none';
 }
 
 function updateTurnsDisplay() {
@@ -947,6 +969,7 @@ function onAgentAudioDrained() {
   if (endPending) { checkEndAfterTurn(); return; }   // 종료 대기 중이면 마지막 발화 재생까지 끝난 뒤 종료
   micGated = false;   // 에이전트 음성 재생 완료 → 마이크 수신 재개 (스트림은 계속 켜져 있음)
   if (!conversationEnded) updateMicUI(true);
+  maybeShowByeMsg();   // 작별 인사 턴의 발화까지 끝났으면 종료 안내 표시
 }
 
 // ================================================================
@@ -961,6 +984,8 @@ function onUserTranscript(chunk) {
   userTurnText += chunk;
   userBubbleEl.textContent = userTurnText.trim();
   scrollChat();
+  // 유저 작별 인사 → 에이전트 응답 없이 즉시 종료 (소켓을 먼저 닫아 응답 차단)
+  if (RE_USER_BYE.test(userTurnText)) endConversation(true);
 }
 
 function onTurnComplete() {
@@ -984,6 +1009,7 @@ function onTurnComplete() {
   // 에이전트 턴 종료 → 예약된 음성이 모두 끝나면 마이크 재개 (음성이 없으면 즉시 재개)
   turnInProg = false;
   if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) { micGated = false; updateMicUI(true); } }
+  maybeShowByeMsg();
   // 종료 대기 중이면: 턴 완료 + 재생 완료 후 종료 처리
   if (endPending) { checkEndAfterTurn(); return; }
   // 10턴을 모두 사용했다면 서버가 소켓을 닫지 않더라도 종료 처리
@@ -996,11 +1022,15 @@ function onTurnComplete() {
 // 종료 요청 (종료 문구 "다음에 또 만나요" / 서버의 소켓 종료 / 최대 턴 도달 등 어떤 경로든 동일하게 처리)
 // 종료 문구는 마지막 발화의 텍스트보다 먼저 도착할 수 있다 — 턴이 끝나고(turnComplete)
 // 오디오 재생까지 끝난 뒤에만 종료한다. 그 전에 소켓을 닫으면 발화가 중간에 잘린다.
-function endConversation() {
+function endConversation(immediate) {
   if (conversationEnded || endPending) return;
   endPending = true;
   micGated = true;
   micOff();   // 마이크는 즉시 완전 차단 (더 이상 입력 받지 않음)
+  if (immediate) {   // 유저 작별 인사 경로: 대기 없이 즉시 — 소켓을 먼저 끊어 에이전트 응답을 원천 차단
+    if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
+    stopAgentAudio();
+  }
   checkEndAfterTurn();
   // 안전장치: turnComplete/재생 종료 이벤트가 오지 않아도 최대 15초 후 강제 종료 처리
   setTimeout(() => { if (!conversationEnded) finalizeEnd(); }, 15000);
@@ -1030,6 +1060,7 @@ function finalizeEnd() {
 
 function continueToOutro() {
   document.getElementById('turns-exhausted-msg').style.display = 'none';
+  document.getElementById('bye-msg').style.display = 'none';
   goToPage(3);
 }
 
