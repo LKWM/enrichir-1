@@ -791,14 +791,30 @@ function micOff() {
 
 async function startMic() {
   if (micStream) return;
+  // 모바일에서 트랙 stop 직후 getUserMedia가 일시 실패하는 경우가 있어 최대 3회 재시도
+  let stream = null, micError = null;
+  for (let attempt = 0; attempt < 3 && !stream; attempt++) {
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) {
+      micError = e;
+      if (e && e.name === 'NotAllowedError') break;   // 권한 거부는 재시도해도 소용 없음
+      if (attempt < 2) await new Promise(r => setTimeout(r, 350));
+    }
+  }
+  if (!micWanted) { if (stream) stream.getTracks().forEach(t => t.stop()); return; }   // 대기 중 꺼짐 → 즉시 반납
+  if (!stream) { throw (micError || new Error('getUserMedia failed')); }
+  micStream = stream;
+  // 컨텍스트와 워클릿 모듈은 재사용 — 매 턴 close/재생성하면 모바일 오디오 세션이 전환되어
+  // 재생 컨텍스트가 정지(suspended)되고 발화 드레인 감지가 영구 멈춤 (에이전트 음성 안 들림 + 마이크 미복귀)
+  if (!micCtx || micCtx.state === 'closed') { micCtx = new AudioContext({ sampleRate: 16000 }); micCtx.__moduleLoaded = false; }
+  if (micCtx.state === 'suspended') { try { await micCtx.resume(); } catch (e) {} }
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    if (!micWanted) { stream.getTracks().forEach(t => t.stop()); return; }   // 대기 중 꺼짐 → 즉시 반납
-    micStream = stream;
-    micCtx = new AudioContext({ sampleRate: 16000 });
-    const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
-    const url = URL.createObjectURL(blob);
-    await micCtx.audioWorklet.addModule(url);
+    if (!micCtx.__moduleLoaded) {
+      const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
+      const url = URL.createObjectURL(blob);
+      await micCtx.audioWorklet.addModule(url);
+      micCtx.__moduleLoaded = true;
+    }
     if (!micWanted) { stopMic(); return; }
     const src = micCtx.createMediaStreamSource(micStream);
     micWorklet = new AudioWorkletNode(micCtx, 'pcm-processor');
@@ -829,8 +845,8 @@ async function startMic() {
 
 function stopMic() {
   if (micWorklet) { try { micWorklet.disconnect(); } catch (e) {} micWorklet = null; }
-  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
-  if (micCtx) { try { micCtx.close(); } catch (e) {} micCtx = null; }
+  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }   // 트랙 정지 → 디바이스는 마이크 해제 상태
+  if (micCtx) { try { micCtx.suspend(); } catch (e) {} }   // 컨텍스트는 유지(suspend) — close는 대화 종료 시만
   updateMicUI(false);
 }
 
@@ -868,6 +884,11 @@ let lastAgentAudioEnd = 0;
 function ensureOutCtx() {
   if (!outCtx || outCtx.state === 'closed') {
     outCtx = new AudioContext({ sampleRate: 24000 });
+    outCtx.onstatechange = () => {
+      if (outCtx && outCtx.state === 'suspended' && !conversationEnded && !document.hidden) {
+        outCtx.resume().catch(() => {});
+      }
+    };
     nextPlayTime = 0;
     masterGain = outCtx.createGain();
     masterGain.gain.value = VOLUME_DEFAULT;
@@ -1012,6 +1033,7 @@ function continueToOutro() {
 
 function teardownLive() {
   micOff();
+  if (micCtx) { try { micCtx.close(); } catch (e) {} micCtx = null; }
   if (liveSession && liveSession.ws) {
     liveSession.ws.onclose = null;
     try { liveSession.ws.close(); } catch (e) {}
