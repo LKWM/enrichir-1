@@ -205,7 +205,7 @@
       <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;">Nombre de tours restants : 10</p>
       <!-- 대화 창 -->
       <div id="chat-area" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.2vh;padding:1vh 0.5vw;width:100%;">
-        <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « Allô ? » pour tester le microphone.</p>
+        <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « 여보세요 » pour tester le microphone.</p>
       <p id="live-status" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;"></p>
       <p id="turns-exhausted-msg" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#6b7280;text-align:center;display:none;padding:1vh 2vw;">Vous avez utilisé toutes les interactions disponibles pour cette conversation.</p>
       </div>
@@ -552,21 +552,23 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#objectif-wrap')) toggleObjectifDropdown(true);
 });
 
-// <꺽쇠> 마커 처리 — user facing 아님, UI 조정에만 사용
-// 상태 메시지는 이모지(1️⃣✅ - 5️⃣✅, 음성 발화 불가) — 화면 노출 금지. 코드포인트 분할 도착 허용
-const RE_GOAL = /([1-4])\uFE0F?\u20E3\uFE0F?\u2705/g;   // 목표 N 통과
-const RE_END = /5\uFE0F?\u20E3\uFE0F?\u2705/g;            // 대화 종료
+// ── 목표/종료 감지: 백엔드 Conversation flow의 특정 문구를 에이전트가 말하면 목표 통과/종료 처리 ──
+// (텍스트 상태 마커는 음성으로 읽히는 문제가 있어 폐기 — 문구는 전사 누적 버퍼에서 감시, 청크 분할 대응)
+const GOAL_PHRASES = [
+  { n: 1, re: /반가워요/ },                       // Turn 2-1
+  { n: 2, re: /그렇군요/ },                       // Turn 3-1
+  { n: 3, re: /정말요|알겠어요/ },                // Turn 4-1 / 4-3
+  { n: 4, re: /오늘 이야기 나눠서 즐거웠어요/ },    // Turn 5-1
+];
+const RE_END_PHRASE = /다음에 또 만나/;            // Turn 5-1/5-2 — 종료 문구
 
 function processAgentText(chunk) {
   agentTurnText += chunk;
-  // 상태 이모지(1️⃣✅ - 4️⃣✅ = 목표 통과, 5️⃣✅ = 대화 종료)는 동작으로만 처리하고 텍스트에서 제거
-  agentTurnText = agentTurnText.replace(RE_GOAL, (_, n) => { goalPassed(parseInt(n, 10)); return ''; });
-  let ended = false;
-  agentTurnText = agentTurnText.replace(RE_END, () => { ended = true; return ''; });
-  if (ended) endConversation();
-  let display = agentTurnText.replace(/<[^<>]*>/g, '');
-  // 미완성 이모지 조각(끝의 1-5 + 키캡 조각)은 표시에서 제외 (다음 청크에서 완성될 수 있음)
-  display = display.replace(/[1-5]\uFE0F?\u20E3?\uFE0F?$/, '');
+  // 목표 문구 감지 → 통과 처리 (문구는 화면에 그대로 표시)
+  for (const g of GOAL_PHRASES) { if (g.re.test(agentTurnText)) goalPassed(g.n); }
+  // 종료 문구 감지 → 이번 턴의 발화 재생까지 끝난 뒤 종료 (이후 유저 발화를 요구하지 않음)
+  if (RE_END_PHRASE.test(agentTurnText)) endConversation();
+  let display = agentTurnText.replace(/<[^<>]*>/g, '');   // 방어: 꺽쇠 안내문 노출 제거
   if (agentBubbleEl) { agentBubbleEl.textContent = display.trim(); scrollChat(); }
 }
 
@@ -642,10 +644,10 @@ function makeLiveHandler() {
     const sc = msg.serverContent;
     if (!sc) return;
 
-    if (sc.interrupted) { stopAgentAudio(); micGated = false; turnInProg = false; if (!endPending && !conversationEnded) micOn(); if (endPending) checkEndAfterTurn(); }
+    if (sc.interrupted) { stopAgentAudio(); micGated = false; turnInProg = false; if (!endPending && !conversationEnded) updateMicUI(true); if (endPending) checkEndAfterTurn(); }
     if (sc.modelTurn || sc.outputTranscription || sc.inputTranscription) hadConversation = true;
     // 에이전트 턴 시작 → 마이크 차단 (주고받기 한 턴씩)
-    if (sc.modelTurn || sc.outputTranscription) { micGated = true; turnInProg = true; micOff(); }   // 에이전트 턴 시작 → 마이크 완전 차단
+    if (sc.modelTurn || sc.outputTranscription) { micGated = true; turnInProg = true; updateMicUI(false); }   // 에이전트 턴 시작 → 전송 차단(마이크 스트림은 유지)
 
     const parts = sc.modelTurn?.parts || [];
     for (const p of parts) {
@@ -741,7 +743,7 @@ async function onGoAway() {
     ws.onerror = () => {};
     ws.onclose = () => onSocketClosed();
     reconnecting = false;
-    if (!micGated && !endPending && !conversationEnded) micOn();   // 재접속 후 마이크 재개
+    if (!micGated && !endPending && !conversationEnded) { updateMicUI(true); micOn(); }   // 재접속 후 마이크 수신 재개 (스트림 끊겼으면 재취득)
   } catch (e) {
     reconnecting = false;
     liveFailed = true;
@@ -943,8 +945,8 @@ function stopAgentAudio() {
 let endPending = false;
 function onAgentAudioDrained() {
   if (endPending) { checkEndAfterTurn(); return; }   // 종료 대기 중이면 마지막 발화 재생까지 끝난 뒤 종료
-  micGated = false;   // 에이전트 음성 재생 완료 → 마이크 재개
-  if (!conversationEnded) micOn();
+  micGated = false;   // 에이전트 음성 재생 완료 → 마이크 수신 재개 (스트림은 계속 켜져 있음)
+  if (!conversationEnded) updateMicUI(true);
 }
 
 // ================================================================
@@ -981,7 +983,7 @@ function onTurnComplete() {
   agentGotTranscript = false;
   // 에이전트 턴 종료 → 예약된 음성이 모두 끝나면 마이크 재개 (음성이 없으면 즉시 재개)
   turnInProg = false;
-  if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) { micGated = false; micOn(); } }
+  if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) { micGated = false; updateMicUI(true); } }
   // 종료 대기 중이면: 턴 완료 + 재생 완료 후 종료 처리
   if (endPending) { checkEndAfterTurn(); return; }
   // 10턴을 모두 사용했다면 서버가 소켓을 닫지 않더라도 종료 처리
@@ -991,8 +993,8 @@ function onTurnComplete() {
 // ================================================================
 // 대화 종료 / 정리
 // ================================================================
-// 종료 요청 (<대화 종료> 마커 / 서버의 소켓 종료 / 최대 턴 도달 등 어떤 경로든 동일하게 처리)
-// 마커는 마지막 발화의 텍스트보다 먼저 도착할 수 있다 — 턴이 끝나고(turnComplete)
+// 종료 요청 (종료 문구 "다음에 또 만나요" / 서버의 소켓 종료 / 최대 턴 도달 등 어떤 경로든 동일하게 처리)
+// 종료 문구는 마지막 발화의 텍스트보다 먼저 도착할 수 있다 — 턴이 끝나고(turnComplete)
 // 오디오 재생까지 끝난 뒤에만 종료한다. 그 전에 소켓을 닫으면 발화가 중간에 잘린다.
 function endConversation() {
   if (conversationEnded || endPending) return;
