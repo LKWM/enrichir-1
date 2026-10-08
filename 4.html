@@ -202,7 +202,10 @@
         <div id="objectif-dropdown" style="position:absolute;top:100%;left:0;width:100%;z-index:120;margin-top:0.8vh;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.2vh 2vw;box-shadow:0 1vh 3vh rgba(124,58,237,0.18);"></div>
       </div>
       <!-- 남은 턴 수 (오른쪽 정렬) -->
-      <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;">Nombre de tours restants : 10</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:1vh 1vw 0.5vh 1vw;flex-shrink:0;gap:2vw;">
+        <span id="mic-status" style="display:inline-flex;align-items:center;gap:1vw;font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;flex-shrink:0;color:#9ca3af;"><i class="ph ph-microphone-slash" style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.2rem);"></i>Micro désactivé</span>
+        <p id="turns-remaining" style="font-size:clamp(0.75rem,max(1.9vw,1.9vh),1.05rem);font-weight:700;color:#7c3aed;text-align:right;flex-shrink:1;white-space:nowrap;">Nombre de tours restants : 10</p>
+      </div>
       <!-- 대화 창 -->
       <div id="chat-area" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.2vh;padding:1vh 0.5vw;width:100%;">
         <p id="mic-hint" style="font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;color:#7c3aed;text-align:center;display:none;padding:1vh 2vw;background:#f5f3ff;border:0.15vh solid #e9d5ff;border-radius:1vw;">Dites « Allô ? » pour tester le microphone.</p>
@@ -216,6 +219,7 @@
     <button id="conv-retry" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="startConversation()">Réessayer</button>
     <button id="conv-continue" class="cta-btn" style="display:none;padding:1.2vh 6vw;font-size:clamp(0.85rem,max(2.2vw,2.2vh),99rem);" onclick="continueToOutro()">Terminer</button>
   </div>
+  <div id="turns-exhausted-msg" style="position:fixed;bottom:calc(var(--nav-h) + 1vh);left:50%;transform:translateX(-50%);width:90%;max-width:80vw;text-align:center;font-size:clamp(0.8rem,max(2vw,2vh),1.1rem);font-weight:600;line-height:1.5;color:#1e1b2e;background:rgba(255,255,255,0.95);border:0.15vh solid #e9d5ff;border-radius:1.2vw;padding:1.2vh 2.5vw;box-shadow:0 0.4vh 1.5vh rgba(124,58,237,0.1);display:none;z-index:149;">Vous avez utilisé toutes les interactions disponibles pour cette conversation.</div>
 
   <!-- ════════ PAGE 3 — RÉSULTAT (노션 [Résultat]) ════════ -->
   <div class="page flex-col bg-violet-50" id="page-3">
@@ -287,7 +291,8 @@ const MAX_TURNS = 10;
 // ================================================================
 let liveSession = null;   // { ws, model, voiceName }
 let micStream = null, micCtx = null, micWorklet = null;
-let micGated = false;   // true = 에이전트 발화 중 (유저 오디오 전송 차단)
+let micGated = false;   // true = 에이전트 발화 중 (논리적 차단 플래그)
+let micWanted = false;  // 마이크 의도 상태 (true = 켬, false = 완전 차단)
 let turnInProg = false;  // 에이전트 턴 진행 중 (turnComplete 전까지 — 마지막 발화 포함)
 let outCtx = null;         // 24kHz 재생용
 
@@ -295,6 +300,7 @@ let conversationEnded = false;
 let conversationStarted = false;
 let objectifIndex = 0;     // 현재 목표 (0-3)
 let turnsUsed = 0;
+let endedByTurns = false;   // 턴수 소진으로 종료됐는지 (종료 안내 메시지 표시용)
 let userSpokeInTurn = false;
 let userBubbleEl = null, userTurnText = '';
 let agentBubbleEl = null, agentTurnText = '';
@@ -546,24 +552,20 @@ document.addEventListener('click', (e) => {
 });
 
 // <꺽쇠> 마커 처리 — user facing 아님, UI 조정에만 사용
-// 상태 메시지(통과/종료)는 UI 체크용 — 화면 노출 금지. 형식 변형(공백 포함)도 인정한다.
-const RE_GOAL = /<\s*목표\s*([1-4])\s*통과\s*>/g;
-const RE_END = /<\s*대화\s*종료\s*>/g;
+// 상태 메시지는 이모지(1️⃣✅ - 5️⃣✅, 음성 발화 불가) — 화면 노출 금지. 코드포인트 분할 도착 허용
+const RE_GOAL = /([1-4])\uFE0F?\u20E3\uFE0F?\u2705/g;   // 목표 N 통과
+const RE_END = /5\uFE0F?\u20E3\uFE0F?\u2705/g;            // 대화 종료
 
 function processAgentText(chunk) {
   agentTurnText += chunk;
-  // 알려진 마커(목표 N 통과 / 대화 종료)만 동작으로 처리하고 텍스트에서 제거
+  // 상태 이모지(1️⃣✅ - 4️⃣✅ = 목표 통과, 5️⃣✅ = 대화 종료)는 동작으로만 처리하고 텍스트에서 제거
   agentTurnText = agentTurnText.replace(RE_GOAL, (_, n) => { goalPassed(parseInt(n, 10)); return ''; });
   let ended = false;
   agentTurnText = agentTurnText.replace(RE_END, () => { ended = true; return ''; });
   if (ended) endConversation();
-  // <꺽쇠> 안의 모든 메시지(기타 상태 텍스트 포함)는 UI 체크용이므로 화면에서 제외
   let display = agentTurnText.replace(/<[^<>]*>/g, '');
-  // 미완성 꺽쇠 조각은 표시에서 제외 (다음 청크에서 완성될 수 있음)
-  const openIdx = display.lastIndexOf('<');
-  if (openIdx !== -1 && display.indexOf('>', openIdx) === -1) {
-    display = display.slice(0, openIdx);
-  }
+  // 미완성 이모지 조각(끝의 1-5 + 키캡 조각)은 표시에서 제외 (다음 청크에서 완성될 수 있음)
+  display = display.replace(/[1-5]\uFE0F?\u20E3?\uFE0F?$/, '');
   if (agentBubbleEl) { agentBubbleEl.textContent = display.trim(); scrollChat(); }
 }
 
@@ -594,7 +596,7 @@ async function startConversation() {
   // 재시도: 이전 세션 리소스 정리 후 새로 시작
   if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
   liveSession = null;
-  stopMic();
+  micOff();
   conversationStarted = false;
   liveFailed = false;
   hadConversation = false;
@@ -639,10 +641,10 @@ function makeLiveHandler() {
     const sc = msg.serverContent;
     if (!sc) return;
 
-    if (sc.interrupted) { stopAgentAudio(); micGated = false; turnInProg = false; if (endPending) checkEndAfterTurn(); }
+    if (sc.interrupted) { stopAgentAudio(); micGated = false; turnInProg = false; if (!endPending && !conversationEnded) micOn(); if (endPending) checkEndAfterTurn(); }
     if (sc.modelTurn || sc.outputTranscription || sc.inputTranscription) hadConversation = true;
     // 에이전트 턴 시작 → 마이크 차단 (주고받기 한 턴씩)
-    if (sc.modelTurn || sc.outputTranscription) { micGated = true; turnInProg = true; }
+    if (sc.modelTurn || sc.outputTranscription) { micGated = true; turnInProg = true; micOff(); }   // 에이전트 턴 시작 → 마이크 완전 차단
 
     const parts = sc.modelTurn?.parts || [];
     for (const p of parts) {
@@ -685,7 +687,7 @@ function onSocketClosed() {
   if (endPending) { turnInProg = false; checkEndAfterTurn(); return; }
   if (conversationStarted && hadConversation) { endConversation(); return; }
   if (conversationStarted) {
-    stopMic();
+    micOff();
     liveFailed = true;
     showLiveStatus(geminiErrorMessage(new Error('Erreur de connexion.')));
     updateConvBottom();
@@ -701,7 +703,7 @@ function onLiveReady() {
   // 연결됨: 전화 걸리는 소리 + 마이크 테스트 안내 → 유저가 먼저 말하며 대화 시작
   playSfx('dial');
   document.getElementById('mic-hint').style.display = 'block';
-  startMic();
+  micOn();
   updateConvBottom();
 }
 
@@ -711,7 +713,7 @@ function onLiveReady() {
 async function onGoAway() {
   if (conversationEnded || reconnecting) return;
   reconnecting = true;
-  stopMic();
+  micOff();
   const handle = resumptionHandle;
   resumptionHandle = null;
   // 기존 ws의 핸들러 무력화 (종료 이벤트가 오류로 표시되지 않도록)
@@ -738,6 +740,7 @@ async function onGoAway() {
     ws.onerror = () => {};
     ws.onclose = () => onSocketClosed();
     reconnecting = false;
+    if (!micGated && !endPending && !conversationEnded) micOn();   // 재접속 후 마이크 재개
   } catch (e) {
     reconnecting = false;
     liveFailed = true;
@@ -772,17 +775,34 @@ class PCMProcessor extends AudioWorkletProcessor {
 registerProcessor('pcm-processor', PCMProcessor);
 `;
 
+// 마이크 의도 상태 전환: micOn = 실제 마이크 켬, micOff = 트랙까지 완전 중단 (디바이스에 마이크 해제로 보임)
+async function micOn() {
+  micWanted = true;
+  if (conversationEnded || endPending) return;
+  if (micStream) return;   // 이미 켜져 있음
+  await startMic();
+}
+
+function micOff() {
+  micWanted = false;
+  stopMic();
+}
+
 async function startMic() {
+  if (micStream) return;
   try {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (!micWanted) { stream.getTracks().forEach(t => t.stop()); return; }   // 대기 중 꺼짐 → 즉시 반납
+    micStream = stream;
     micCtx = new AudioContext({ sampleRate: 16000 });
     const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
     const url = URL.createObjectURL(blob);
     await micCtx.audioWorklet.addModule(url);
+    if (!micWanted) { stopMic(); return; }
     const src = micCtx.createMediaStreamSource(micStream);
     micWorklet = new AudioWorkletNode(micCtx, 'pcm-processor');
     micWorklet.port.onmessage = (e) => {
-      if (micGated) return;   // 에이전트가 말하는 중에는 오디오를 보내지 않는다 (동시 발화·끊김 방지)
+      if (micGated || !micWanted) return;   // 에이전트가 말하는 중에는 오디오를 보내지 않는다 (동시 발화·끊김 방지)
       if (liveSession && liveSession.ws && liveSession.ws.readyState === WebSocket.OPEN) {
         const b64 = arrayBufferToBase64(e.data);
         liveSession.ws.send(JSON.stringify({
@@ -791,13 +811,18 @@ async function startMic() {
       }
     };
     src.connect(micWorklet);
+    updateMicUI(true);
   } catch (e) {
     console.warn('Mic error:', e);
     stopMic();
-    liveFailed = true;
-    document.getElementById('mic-hint').style.display = 'none';
-    showLiveStatus("Erreur de connexion. Veuillez réessayer.");
-    updateConvBottom();
+    if (conversationStarted && hadConversation) {
+      showLiveStatus("Micro inaccessible. Réessayez.");   // 대화 중 재시작 실패: 안내만 (대화 유지)
+    } else {
+      liveFailed = true;
+      document.getElementById('mic-hint').style.display = 'none';
+      showLiveStatus("Erreur de connexion. Veuillez réessayer.");
+      updateConvBottom();
+    }
   }
 }
 
@@ -805,6 +830,17 @@ function stopMic() {
   if (micWorklet) { try { micWorklet.disconnect(); } catch (e) {} micWorklet = null; }
   if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
   if (micCtx) { try { micCtx.close(); } catch (e) {} micCtx = null; }
+  updateMicUI(false);
+}
+
+// 마이크 사용 여부 화면 표시
+function updateMicUI(on) {
+  const el = document.getElementById('mic-status');
+  if (!el) return;
+  el.innerHTML = on
+    ? '<i class="ph-fill ph-microphone" style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.2rem);"></i>Micro activé'
+    : '<i class="ph ph-microphone-slash" style="font-size:clamp(0.9rem,max(2.2vw,2.2vh),1.2rem);"></i>Micro désactivé';
+  el.style.color = on ? '#10b981' : '#9ca3af';
 }
 
 function arrayBufferToBase64(buf) {
@@ -886,6 +922,7 @@ let endPending = false;
 function onAgentAudioDrained() {
   if (endPending) { checkEndAfterTurn(); return; }   // 종료 대기 중이면 마지막 발화 재생까지 끝난 뒤 종료
   micGated = false;   // 에이전트 음성 재생 완료 → 마이크 재개
+  if (!conversationEnded) micOn();
 }
 
 // ================================================================
@@ -922,11 +959,11 @@ function onTurnComplete() {
   agentGotTranscript = false;
   // 에이전트 턴 종료 → 예약된 음성이 모두 끝나면 마이크 재개 (음성이 없으면 즉시 재개)
   turnInProg = false;
-  if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) micGated = false; }
+  if (!conversationEnded && !endPending) { if (!agentAudioPlaying()) { micGated = false; micOn(); } }
   // 종료 대기 중이면: 턴 완료 + 재생 완료 후 종료 처리
   if (endPending) { checkEndAfterTurn(); return; }
   // 10턴을 모두 사용했다면 서버가 소켓을 닫지 않더라도 종료 처리
-  if (turnsUsed >= MAX_TURNS) endConversation();
+  if (turnsUsed >= MAX_TURNS) { endedByTurns = true; endConversation(); }   // 턴수 소진 종료
 }
 
 // ================================================================
@@ -938,7 +975,8 @@ function onTurnComplete() {
 function endConversation() {
   if (conversationEnded || endPending) return;
   endPending = true;
-  stopMic();   // 마이크는 즉시 중단 (더 이상 입력 받지 않음)
+  micGated = true;
+  micOff();   // 마이크는 즉시 완전 차단 (더 이상 입력 받지 않음)
   checkEndAfterTurn();
   // 안전장치: turnComplete/재생 종료 이벤트가 오지 않아도 최대 15초 후 강제 종료 처리
   setTimeout(() => { if (!conversationEnded) finalizeEnd(); }, 15000);
@@ -954,17 +992,20 @@ function finalizeEnd() {
   conversationEnded = true;
   endPending = false;
   micGated = true;
+  micOff();
   if (liveSession && liveSession.ws) { try { liveSession.ws.close(); } catch (e) {} }
   playSfx('hangup');   // 전화 끊기는 소리
+  if (endedByTurns) document.getElementById('turns-exhausted-msg').style.display = 'block';
   updateConvBottom();
 }
 
 function continueToOutro() {
+  document.getElementById('turns-exhausted-msg').style.display = 'none';
   goToPage(3);
 }
 
 function teardownLive() {
-  stopMic();
+  micOff();
   if (liveSession && liveSession.ws) {
     liveSession.ws.onclose = null;
     try { liveSession.ws.close(); } catch (e) {}
@@ -989,9 +1030,9 @@ function updateConvBottom() {
 // ================================================================
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    stopMic();
+    micOff();
   } else if (currentPage === 2 && conversationStarted && !conversationEnded && !endPending) {
-    startMic();
+    micOn();
   }
 });
 window.addEventListener('pagehide', () => { teardownLive(); });
