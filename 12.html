@@ -24,8 +24,8 @@
     /* ── 문제 페이지: 상단 칩 ── */
     .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
     .q-chip {
-      font-size: clamp(0.85rem, max(2.2vw, 2.2vh), 1.2rem); font-weight: 800; color: #6d28d9;
-      background: #ede9fe; border-radius: 1vw; padding: 0.8vh 2.2vw; line-height: 1.2;
+      font-size: clamp(1.05rem, max(2.9vw, 2.9vh), 99rem); font-weight: 800; color: #6d28d9;
+      background: #ede9fe; border-radius: 1.2vw; padding: 1.1vh 2.8vw; line-height: 1.2;
     }
     .q-chip.timer-idle { color: #9ca3af; background: #f3f4f6; }
     /* ── 문제 이미지 (정방형) ── */
@@ -36,17 +36,17 @@
     }
     /* ── 힌트 영역: 힌트 메시지 최대 크기만큼 항상 공간 확보 ── */
     .q-hint {
-      width: min(46vh, 84vw); height: clamp(2.6rem, 9vh, 99rem);
+      width: min(92vw, 110vh); height: clamp(2.6rem, 10vh, 99rem);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .hint-btn {
       border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
-      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 800;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.9rem, max(2.2vw, 2.2vh), 99rem); font-weight: 800;
       padding: 1.2vh 5vw; cursor: pointer; box-shadow: 0 0.4vh 1.6vh rgba(124,58,237,0.2); transition: transform 0.15s;
     }
     .hint-btn:hover { transform: scale(1.04); }
     .hint-msg {
-      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 600;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.85rem, max(1.7vw, 2vh), 99rem); font-weight: 600;
       color: #5b21b6; text-align: center; line-height: 1.35; padding: 0 1vw;
     }
     /* ── 마이크 버튼 ── */
@@ -65,16 +65,16 @@
     .q-controls { display: flex; flex-direction: column; align-items: center; gap: 1.2vh; flex-shrink: 0; }
     .q-controls .q-hint, .q-controls .mic-btn { transition: none; }
     .q-reveal {
-      width: min(46vh, 84vw); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.8vh;
+      width: min(92vw, 110vh); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.8vh;
       flex-shrink: 0;
     }
     .reveal-transcript {
-      font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.85rem, max(2.2vw, 2.2vh), 99rem); font-weight: 600;
-      color: #1e1b2e; text-align: center; line-height: 1.3;
+      font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.9rem, max(1.9vw, 2.2vh), 99rem); font-weight: 600;
+      color: #1e1b2e; text-align: center; line-height: 1.35;
       overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     }
-    .reveal-score { font-size: clamp(1rem, max(3vw, 3vh), 99rem); font-weight: 900; color: #16a34a; line-height: 1.2; }
-    .reveal-score.no-score { color: #ef4444; font-weight: 700; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); }
+    .reveal-score { font-size: clamp(1.1rem, max(3vw, 3vh), 99rem); font-weight: 900; color: #16a34a; line-height: 1.2; }
+    .reveal-score.no-score { color: #ef4444; font-weight: 700; font-size: clamp(0.85rem, max(2vw, 2vh), 99rem); }
     .reveal-retry {
       border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
       font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 800;
@@ -92,29 +92,33 @@
     }
     .main-btn:hover { transform: scale(1.04); }
 
-    /* ── Résultat 행 ── */
-    .res-wrap { width: 94%; max-width: 90vw; display: flex; flex-direction: column; gap: 1.6vh; align-items: stretch; }
+    /* ── Résultat: 화면을 채우는 5행 구성 (분할 없음). 모든 크기는 --res-scale 배율 — 꽉 차면 전체 비율 축소 ── */
+    .res-wrap { width: 95%; max-width: 92vw; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-evenly; gap: calc(1.2vh * var(--res-scale, 1)); overflow: hidden; }
     .res-row {
-      display: flex; align-items: center; gap: 2vw; background: #fff; border: 0.15vh solid #e9d5ff;
-      border-radius: 1.2vw; padding: 1.4vh 2.4vw; box-shadow: 0 0.3vh 1.2vh rgba(124,58,237,0.08);
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: calc(2.8vw * var(--res-scale, 1)); background: #fff; border: 0.18vh solid #e9d5ff;
+      border-radius: 1.4vw; padding: calc(1.8vh * var(--res-scale, 1)) calc(3vw * var(--res-scale, 1)); box-shadow: 0 0.4vh 1.6vh rgba(124,58,237,0.1);
     }
-    .res-thumb {
-      width: clamp(1.2rem, 4vmin, 2.2rem); height: clamp(1.2rem, 4vmin, 2.2rem);
-      border-radius: 0.6vw; object-fit: cover; cursor: zoom-in; flex-shrink: 0; background: #ede9fe;
+    .res-thumbwrap { position: relative; flex-shrink: 0; cursor: pointer; }
+    .res-thumbwrap .res-thumb {
+      width: calc(clamp(2.4rem, 7vh, 99rem) * var(--res-scale, 1)); height: calc(clamp(2.4rem, 7vh, 99rem) * var(--res-scale, 1));
+      border-radius: 1vw; object-fit: cover; background: #ede9fe; display: block;
     }
-    .res-texts { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.4vh; }
-    .res-ko { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 1.05rem); font-weight: 700; color: #1e1b2e; line-height: 1.25; }
-    .res-fr { font-family: 'Nunito', sans-serif; font-size: 0.85em; font-weight: 600; color: #6b7280; }
-    .res-user { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.75rem, max(1.8vw, 1.8vh), 0.95rem); font-weight: 500; color: #4b5563; line-height: 1.25;
+    .res-zoom {
+      position: absolute; right: -0.5vmin; bottom: -0.5vmin;
+      width: calc(clamp(1.1rem, 3.4vh, 99rem) * var(--res-scale, 1)); height: calc(clamp(1.1rem, 3.4vh, 99rem) * var(--res-scale, 1));
+      background: #7c3aed; color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: calc(clamp(0.6rem, 1.9vh, 99rem) * var(--res-scale, 1));
+      box-shadow: 0 0.2vh 0.8vh rgba(0,0,0,0.25);
+    }
+    .res-texts { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .res-ko { font-family: 'Noto Sans KR', sans-serif; font-size: calc(clamp(1rem, 2.6vh, 99rem) * var(--res-scale, 1)); font-weight: 800; color: #1e1b2e; line-height: 1.3; }
+    .res-fr { font-family: 'Nunito', sans-serif; font-size: calc(clamp(0.85rem, 2vh, 99rem) * var(--res-scale, 1)); font-weight: 600; color: #6b7280; line-height: 1.35; }
+    .res-divider { border-top: 0.18vh solid #ede9fe; margin: calc(0.6vh * var(--res-scale, 1)) 0; }
+    .res-user { font-family: 'Noto Sans KR', sans-serif; font-size: calc(clamp(0.9rem, 2.3vh, 99rem) * var(--res-scale, 1)); font-weight: 700; color: #7c3aed; line-height: 1.3;
       overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .res-score { font-size: clamp(0.95rem, max(2.6vw, 2.6vh), 1.3rem); font-weight: 900; color: #16a34a; flex-shrink: 0; }
-
-    /* ── 세로 화면(모바일): Résultat 2페이지 분할 — page 1: 문제 1,2,3 / page 2: 문제 4,5 ── */
-    #res-suivant { display: none; }
-    @media (orientation: portrait) {
-      #res-view-2 { display: none; }
-      #res-suivant { display: inline-flex; }
-    }
+    .res-score { font-size: calc(clamp(1.05rem, 3vh, 99rem) * var(--res-scale, 1)); font-weight: 900; color: #16a34a; flex-shrink: 0; }
     /* ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ── */
     #img-popup {
       position: fixed; inset: 0; background: rgba(30, 27, 46, 0.65); z-index: 50;
@@ -128,6 +132,22 @@
       display: flex; align-items: center; justify-content: center; font-size: clamp(1.1rem, max(3.5vw, 3.5vh), 1.7rem);
       box-shadow: 0 0.4vh 1.6vh rgba(0,0,0,0.25); z-index: 51;
     }
+    /* ── Goals: 큰 텍스트 박스 — consigne과 sub consigne 2pt 폰트 차이, 양쪽 정렬 ── */
+    #goals-box {
+      width: 100%; background: #fff; border: 0.2vh solid #e9d5ff; border-radius: 1.4vw;
+      padding: 3vh 4vw; box-shadow: 0 0.5vh 2vh rgba(124,58,237,0.1);
+      display: flex; flex-direction: column; gap: 2vh;
+    }
+    .goal-main {
+      font-family: 'Nunito', sans-serif; font-weight: 800; color: #4c1d95; line-height: 1.6;
+      font-size: calc(clamp(0.9rem, max(2vw, 2vh), 99rem) + 2px);
+      text-align: justify;
+    }
+    .goal-sub {
+      font-family: 'Nunito', sans-serif; font-weight: 500; color: #4b5563; line-height: 1.6;
+      font-size: clamp(0.9rem, max(2vw, 2vh), 99rem);
+      text-align: justify;
+    }
   </style>
 </head>
 <body class="bg-violet-50">
@@ -140,20 +160,23 @@
           <i class="ph ph-image-square" style="font-size:clamp(1.75rem,max(6vw,6vh),99rem);color:#fff;"></i>
         </div>
         <p style="font-size:clamp(1.05rem,max(2.6vw,2.6vh),99rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;line-height:1.5;margin-bottom:1.5vh;"><span style="white-space:nowrap;">Chapitre 3 :</span> <span style="display:inline-block;">La localisation d’un objet</span></p>
-        <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Mise en pratique 🗣️ Décrire des scènes 🎨</p>
+        <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Décrire des scènes 🎨</p>
         <h1 style="font-size:clamp(1.5rem,max(5vw,5vh),99rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;margin-top:-1.5vh;">Cinq scènes du quotidien</h1>
         <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(0.9rem,max(2.5vw,2.5vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
       </div>
     </div>
   </div>
 
-  <!-- ════════ PAGE 1 — GOALS ════════ -->
+  <!-- ════════ PAGE 1 — GOALS: 큰 텍스트 박스, consigne/sub 2pt 차이, 양쪽 정렬 ════════ -->
   <div class="page flex-col bg-violet-50" id="page-1">
-    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2.4vh;">
-      <p style="font-size:clamp(0.95rem,max(2.4vw,2.4vh),99rem);font-weight:600;line-height:1.7;text-align:center;color:#1e1b2e;">On va vous montrer 5 images. Décrivez chaque image en coréen.</p>
-      <p style="font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:500;line-height:1.7;text-align:center;color:#4b5563;">*Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
-      <p style="font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:500;line-height:1.7;text-align:center;color:#4b5563;">*Vous pouvez obtenir jusqu’à 10 points par question.</p>
-      <div style="display:flex;justify-content:center;margin-top:1vh;">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:3vh;">
+      <div id="goals-box">
+        <p class="goal-main">On va vous montrer 5 images. Décrivez chaque image en coréen.</p>
+        <p class="goal-sub">Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
+        <p class="goal-sub">Vous pouvez obtenir jusqu’à 10 points par question.</p>
+        <p class="goal-sub">Vous perdez 2 points si vous ouvrez l’indice.</p>
+      </div>
+      <div style="display:flex;justify-content:center;">
         <button class="main-btn" id="goals-btn" onclick="goToPage(2)">C’est parti !</button>
       </div>
     </div>
@@ -164,11 +187,7 @@
 
   <!-- ════════ PAGE 7 — RÉSULTAT ════════ -->
   <div class="page flex-col bg-violet-50" id="page-7">
-    <div class="res-wrap" id="res-wrap">
-      <div id="res-view-1" style="display:flex;flex-direction:column;gap:1.6vh;"></div>
-      <div id="res-view-2" style="display:flex;flex-direction:column;gap:1.6vh;"></div>
-    </div>
-    <button class="main-btn" id="res-suivant" onclick="showResView2()">Suivant</button>
+    <div class="res-wrap" id="res-wrap"></div>
   </div>
 
   <!-- 이미지 팝업 (화면 80%, 우측 상단 X) -->
@@ -204,16 +223,29 @@ const EXAMPLES = [
   { ko: '은행에 의자가 있어요.', fr: 'Il y a une chaise à la banque.' },
   { ko: '고양이가 거실에 있어요.', fr: 'Le chat est au salon.' },
 ];
-// #Systeminstruction for Gemini — 실라버스 전문 그대로
-const SYSTEM_INSTRUCTION = `#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 
+// #Systeminstruction for Gemini — 실라버스 갱신본, 문제별 키워드 조건 포함
+const QUESTION_KEYWORDS = [
+  '침대, 방, 오른쪽, 왼쪽',
+  '한국, 가다, 공항',
+  '학교, 선생님, 일하다, 공부하다',
+  '은행, 의자, 사람',
+  '고양이, 거실, 기다리다, 자다',
+];
+function systemInstruction(n) {
+  return `#ilnk: ${IMAGES[n]}
+#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 
 #conditions:
-- 일부 오류가 있지만 이해 가능한 경우 최대 3점 감점.
-- 전달하고자 하는 주 메시지가 그림과 일치하지 않는 경우 5점 이상 감점.
-- 발화 내용에 아무 의미가 없거나 주제와 전혀 관련 없는 발화인 경우 8점 이상 감점.
-- 발화 내용이 한국어가 아닌 경우 5점 이상 감점
+- 문제의 키워드를 2개 이상 사용해 문법적으로 완전한 문장을 만들어야 10점 가능. (동사 활용 가능)
+  ${QUESTION_KEYWORDS[n]}
+- 일부 문법상 오류가 있으나 이해가 가능한 수준: 6-9점
+- 단어만 나열하는 경우: 최대 5점
+- 단어만 나열했고 단어가 그림과 일치하지 않는 경우: 최대 2점
+- 문장 형태로 발화했으나 내용이 그림과 일치하지 않는 경우: 3-6점
+- 의미 없는 발화, 이해할 수 없는 문장, 외국어로 발화: 1-3점
 - 전혀 발화를 하지 않은 경우 무조건 0점.
 #output format: "발화값", 점수
 #output format example: "이것은 사과입니다", 10`;
+}
 
 const TOTAL_Q = 5;
 const RECORD_SECONDS = 15;   // 최대 15초
@@ -246,7 +278,7 @@ function buildQuestionPages() {
       <img class="q-img" id="q-img-${n}" src="${IMAGES[n]}" alt="Image ${n + 1}">
       <div class="q-controls" id="q-controls-${n}">
         <div class="q-hint" id="q-hint-${n}">
-          <button class="hint-btn" id="hint-btn-${n}" onclick="useHint(${n})">Hint (-2)</button>
+          <button class="hint-btn" id="hint-btn-${n}" onclick="useHint(${n})">Indice (-2)</button>
         </div>
         <button class="mic-btn disabled" id="mic-${n}" onclick="toggleMic(${n})">
           <i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>
@@ -401,7 +433,7 @@ async function scoreWithGemini(n, audioBlob) {
           { inline_data: { mime_type: 'audio/webm', data: audioBase64 } }
         ]
       }],
-      systemInstruction: SYSTEM_INSTRUCTION
+      systemInstruction: systemInstruction(n)
     };
     if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
     const res = await fetch(GEMINI_URL, {
@@ -523,10 +555,8 @@ function enterResultat() {
 function triggerLessonComplete() { window.parent.postMessage({ type: 'lesson_complete' }, '*'); }
 
 function buildResultat() {
-  const v1 = document.getElementById('res-view-1');
-  const v2 = document.getElementById('res-view-2');
-  v1.innerHTML = '';
-  v2.innerHTML = '';
+  const wrap = document.getElementById('res-wrap');
+  wrap.innerHTML = '';
   for (let n = 0; n < TOTAL_Q; n++) {
     const row = document.createElement('div');
     row.className = 'res-row';
@@ -534,62 +564,31 @@ function buildResultat() {
     const transcript = st.transcript !== null ? st.transcript : '—';
     const scoreTxt = st.score !== null ? st.score + '/10' : '—';
     row.innerHTML = `
-      <img class="res-thumb" src="${IMAGES[n]}" alt="Image ${n + 1}" onclick="openPopup(${n})">
+      <div class="res-thumbwrap" onclick="openPopup(${n})">
+        <img class="res-thumb" src="${IMAGES[n]}" alt="Image ${n + 1}">
+        <span class="res-zoom"><i class="ph-bold ph-magnifying-glass-plus"></i></span>
+      </div>
       <div class="res-texts">
-        <p class="res-ko">${EXAMPLES[n].ko} <span class="res-fr">(${EXAMPLES[n].fr})</span></p>
+        <p class="res-ko">${EXAMPLES[n].ko}</p>
+        <p class="res-fr">${EXAMPLES[n].fr}</p>
+        <div class="res-divider"></div>
         <p class="res-user">${transcript}</p>
       </div>
       <p class="res-score">${scoreTxt}</p>`;
-    (n < 3 ? v1 : v2).appendChild(row);
+    wrap.appendChild(row);
   }
-  applyResLayout();
-  // 웹폰트 적용 등으로 행 높이가 확정된 뒤 재판정 (분할 여부 오측정 방지)
-  setTimeout(applyResLayout, 350);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => applyResLayout());
+  fitResultat();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentPage === 7) fitResultat(); });
 }
-function showResView2() {   // 분할 모드 page 2: 문제 4,5
-  resView = 2;
-  document.getElementById('res-view-1').style.display = 'none';
-  document.getElementById('res-view-2').style.display = 'flex';
-  document.getElementById('res-suivant').style.display = 'none';
-}
-let resView = 1;   // 분할 모드에서 현재 표시 중인 페이지 (1: 문제 1,2,3 / 2: 문제 4,5)
-// 분할 여부 판정: 모든 행이 보인다고 가정한 높이 — 숨겨진 행은 0으로 측정되므로 잠시 전부 표시해 측정
-function measureResNeed() {
-  const v1 = document.getElementById('res-view-1');
-  const v2 = document.getElementById('res-view-2');
-  const d1 = v1.style.display, d2 = v2.style.display;
-  v1.style.display = 'flex'; v2.style.display = 'flex';
-  const rows = Array.from(document.querySelectorAll('.res-row'));
-  const gap = 1.6 * window.innerHeight / 100;
-  const total = rows.reduce((a, r) => a + r.getBoundingClientRect().height, 0) + gap * (rows.length - 1);
-  v1.style.display = d1; v2.style.display = d2;
-  return total;
-}
-function applyResLayout() {
-  // 세로 화면(모바일) 또는 5행 전체가 화면에 들어가지 않는 경우 → 2페이지 분할 (page 1: 문제 1,2,3 / page 2: 문제 4,5)
-  const portrait = window.matchMedia('(orientation: portrait)').matches;
-  const split = portrait || measureResNeed() > window.innerHeight * 0.92;
-  const v1 = document.getElementById('res-view-1');
-  const v2 = document.getElementById('res-view-2');
-  const btn = document.getElementById('res-suivant');
-  if (split) {
-    if (resView === 2) {   // 이미 page 2를 보고 있다면 유지
-      v1.style.display = 'none'; v2.style.display = 'flex'; btn.style.display = 'none';
-    } else {
-      v1.style.display = 'flex'; v2.style.display = 'none'; btn.style.display = 'inline-flex';
-    }
-  } else {
-    resView = 1;
-    v1.style.display = 'flex'; v2.style.display = 'flex'; btn.style.display = 'none';
+// ── 꽉 차면 비율 축소: 5행이 화면에 항상 통째로 들어가도록 전체 배율 조정 ──
+function fitResultat() {
+  const wrap = document.getElementById('res-wrap');
+  for (let i = 0; i < 3; i++) {
+    const avail = wrap.clientHeight;                       // flex:1이 확보한 실제 공간
+    const need = wrap.scrollHeight;                        // 현재 배율에서의 내용 높이
+    if (need <= avail) break;
+    document.documentElement.style.setProperty('--res-scale', Math.max(0.5, (avail / need) * 0.98));
   }
-}
-window.addEventListener('resize', () => { if (currentPage === 7) applyResLayout(); });
-// 분할 여부 판정 (세로 화면 또는 5행 미들어남)
-function resSplitMode() {
-  const portrait = window.matchMedia('(orientation: portrait)').matches;
-  if (!document.querySelectorAll('.res-row').length) return portrait;
-  return portrait || measureResNeed() > window.innerHeight * 0.92;
 }
 
 // ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ──
@@ -630,9 +629,10 @@ async function initTone() {
   if (toneReady) return;
   try {
     await Tone.start();
-    startSynth = new Tone.Synth().toDestination();
-    transitionSynth = new Tone.Synth().toDestination();
-    completionSynth = new Tone.Synth().toDestination();
+    completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+    transitionSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+    transitionSynth.volume.value = -15;
+    startSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.15 } }).toDestination();
     toneReady = true;
   } catch (e) { console.warn('Tone init failed:', e); }
 }
