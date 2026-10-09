@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Enrichir son expression (1) — Chapitre 3 — Mise en pratique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <style>
+    :root { --nav-h: max(12vmin, 10vh); --btn: calc(var(--nav-h) * 0.5); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+    .page {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2.5vh 2.5vw; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden;
+    }
+    .page.active { opacity: 1; pointer-events: auto; }
+    .ko { font-family: 'Noto Sans KR', sans-serif; }
+    .invisible { visibility: hidden; }
+
+    /* ── 문제 페이지: 상단 칩 ── */
+    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .q-chip {
+      font-size: clamp(0.85rem, max(2.2vw, 2.2vh), 1.2rem); font-weight: 800; color: #6d28d9;
+      background: #ede9fe; border-radius: 1vw; padding: 0.8vh 2.2vw; line-height: 1.2;
+    }
+    .q-chip.timer-idle { color: #9ca3af; background: #f3f4f6; }
+    /* ── 문제 이미지 (정방형) ── */
+    .q-img {
+      width: min(46vh, 84vw); aspect-ratio: 1 / 1; object-fit: cover;
+      border-radius: 1.6vw; box-shadow: 0 0.6vh 2.4vh rgba(124,58,237,0.18);
+      background: #ede9fe; flex-shrink: 0;
+    }
+    /* ── 힌트 영역: 힌트 메시지 최대 크기만큼 항상 공간 확보 ── */
+    .q-hint {
+      width: min(46vh, 84vw); height: clamp(2.6rem, 9vh, 99rem);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .hint-btn {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 800;
+      padding: 1.2vh 5vw; cursor: pointer; box-shadow: 0 0.4vh 1.6vh rgba(124,58,237,0.2); transition: transform 0.15s;
+    }
+    .hint-btn:hover { transform: scale(1.04); }
+    .hint-msg {
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 600;
+      color: #5b21b6; text-align: center; line-height: 1.35; padding: 0 1vw;
+    }
+    /* ── 마이크 버튼 ── */
+    .mic-btn {
+      width: calc(var(--btn) * 1.6); height: calc(var(--btn) * 1.6);
+      border-radius: 50%; border: none; background: #7c3aed; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: transform 0.15s, background 0.15s; flex-shrink: 0;
+    }
+    .mic-btn:hover:not(.disabled) { transform: scale(1.05); }
+    .mic-btn.disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
+    .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+    /* ── 힌트+마이크 → 전사·점수 공개란: 같은 크기로 교체 (화면 흔들림 없음) ── */
+    .q-controls { display: flex; flex-direction: column; align-items: center; gap: 1.2vh; flex-shrink: 0; }
+    .q-controls .q-hint, .q-controls .mic-btn { transition: none; }
+    .q-reveal {
+      width: min(46vh, 84vw); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.8vh;
+      flex-shrink: 0;
+    }
+    .reveal-transcript {
+      font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.85rem, max(2.2vw, 2.2vh), 99rem); font-weight: 600;
+      color: #1e1b2e; text-align: center; line-height: 1.3;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .reveal-score { font-size: clamp(1rem, max(3vw, 3vh), 99rem); font-weight: 900; color: #16a34a; line-height: 1.2; }
+    .reveal-score.no-score { color: #ef4444; font-weight: 700; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); }
+    .reveal-retry {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 800;
+      padding: 1vh 6vw; cursor: pointer;
+    }
+    /* ── Voir le résultat 슬롯: 모든 문제 페이지에 항상 동일 공간 확보 ── */
+    .q-next-slot {
+      height: clamp(2.8rem, 10vh, 99rem); width: 100%;
+      display: flex; align-items: flex-start; justify-content: center; flex-shrink: 0;
+    }
+    .main-btn {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.9rem, max(2.5vw, 2.5vh), 99rem); font-weight: 800; letter-spacing: 0.06em;
+      padding: 1.6vh 7vw; cursor: pointer; box-shadow: 0 0.5vh 1.8vh rgba(124,58,237,0.2); transition: transform 0.15s;
+    }
+    .main-btn:hover { transform: scale(1.04); }
+
+    /* ── Résultat 행 ── */
+    .res-wrap { width: 94%; max-width: 90vw; display: flex; flex-direction: column; gap: 1.6vh; align-items: stretch; }
+    .res-row {
+      display: flex; align-items: center; gap: 2vw; background: #fff; border: 0.15vh solid #e9d5ff;
+      border-radius: 1.2vw; padding: 1.4vh 2.4vw; box-shadow: 0 0.3vh 1.2vh rgba(124,58,237,0.08);
+    }
+    .res-thumb {
+      width: clamp(1.2rem, 4vmin, 2.2rem); height: clamp(1.2rem, 4vmin, 2.2rem);
+      border-radius: 0.6vw; object-fit: cover; cursor: zoom-in; flex-shrink: 0; background: #ede9fe;
+    }
+    .res-texts { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.4vh; }
+    .res-ko { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 1.05rem); font-weight: 700; color: #1e1b2e; line-height: 1.25; }
+    .res-fr { font-family: 'Nunito', sans-serif; font-size: 0.85em; font-weight: 600; color: #6b7280; }
+    .res-user { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.75rem, max(1.8vw, 1.8vh), 0.95rem); font-weight: 500; color: #4b5563; line-height: 1.25;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .res-score { font-size: clamp(0.95rem, max(2.6vw, 2.6vh), 1.3rem); font-weight: 900; color: #16a34a; flex-shrink: 0; }
+
+    /* ── 세로 화면(모바일): Résultat 2페이지 분할 — page 1: 문제 1,2,3 / page 2: 문제 4,5 ── */
+    #res-suivant { display: none; }
+    @media (orientation: portrait) {
+      #res-view-2 { display: none; }
+      #res-suivant { display: inline-flex; }
+    }
+    /* ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ── */
+    #img-popup {
+      position: fixed; inset: 0; background: rgba(30, 27, 46, 0.65); z-index: 50;
+      display: none; align-items: center; justify-content: center;
+    }
+    #img-popup .popup-box { position: relative; width: 80vw; height: 80vh; }
+    #img-popup .popup-img { width: 100%; height: 100%; object-fit: contain; border-radius: 1.2vw; background: #fff; }
+    #img-popup .popup-close {
+      position: absolute; top: -1.2vh; right: -1.2vw; width: clamp(2.2rem, max(7vw, 7vh), 3.2rem); height: clamp(2.2rem, max(7vw, 7vh), 3.2rem);
+      border-radius: 50%; border: none; background: #7c3aed; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: clamp(1.1rem, max(3.5vw, 3.5vh), 1.7rem);
+      box-shadow: 0 0.4vh 1.6vh rgba(0,0,0,0.25); z-index: 51;
+    }
+  </style>
+</head>
+<body class="bg-violet-50">
+
+  <!-- ════════ PAGE 0 — COVER ════════ -->
+  <div class="page active flex-col bg-violet-50" id="page-0">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <div class="flex flex-col items-center" style="gap:3vh;">
+        <div style="width:clamp(3.5rem,max(12vw,12vh),99rem);height:clamp(3.5rem,max(12vw,12vh),99rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
+          <i class="ph ph-image-square" style="font-size:clamp(1.75rem,max(6vw,6vh),99rem);color:#fff;"></i>
+        </div>
+        <p style="font-size:clamp(1.05rem,max(2.6vw,2.6vh),99rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;line-height:1.5;margin-bottom:1.5vh;"><span style="white-space:nowrap;">Chapitre 3 :</span> <span style="display:inline-block;">La localisation d’un objet</span></p>
+        <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Mise en pratique 🗣️ Décrire des scènes 🎨</p>
+        <h1 style="font-size:clamp(1.5rem,max(5vw,5vh),99rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;margin-top:-1.5vh;">Cinq scènes du quotidien</h1>
+        <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(0.9rem,max(2.5vw,2.5vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE 1 — GOALS ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-1">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:2.4vh;">
+      <p style="font-size:clamp(0.95rem,max(2.4vw,2.4vh),99rem);font-weight:600;line-height:1.7;text-align:center;color:#1e1b2e;">On va vous montrer 5 images. Décrivez chaque image en coréen.</p>
+      <p style="font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:500;line-height:1.7;text-align:center;color:#4b5563;">*Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
+      <p style="font-size:clamp(0.85rem,max(2vw,2vh),99rem);font-weight:500;line-height:1.7;text-align:center;color:#4b5563;">*Vous pouvez obtenir jusqu’à 10 points par question.</p>
+      <div style="display:flex;justify-content:center;margin-top:1vh;">
+        <button class="main-btn" id="goals-btn" onclick="goToPage(2)">C’est parti !</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGES 2-6 — EXERCICE (문제 1-5) ════════ -->
+  <!-- 문제 페이지들은 JS로 생성 -->
+
+  <!-- ════════ PAGE 7 — RÉSULTAT ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-7">
+    <div class="res-wrap" id="res-wrap">
+      <div id="res-view-1" style="display:flex;flex-direction:column;gap:1.6vh;"></div>
+      <div id="res-view-2" style="display:flex;flex-direction:column;gap:1.6vh;"></div>
+    </div>
+    <button class="main-btn" id="res-suivant" onclick="showResView2()">Suivant</button>
+  </div>
+
+  <!-- 이미지 팝업 (화면 80%, 우측 상단 X) -->
+  <div id="img-popup">
+    <div class="popup-box">
+      <img class="popup-img" id="popup-img" src="" alt="">
+      <button class="popup-close" onclick="closePopup()" aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
+    </div>
+  </div>
+
+<script>
+// ================================================================
+// 레슨 데이터 — 실라버스(Notion) 원문 그대로
+// ================================================================
+const IMAGES = [
+  'https://res.cloudinary.com/de76i94ia/image/upload/v1791463331/image1_bynn5s.png',
+  'https://res.cloudinary.com/de76i94ia/image/upload/v1791467271/image_2_w1qsue.png',
+  'https://res.cloudinary.com/de76i94ia/image/upload/v1791481512/Image_3_xfmxac.png',
+  'https://res.cloudinary.com/de76i94ia/image/upload/v1791481512/image_4_nxpvqo.png',
+  'https://res.cloudinary.com/de76i94ia/image/upload/v1791481512/image_5_mmsvrb.png',
+];
+const HINTS = [
+  'Il y a un lit dans la chambre.',
+  'Je vais en Corée.',
+  'Le professeur travaille à l’école.',
+  'Il y a une chaise à la banque.',
+  'Le chat est au salon.',
+];
+const EXAMPLES = [
+  { ko: '방에 침대가 있어요.', fr: 'Il y a un lit dans la chambre.' },
+  { ko: '한국에 가요.', fr: 'Je vais en Corée.' },
+  { ko: '선생님이 학교에서 일해요.', fr: 'Le professeur travaille à l’école.' },
+  { ko: '은행에 의자가 있어요.', fr: 'Il y a une chaise à la banque.' },
+  { ko: '고양이가 거실에 있어요.', fr: 'Le chat est au salon.' },
+];
+// #Systeminstruction for Gemini — 실라버스 전문 그대로
+const SYSTEM_INSTRUCTION = `#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 
+#conditions:
+- 일부 오류가 있지만 이해 가능한 경우 최대 3점 감점.
+- 전달하고자 하는 주 메시지가 그림과 일치하지 않는 경우 5점 이상 감점.
+- 발화 내용에 아무 의미가 없거나 주제와 전혀 관련 없는 발화인 경우 8점 이상 감점.
+- 발화 내용이 한국어가 아닌 경우 5점 이상 감점
+- 전혀 발화를 하지 않은 경우 무조건 0점.
+#output format: "발화값", 점수
+#output format example: "이것은 사과입니다", 10`;
+
+const TOTAL_Q = 5;
+const RECORD_SECONDS = 15;   // 최대 15초
+const AUTO_NEXT_MS = 3000;    // 점수 공개 후 3초 뒤 자동 전환
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+
+let currentPage = 0;
+let lessonPermit = null;
+let lessonId = null;
+window.addEventListener("message", (event) => {
+  if (event.data?.type !== "coreeno:permit") return;
+  lessonPermit = event.data.permit;
+  lessonId = event.data.lesson_id;
+});
+
+// ================================================================
+// 문제 페이지 2-6 생성 (페이지 들어가면 그림 → 2초 후 마이크·타이머 자동 활성화)
+// ================================================================
+function buildQuestionPages() {
+  for (let n = 0; n < TOTAL_Q; n++) {
+    const pageNum = 2 + n;
+    const page = document.createElement('div');
+    page.className = 'page flex-col bg-violet-50';
+    page.id = 'page-' + pageNum;
+    page.innerHTML = `
+      <div class="q-top">
+        <span class="q-chip" id="q-num-${n}">${n + 1}/5</span>
+        <span class="q-chip timer-idle" id="q-timer-${n}">15 s</span>
+      </div>
+      <img class="q-img" id="q-img-${n}" src="${IMAGES[n]}" alt="Image ${n + 1}">
+      <div class="q-controls" id="q-controls-${n}">
+        <div class="q-hint" id="q-hint-${n}">
+          <button class="hint-btn" id="hint-btn-${n}" onclick="useHint(${n})">Hint (-2)</button>
+        </div>
+        <button class="mic-btn disabled" id="mic-${n}" onclick="toggleMic(${n})">
+          <i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>
+        </button>
+      </div>
+      <div class="q-reveal" id="q-reveal-${n}">
+        <p class="reveal-transcript" id="reveal-tr-${n}"></p>
+        <p class="reveal-score" id="reveal-sc-${n}"></p>
+      </div>
+      <div class="q-next-slot">
+        <button class="main-btn invisible" id="voir-${n}" onclick="goToPage(7)">Voir le résultat</button>
+      </div>`;
+    document.body.insertBefore(page, document.getElementById('page-7'));
+  }
+}
+
+// ================================================================
+// 문제 상태
+// ================================================================
+const qState = [];   // { recording, timer, timerVal, hintUsed, done, transcript, score, retrying }
+for (let i = 0; i < TOTAL_Q; i++) qState.push({ recording: false, timer: null, timerVal: RECORD_SECONDS, hintUsed: false, done: false, transcript: null, score: null, retrying: false, autoTimer: null });
+
+function revealEl(n) { return document.getElementById('q-reveal-' + n); }
+// 힌트+마이크 공개란을 전사·점수 공개란으로 같은 크기로 교체
+function swapToReveal(n) {
+  const controls = document.getElementById('q-controls-' + n);
+  const reveal = revealEl(n);
+  if (reveal.style.display === 'flex') return;
+  reveal.style.minHeight = controls.offsetHeight + 'px';
+  controls.style.display = 'none';
+  reveal.style.display = 'flex';
+}
+
+// ── 문제 페이지 진입: 그림 표시 → 2초 후 마이크·타이머 자동 활성화 ──
+function enterQuestion(n) {
+  if (qState[n].done && !qState[n].retrying) return;
+  // 이미지 base64 사전 로드 (Gemini 채점 전송용)
+  prefetchImage(n);
+  const micBtn = document.getElementById('mic-' + n);
+  micBtn.classList.add('disabled');
+  setTimeout(() => { if (currentPage === 2 + n && !qState[n].done) startRecording(n); }, 2000);
+}
+
+// ── 힌트 (-2): 클릭하면 힌트 메시지로 전환 (공간은 항상 확보됨) ──
+function useHint(n) {
+  if (qState[n].hintUsed || qState[n].done) return;
+  qState[n].hintUsed = true;
+  const hintBox = document.getElementById('q-hint-' + n);
+  hintBox.innerHTML = `<p class="hint-msg">${HINTS[n]}</p>`;
+}
+
+// ── 마이크: 자동 시작(15초) 또는 유저가 클릭해 수동 종료 ──
+function toggleMic(n) {
+  const st = qState[n];
+  if (st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (st.recording) {          // 수동 종료
+    if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
+  }
+}
+
+let activeRecorder = null;
+let activeStream = null;
+
+async function startRecording(n) {
+  const st = qState[n];
+  if (st.recording || st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    activeStream = stream;
+    const mediaRecorder = new MediaRecorder(stream);
+    let audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(track => track.stop());
+      if (activeRecorder === mediaRecorder) activeRecorder = null;
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      audioChunks = [];
+      stopTimer(n);
+      st.recording = false;
+      finishQuestion(n, audioBlob);
+    };
+    mediaRecorder.start();
+    activeRecorder = mediaRecorder;
+    st.recording = true;
+    micBtn.classList.remove('disabled');
+    micBtn.classList.add('recording');
+    micBtn.innerHTML = '<i class="ph-fill ph-stop" style="font-size:var(--btn);"></i>';
+    startTimer(n);
+  } catch (err) {
+    console.error('Mic access error:', err);
+    stopTimer(n);
+    st.recording = false;
+    if (!st.done) { swapToReveal(n); showRevealError(n, 'Micro inaccessible. Réessayez.'); }
+  }
+}
+
+// ── 15초 타이머 ──
+function startTimer(n) {
+  const st = qState[n];
+  const el = document.getElementById('q-timer-' + n);
+  st.timerVal = RECORD_SECONDS;
+  el.textContent = RECORD_SECONDS + ' s';
+  el.classList.remove('timer-idle');
+  clearInterval(st.timer);
+  st.timer = setInterval(() => {
+    st.timerVal--;
+    el.textContent = st.timerVal + ' s';
+    if (st.timerVal <= 0) {   // 15초 자동 종료
+      stopTimer(n);
+      if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
+      else if (st.recording) { st.recording = false; }
+    }
+  }, 1000);
+}
+function stopTimer(n) {
+  const st = qState[n];
+  clearInterval(st.timer); st.timer = null;
+  const el = document.getElementById('q-timer-' + n);
+  if (el) el.classList.add('timer-idle');
+}
+
+// ── 녹음 종료 → 힌트+마이크란을 전사·점수 공개란으로 같은 크기로 교체 ──
+function finishQuestion(n, audioBlob) {
+  const st = qState[n];
+  if (st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  micBtn.classList.remove('recording');
+  micBtn.classList.add('disabled');
+  micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
+  // 힌트+마이크 공개란과 동일 크기의 전사·점수란으로 전환 (레이아웃 고정)
+  swapToReveal(n);
+  const trEl = document.getElementById('reveal-tr-' + n);
+  const scEl = document.getElementById('reveal-sc-' + n);
+  trEl.textContent = 'Analyse en cours...';
+  scEl.textContent = '';
+  scEl.className = 'reveal-score';
+  scoreWithGemini(n, audioBlob);
+}
+
+async function scoreWithGemini(n, audioBlob) {
+  const st = qState[n];
+  try {
+    const audioBase64 = await blobToBase64(audioBlob);
+    const imageBase64 = await getImageBase64(n);   // 그림 포함 전송
+    const payload = {
+      contents: [{
+        role: "user",
+        parts: [
+          { inline_data: { mime_type: 'image/png', data: imageBase64 } },
+          { inline_data: { mime_type: 'audio/webm', data: audioBase64 } }
+        ]
+      }],
+      systemInstruction: SYSTEM_INSTRUCTION
+    };
+    if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, permit: lessonPermit, lesson_id: lessonId })
+    });
+    if (!res.ok) throw new Error("API status: " + res.status);
+    const data = await res.json();
+    const resultText = (data.text || "").trim();
+    // #output format: "발화값", 점수
+    const m = resultText.match(/^[“”"']([^“”"']*)[“”"']\s*,\s*(\d+)\s*$/);
+    if (!m) throw new Error('Bad format: ' + resultText.slice(0, 40));
+    let transcript = m[1].trim();
+    let score = parseInt(m[2], 10);
+    if (isNaN(score)) throw new Error('Bad score');
+    score = Math.max(0, Math.min(10, score));
+    if (qState[n].hintUsed) score = Math.max(0, score - 2);   // 힌트 사용: 2점 감점, 최소 0점
+    st.transcript = transcript;
+    st.score = score;
+    st.done = true;
+    showRevealScore(n, transcript, score);
+  } catch (error) {
+    console.warn('Gemini API Error:', error);
+    showRevealError(n, geminiErrorMessage(error));
+  }
+}
+
+function showRevealScore(n, transcript, score) {
+  document.getElementById('reveal-tr-' + n).textContent = transcript;
+  const scEl = document.getElementById('reveal-sc-' + n);
+  scEl.className = 'reveal-score';
+  scEl.textContent = score + '/10';
+  if (n < TOTAL_Q - 1) {   // 점수 공개 후 3초 뒤 자동 전환
+    qState[n].autoTimer = setTimeout(() => { if (currentPage === 2 + n) goToPage(3 + n); }, AUTO_NEXT_MS);
+  } else {                 // 마지막 문제: 점수 공개란 하단 중앙에 Voir le résultat
+    document.getElementById('voir-' + n).classList.remove('invisible');
+  }
+}
+
+function showRevealError(n, message) {
+  document.getElementById('reveal-tr-' + n).textContent = message;
+  const scEl = document.getElementById('reveal-sc-' + n);
+  scEl.className = 'reveal-score no-score';
+  scEl.innerHTML = '<button class="reveal-retry" onclick="retryQuestion(' + n + ')">Réessayer</button>';
+}
+
+function retryQuestion(n) {
+  const st = qState[n];
+  st.retrying = true;
+  const controls = document.getElementById('q-controls-' + n);
+  const reveal = revealEl(n);
+  reveal.style.display = 'none';
+  reveal.style.minHeight = '';
+  controls.style.display = '';
+  // 힌트를 이미 봤다면 메시지 상태 유지
+  if (st.hintUsed) document.getElementById('q-hint-' + n).innerHTML = `<p class="hint-msg">${HINTS[n]}</p>`;
+  startRecording(n);
+}
+
+// ================================================================
+// Gemini 호출 오류 — 프랑스어 안내 (기존 레슨 기준 문구)
+// ================================================================
+let geminiErrorStreak = 0;
+function geminiErrorMessage(error) {
+  const msg = (error && error.message) || String(error);
+  if (msg.indexOf('Lesson permit') !== -1) {
+    return "Permis d'accès indisponible. Veuillez actualiser la page et réessayer.";
+  }
+  if (msg === 'img' || /failed to fetch|network/i.test(msg)) return "Erreur de connexion. Veuillez réessayer.";
+  const m = msg.match(/API status: (\d+)/);
+  if (m) {
+    const status = parseInt(m[1], 10);
+    if (status === 401 || status === 403) return "Permis d'accès expiré. Veuillez actualiser la page et réessayer.";
+    if (status === 429) return "Limite d'utilisation atteinte. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    if (status >= 500) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+  }
+  geminiErrorStreak++;
+  if (geminiErrorStreak >= 2) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+  return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+}
+
+// ================================================================
+// 이미지 base64 (그림 포함 채점 전송용)
+// ================================================================
+const imageB64Cache = {};
+async function prefetchImage(n) {
+  if (imageB64Cache[n]) return imageB64Cache[n];
+  try {
+    const blob = await fetch(IMAGES[n]).then(r => { if (!r.ok) throw new Error('img status ' + r.status); return r.blob(); });
+    imageB64Cache[n] = await blobToBase64(blob);
+  } catch (e) { imageB64Cache[n] = null; }
+  return imageB64Cache[n];
+}
+async function getImageBase64(n) {
+  if (imageB64Cache[n]) return imageB64Cache[n];
+  const b64 = await prefetchImage(n);
+  if (!b64) throw new Error('img');
+  return b64;
+}
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// ================================================================
+// Résultat — 입장 동시에 lesson complete
+// ================================================================
+function enterResultat() {
+  playSfx('end');
+  triggerLessonComplete();
+  buildResultat();
+}
+function triggerLessonComplete() { window.parent.postMessage({ type: 'lesson_complete' }, '*'); }
+
+function buildResultat() {
+  const v1 = document.getElementById('res-view-1');
+  const v2 = document.getElementById('res-view-2');
+  v1.innerHTML = '';
+  v2.innerHTML = '';
+  for (let n = 0; n < TOTAL_Q; n++) {
+    const row = document.createElement('div');
+    row.className = 'res-row';
+    const st = qState[n];
+    const transcript = st.transcript !== null ? st.transcript : '—';
+    const scoreTxt = st.score !== null ? st.score + '/10' : '—';
+    row.innerHTML = `
+      <img class="res-thumb" src="${IMAGES[n]}" alt="Image ${n + 1}" onclick="openPopup(${n})">
+      <div class="res-texts">
+        <p class="res-ko">${EXAMPLES[n].ko} <span class="res-fr">(${EXAMPLES[n].fr})</span></p>
+        <p class="res-user">${transcript}</p>
+      </div>
+      <p class="res-score">${scoreTxt}</p>`;
+    (n < 3 ? v1 : v2).appendChild(row);
+  }
+  applyResLayout();
+  // 웹폰트 적용 등으로 행 높이가 확정된 뒤 재판정 (분할 여부 오측정 방지)
+  setTimeout(applyResLayout, 350);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => applyResLayout());
+}
+function showResView2() {   // 분할 모드 page 2: 문제 4,5
+  resView = 2;
+  document.getElementById('res-view-1').style.display = 'none';
+  document.getElementById('res-view-2').style.display = 'flex';
+  document.getElementById('res-suivant').style.display = 'none';
+}
+let resView = 1;   // 분할 모드에서 현재 표시 중인 페이지 (1: 문제 1,2,3 / 2: 문제 4,5)
+// 분할 여부 판정: 모든 행이 보인다고 가정한 높이 — 숨겨진 행은 0으로 측정되므로 잠시 전부 표시해 측정
+function measureResNeed() {
+  const v1 = document.getElementById('res-view-1');
+  const v2 = document.getElementById('res-view-2');
+  const d1 = v1.style.display, d2 = v2.style.display;
+  v1.style.display = 'flex'; v2.style.display = 'flex';
+  const rows = Array.from(document.querySelectorAll('.res-row'));
+  const gap = 1.6 * window.innerHeight / 100;
+  const total = rows.reduce((a, r) => a + r.getBoundingClientRect().height, 0) + gap * (rows.length - 1);
+  v1.style.display = d1; v2.style.display = d2;
+  return total;
+}
+function applyResLayout() {
+  // 세로 화면(모바일) 또는 5행 전체가 화면에 들어가지 않는 경우 → 2페이지 분할 (page 1: 문제 1,2,3 / page 2: 문제 4,5)
+  const portrait = window.matchMedia('(orientation: portrait)').matches;
+  const split = portrait || measureResNeed() > window.innerHeight * 0.92;
+  const v1 = document.getElementById('res-view-1');
+  const v2 = document.getElementById('res-view-2');
+  const btn = document.getElementById('res-suivant');
+  if (split) {
+    if (resView === 2) {   // 이미 page 2를 보고 있다면 유지
+      v1.style.display = 'none'; v2.style.display = 'flex'; btn.style.display = 'none';
+    } else {
+      v1.style.display = 'flex'; v2.style.display = 'none'; btn.style.display = 'inline-flex';
+    }
+  } else {
+    resView = 1;
+    v1.style.display = 'flex'; v2.style.display = 'flex'; btn.style.display = 'none';
+  }
+}
+window.addEventListener('resize', () => { if (currentPage === 7) applyResLayout(); });
+// 분할 여부 판정 (세로 화면 또는 5행 미들어남)
+function resSplitMode() {
+  const portrait = window.matchMedia('(orientation: portrait)').matches;
+  if (!document.querySelectorAll('.res-row').length) return portrait;
+  return portrait || measureResNeed() > window.innerHeight * 0.92;
+}
+
+// ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ──
+function openPopup(n) {
+  document.getElementById('popup-img').src = IMAGES[n];
+  document.getElementById('img-popup').style.display = 'flex';
+}
+function closePopup() {
+  document.getElementById('img-popup').style.display = 'none';
+}
+
+// ================================================================
+// 페이지 전환
+// ================================================================
+function goToPage(n) {
+  if (n === currentPage) return;
+  playSfx('pageTurn');
+  const oldPage = document.getElementById('page-' + currentPage);
+  if (oldPage) oldPage.classList.remove('active');
+  currentPage = n;
+  const newPage = document.getElementById('page-' + n);
+  if (newPage) newPage.classList.add('active');
+  if (n >= 2 && n <= 6) enterQuestion(n - 2);
+  if (n === 7) enterResultat();
+}
+
+async function startLesson() {
+  await initTone();
+  playSfx('start');
+  goToPage(1);
+}
+
+// ================================================================
+// 효과음 (표준 5종 중 이 레슨 적용분: 시작/페이지넘김/종료)
+// ================================================================
+let toneReady = false, startSynth, transitionSynth, completionSynth;
+async function initTone() {
+  if (toneReady) return;
+  try {
+    await Tone.start();
+    startSynth = new Tone.Synth().toDestination();
+    transitionSynth = new Tone.Synth().toDestination();
+    completionSynth = new Tone.Synth().toDestination();
+    toneReady = true;
+  } catch (e) { console.warn('Tone init failed:', e); }
+}
+function playSfx(type) {
+  if (!toneReady) return;
+  try {
+    switch (type) {
+      case 'pageTurn':
+        transitionSynth.triggerAttackRelease('C6', '0.05s');
+        break;
+      case 'start':
+        startSynth.triggerAttackRelease("E4", "16n", Tone.now());
+        startSynth.triggerAttackRelease("A4", "16n", Tone.now() + 0.12);
+        startSynth.triggerAttackRelease("C#5", "8n", Tone.now() + 0.24);
+        break;
+      case 'end':
+        completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+        break;
+    }
+  } catch (e) {}
+}
+
+buildQuestionPages();
+</script>
+</body>
+</html>
