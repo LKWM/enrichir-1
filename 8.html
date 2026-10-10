@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  // ================================================================
+  // 레슨 이미지 링크 — 실라버스(Notion) 원문 그대로
+  // ================================================================
+  const IMAGES = [
+    // 이미지 링크 — 실라버스(Notion)에서 링크 추가 시 이 배열에 넣으면 자동 연동
+    '',
+    '',
+    '',
+    '',
+    '',
+  ];
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Enrichir son expression (1) — Chapitre 2 — Mise en pratique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <style>
+    :root { --nav-h: max(12vmin, 10vh); --btn: calc(var(--nav-h) * 0.5); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+    .page {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2.5vh 2.5vw; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden;
+    }
+    .page.active { opacity: 1; pointer-events: auto; }
+    .ko { font-family: 'Noto Sans KR', sans-serif; }
+    .invisible { visibility: hidden; }
+
+    /* ── 문제 페이지: 상단 칩 ── */
+    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .q-chip {
+      font-size: clamp(1.05rem, max(2.9vw, 2.9vh), 99rem); font-weight: 800; color: #6d28d9;
+      background: #ede9fe; border-radius: 1.2vw; padding: 1.1vh 2.8vw; line-height: 1.2;
+    }
+    .q-chip.timer-idle { color: #9ca3af; background: #f3f4f6; }
+    /* ── 문제 이미지 (정방형) ── */
+    .q-img {
+      width: min(46vh, 84vw); aspect-ratio: 1 / 1; object-fit: cover;
+      border-radius: 1.6vw; box-shadow: 0 0.6vh 2.4vh rgba(124,58,237,0.18);
+      background: #ede9fe; flex-shrink: 0;
+    }
+    /* ── 힌트 영역: 힌트 메시지 최대 크기만큼 항상 공간 확보 ── */
+    .q-hint {
+      width: min(92vw, 110vh); height: clamp(2.6rem, 10vh, 99rem);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .hint-btn {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.9rem, max(2.2vw, 2.2vh), 99rem); font-weight: 800;
+      padding: 1.2vh 5vw; cursor: pointer; box-shadow: 0 0.4vh 1.6vh rgba(124,58,237,0.2); transition: transform 0.15s;
+    }
+    .hint-btn:hover { transform: scale(1.04); }
+    .hint-msg {
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.85rem, max(1.7vw, 2vh), 99rem); font-weight: 600;
+      color: #5b21b6; text-align: center; line-height: 1.35; padding: 0 1vw;
+    }
+    /* ── 마이크 버튼 ── */
+    .mic-btn {
+      width: calc(var(--btn) * 1.6); height: calc(var(--btn) * 1.6);
+      border-radius: 50%; border: none; background: #7c3aed; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: transform 0.15s, background 0.15s; flex-shrink: 0;
+    }
+    .mic-btn:hover:not(.disabled) { transform: scale(1.05); }
+    .mic-btn.disabled { background: #e9d5ff; cursor: not-allowed; opacity: 0.5; }
+    .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+    /* ── 힌트+마이크 → 전사·점수 공개란: 같은 크기로 교체 (화면 흔들림 없음) ── */
+    .q-controls { display: flex; flex-direction: column; align-items: center; gap: 1.2vh; flex-shrink: 0; }
+    .q-controls .q-hint, .q-controls .mic-btn { transition: none; }
+    .q-reveal {
+      width: min(92vw, 110vh); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.8vh;
+      flex-shrink: 0;
+    }
+    .reveal-transcript {
+      font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.9rem, max(1.9vw, 2.2vh), 99rem); font-weight: 600;
+      color: #1e1b2e; text-align: center; line-height: 1.35;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .reveal-score { font-size: clamp(1.1rem, max(3vw, 3vh), 99rem); font-weight: 900; color: #16a34a; line-height: 1.2; }
+    .reveal-score.no-score { color: #ef4444; font-weight: 700; font-size: clamp(0.85rem, max(2vw, 2vh), 99rem); }
+    .reveal-retry {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.8rem, max(2vw, 2vh), 99rem); font-weight: 800;
+      padding: 1vh 6vw; cursor: pointer;
+    }
+    /* ── Voir le résultat 슬롯: 모든 문제 페이지에 항상 동일 공간 확보 ── */
+    .q-next-slot {
+      height: clamp(2.8rem, 10vh, 99rem); width: 100%;
+      display: flex; align-items: flex-start; justify-content: center; flex-shrink: 0;
+    }
+    .main-btn {
+      border: none; border-radius: 1.2vw; background: linear-gradient(135deg,#7c3aed,#4c1d95); color: #fff;
+      font-family: 'Nunito', sans-serif; font-size: clamp(0.9rem, max(2.5vw, 2.5vh), 99rem); font-weight: 800; letter-spacing: 0.06em;
+      padding: 1.6vh 7vw; cursor: pointer; box-shadow: 0 0.5vh 1.8vh rgba(124,58,237,0.2); transition: transform 0.15s;
+    }
+    .main-btn:hover { transform: scale(1.04); }
+
+    /* ── Résultat: 화면을 채우는 5행 구성 (분할 없음). 모든 크기는 --res-scale 배율 — 꽉 차면 전체 비율 축소 ── */
+    .res-wrap { width: 95%; max-width: 92vw; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-evenly; gap: calc(1.1vh * var(--res-scale, 1)); overflow: hidden; }
+    .res-row {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: calc(2.8vw * var(--res-scale, 1)); background: #fff; border: 0.18vh solid #e9d5ff;
+      border-radius: 1.4vw; padding: calc(1.7vh * var(--res-scale, 1)) calc(3vw * var(--res-scale, 1)); box-shadow: 0 0.4vh 1.6vh rgba(124,58,237,0.1);
+    }
+    .res-thumbwrap { position: relative; flex-shrink: 0; cursor: pointer; }
+    .res-thumbwrap .res-thumb {
+      width: calc(clamp(2.4rem, 6.6vh, 99rem) * var(--res-scale, 1)); height: calc(clamp(2.4rem, 6.6vh, 99rem) * var(--res-scale, 1));
+      border-radius: 1vw; object-fit: cover; background: #ede9fe; display: block;
+    }
+    .res-zoom {
+      position: absolute; right: -0.5vmin; bottom: -0.5vmin;
+      width: calc(clamp(1.1rem, 3.4vh, 99rem) * var(--res-scale, 1)); height: calc(clamp(1.1rem, 3.4vh, 99rem) * var(--res-scale, 1));
+      background: #7c3aed; color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: calc(clamp(0.6rem, 1.9vh, 99rem) * var(--res-scale, 1));
+      box-shadow: 0 0.2vh 0.8vh rgba(0,0,0,0.25);
+    }
+    .res-texts { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .res-ko { font-family: 'Noto Sans KR', sans-serif; font-size: calc(clamp(1rem, 2.45vh, 99rem) * var(--res-scale, 1)); font-weight: 800; color: #1e1b2e; line-height: 1.3; }
+    .res-fr { font-family: 'Nunito', sans-serif; font-size: calc(clamp(0.85rem, 1.9vh, 99rem) * var(--res-scale, 1)); font-weight: 600; color: #6b7280; line-height: 1.35; }
+    .res-divider { border-top: 0.18vh solid #ede9fe; margin: calc(0.5vh * var(--res-scale, 1)) 0; }
+    .res-user { font-family: 'Noto Sans KR', sans-serif; font-size: calc(clamp(0.9rem, 2.15vh, 99rem) * var(--res-scale, 1)); font-weight: 700; color: #7c3aed; line-height: 1.3;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .res-score { font-size: calc(clamp(1.05rem, 2.85vh, 99rem) * var(--res-scale, 1)); font-weight: 900; color: #16a34a; flex-shrink: 0; }
+    /* ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ── */
+    #img-popup {
+      position: fixed; inset: 0; background: rgba(30, 27, 46, 0.65); z-index: 50;
+      display: none; align-items: center; justify-content: center;
+    }
+    #img-popup .popup-box { position: relative; width: 80vw; height: 80vh; }
+    #img-popup .popup-img { width: 100%; height: 100%; object-fit: contain; border-radius: 1.2vw; background: #fff; }
+    #img-popup .popup-close {
+      position: absolute; top: -1.2vh; right: -1.2vw; width: clamp(2.2rem, max(7vw, 7vh), 3.2rem); height: clamp(2.2rem, max(7vw, 7vh), 3.2rem);
+      border-radius: 50%; border: none; background: #7c3aed; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: clamp(1.1rem, max(3.5vw, 3.5vh), 1.7rem);
+      box-shadow: 0 0.4vh 1.6vh rgba(0,0,0,0.25); z-index: 51;
+    }
+    /* ── Goals: 큰 텍스트 박스 — consigne과 sub consigne 2pt 폰트 차이, 양쪽 정렬 ── */
+    #goals-box {
+      width: 100%; background: #fff; border: 0.2vh solid #e9d5ff; border-radius: 1.4vw;
+      padding: 3vh 4vw; box-shadow: 0 0.5vh 2vh rgba(124,58,237,0.1);
+      display: flex; flex-direction: column; gap: 2vh;
+    }
+    .goal-main {
+      font-family: 'Nunito', sans-serif; font-weight: 800; color: #4c1d95; line-height: 1.6;
+      font-size: calc(clamp(0.9rem, max(2vw, 2vh), 99rem) + 2px);
+      text-align: justify;
+    }
+    .goal-sub {
+      font-family: 'Nunito', sans-serif; font-weight: 500; color: #4b5563; line-height: 1.6;
+      font-size: clamp(0.9rem, max(2vw, 2vh), 99rem);
+      text-align: justify;
+    }
+  </style>
+</head>
+<body class="bg-violet-50">
+
+  <!-- ════════ PAGE 0 — COVER ════════ -->
+  <div class="page active flex-col bg-violet-50" id="page-0">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:1.5vh;">
+      <div class="flex flex-col items-center" style="gap:3vh;">
+        <div style="width:clamp(3.5rem,max(12vw,12vh),99rem);height:clamp(3.5rem,max(12vw,12vh),99rem);border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;box-shadow:0 0.5vh 2vh rgba(124,58,237,0.25);flex-shrink:0;">
+          <i class="ph ph-image-square" style="font-size:clamp(1.75rem,max(6vw,6vh),99rem);color:#fff;"></i>
+        </div>
+        <p style="font-size:clamp(1.05rem,max(2.6vw,2.6vh),99rem);font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;text-align:center;line-height:1.5;margin-bottom:1.5vh;"><span style="white-space:nowrap;">Chapitre 2 :</span> <span style="display:inline-block;">Le déplacement et la destination</span></p>
+        <p style="font-size:clamp(0.8rem,max(1.8vw,1.8vh),99rem);font-weight:800;letter-spacing:0.18em;color:#a78bfa;text-align:center;">Décrire des scènes 🎨</p>
+        <h1 style="font-size:clamp(1.5rem,max(5vw,5vh),99rem);font-weight:900;color:#4c1d95;text-align:center;line-height:1.15;margin-top:-1.5vh;">Cinq scènes du quotidien</h1>
+        <button onclick="startLesson()" style="margin-top:1vh;background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:1.2vw;padding:1.8vh 8vw;font-family:'Nunito',sans-serif;font-size:clamp(0.9rem,max(2.5vw,2.5vh),99rem);font-weight:800;letter-spacing:0.06em;cursor:pointer;box-shadow:0 0.5vh 1.8vh rgba(124,58,237,0.2);transition:transform 0.15s;">Commencer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGE 1 — GOALS: 큰 텍스트 박스, consigne/sub 2pt 차이, 양쪽 정렬 ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-1">
+    <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:3vh;">
+      <div id="goals-box">
+        <p class="goal-main">On va vous montrer 5 images. Décrivez chaque image en coréen.</p>
+        <p class="goal-sub">Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
+        <p class="goal-sub">Vous pouvez obtenir jusqu’à 10 points par question.</p>
+        <p class="goal-sub">Vous perdez 2 points si vous ouvrez l’indice.</p>
+      </div>
+      <div style="display:flex;justify-content:center;">
+        <button class="main-btn" id="goals-btn" onclick="goToPage(2)">C’est parti !</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGES 2-6 — EXERCICE (문제 1-5) ════════ -->
+  <!-- 문제 페이지들은 JS로 생성 -->
+
+  <!-- ════════ PAGE 7 — RÉSULTAT ════════ -->
+  <div class="page flex-col bg-violet-50" id="page-7">
+    <div class="res-wrap" id="res-wrap"></div>
+    <button class="main-btn" id="res-suivant" onclick="showResView2()">Suivant</button>
+  </div>
+
+  <!-- 이미지 팝업 (화면 80%, 우측 상단 X) -->
+  <div id="img-popup">
+    <div class="popup-box">
+      <img class="popup-img" id="popup-img" src="" alt="">
+      <button class="popup-close" onclick="closePopup()" aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
+    </div>
+  </div>
+
+<script>
+// ================================================================
+// 레슨 데이터 — 실라버스(Notion) 원문 그대로
+// ================================================================
+const HINTS = [
+  'Je vais à la maison.',
+  'J’entre dans la chambre.',
+  'Un ami vient à la banque.',
+  'J’attends à droite.',
+  'Je vais à l’école.',
+];
+const EXAMPLES = [
+  { ko: '집으로 가요.', fr: 'Je vais à la maison.' },
+  { ko: '방에 들어가요.', fr: 'J’entre dans la chambre.' },
+  { ko: '친구가 은행에 와요.', fr: 'Un ami vient à la banque.' },
+  { ko: '오른쪽에서 기다려요.', fr: 'J’attends à droite.' },
+  { ko: '학교에 가요.', fr: 'Je vais à l’école.' },
+];
+// #Systeminstruction for Gemini — 실라버스 갱신본, 문제별 키워드 조건 포함
+const QUESTION_KEYWORDS = [
+  '집, 가다, 들어가다',
+  '방, 들어가다, 안',
+  '친구, 은행, 오다, 들어오다',
+  '오른쪽, 기다리다, 오다',
+  '학교, 가다',
+];
+function systemInstruction(n) {
+  return `#ilnk: ${IMAGES[n]}
+#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 
+#conditions:
+- 문제의 키워드를 2개 이상 사용해 문법적으로 완전한 문장을 만들어야 10점 가능. (동사 활용 가능)
+  ${QUESTION_KEYWORDS[n]}
+- 일부 문법상 오류가 있으나 이해가 가능한 수준: 6-9점
+- 단어만 나열하는 경우: 최대 5점
+- 단어만 나열했고 단어가 그림과 일치하지 않는 경우: 최대 2점
+- 문장 형태로 발화했으나 내용이 그림과 일치하지 않는 경우: 3-6점
+- 의미 없는 발화, 이해할 수 없는 문장, 외국어로 발화: 1-3점
+- 전혀 발화를 하지 않은 경우 무조건 0점.
+#output format: "발화값", 점수
+#output format example: "이것은 사과입니다", 10`;
+}
+
+const TOTAL_Q = 5;
+const RECORD_SECONDS = 15;   // 최대 15초
+const AUTO_NEXT_MS = 3000;    // 점수 공개 후 3초 뒤 자동 전환
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+
+let currentPage = 0;
+let lessonPermit = null;
+let lessonId = null;
+window.addEventListener("message", (event) => {
+  if (event.data?.type !== "coreeno:permit") return;
+  lessonPermit = event.data.permit;
+  lessonId = event.data.lesson_id;
+});
+
+// ================================================================
+// 문제 페이지 2-6 생성 (페이지 들어가면 그림 → 2초 후 마이크·타이머 자동 활성화)
+// ================================================================
+function buildQuestionPages() {
+  for (let n = 0; n < TOTAL_Q; n++) {
+    const pageNum = 2 + n;
+    const page = document.createElement('div');
+    page.className = 'page flex-col bg-violet-50';
+    page.id = 'page-' + pageNum;
+    page.innerHTML = `
+      <div class="q-top">
+        <span class="q-chip" id="q-num-${n}">${n + 1}/5</span>
+        <span class="q-chip timer-idle" id="q-timer-${n}">15 s</span>
+      </div>
+      <img class="q-img" id="q-img-${n}" ${IMAGES[n] ? `src="${IMAGES[n]}"` : ''} alt="Image ${n + 1}">
+      <div class="q-controls" id="q-controls-${n}">
+        <div class="q-hint" id="q-hint-${n}">
+          <button class="hint-btn" id="hint-btn-${n}" onclick="useHint(${n})">Indice (-2)</button>
+        </div>
+        <button class="mic-btn disabled" id="mic-${n}" onclick="toggleMic(${n})">
+          <i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>
+        </button>
+      </div>
+      <div class="q-reveal" id="q-reveal-${n}">
+        <p class="reveal-transcript" id="reveal-tr-${n}"></p>
+        <p class="reveal-score" id="reveal-sc-${n}"></p>
+      </div>
+      <div class="q-next-slot">
+        <button class="main-btn invisible" id="voir-${n}" onclick="goToPage(7)">Voir le résultat</button>
+      </div>`;
+    document.body.insertBefore(page, document.getElementById('page-7'));
+  }
+}
+
+// ================================================================
+// 문제 상태
+// ================================================================
+const qState = [];   // { recording, timer, timerVal, hintUsed, done, transcript, score, retrying }
+for (let i = 0; i < TOTAL_Q; i++) qState.push({ recording: false, timer: null, timerVal: RECORD_SECONDS, hintUsed: false, done: false, transcript: null, score: null, retrying: false, autoTimer: null });
+
+function revealEl(n) { return document.getElementById('q-reveal-' + n); }
+// 힌트+마이크 공개란을 전사·점수 공개란으로 같은 크기로 교체
+function swapToReveal(n) {
+  const controls = document.getElementById('q-controls-' + n);
+  const reveal = revealEl(n);
+  if (reveal.style.display === 'flex') return;
+  reveal.style.minHeight = controls.offsetHeight + 'px';
+  controls.style.display = 'none';
+  reveal.style.display = 'flex';
+}
+
+// ── 문제 페이지 진입: 그림 표시 → 2초 후 마이크·타이머 자동 활성화 ──
+function enterQuestion(n) {
+  if (qState[n].done && !qState[n].retrying) return;
+  // 이미지 base64 사전 로드 (Gemini 채점 전송용)
+  prefetchImage(n);
+  const micBtn = document.getElementById('mic-' + n);
+  micBtn.classList.add('disabled');
+  setTimeout(() => { if (currentPage === 2 + n && !qState[n].done) startRecording(n); }, 2000);
+}
+
+// ── 힌트 (-2): 클릭하면 힌트 메시지로 전환 (공간은 항상 확보됨) ──
+function useHint(n) {
+  if (qState[n].hintUsed || qState[n].done) return;
+  qState[n].hintUsed = true;
+  const hintBox = document.getElementById('q-hint-' + n);
+  hintBox.innerHTML = `<p class="hint-msg">${HINTS[n]}</p>`;
+}
+
+// ── 마이크: 자동 시작(15초) 또는 유저가 클릭해 수동 종료 ──
+function toggleMic(n) {
+  const st = qState[n];
+  if (st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  if (st.recording) {          // 수동 종료
+    if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
+  }
+}
+
+let activeRecorder = null;
+let activeStream = null;
+
+async function startRecording(n) {
+  const st = qState[n];
+  if (st.recording || st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    activeStream = stream;
+    const mediaRecorder = new MediaRecorder(stream);
+    let audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(track => track.stop());
+      if (activeRecorder === mediaRecorder) activeRecorder = null;
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      audioChunks = [];
+      stopTimer(n);
+      st.recording = false;
+      finishQuestion(n, audioBlob);
+    };
+    mediaRecorder.start();
+    activeRecorder = mediaRecorder;
+    st.recording = true;
+    micBtn.classList.remove('disabled');
+    micBtn.classList.add('recording');
+    micBtn.innerHTML = '<i class="ph-fill ph-stop" style="font-size:var(--btn);"></i>';
+    startTimer(n);
+  } catch (err) {
+    console.error('Mic access error:', err);
+    stopTimer(n);
+    st.recording = false;
+    if (!st.done) { swapToReveal(n); showRevealError(n, 'Micro inaccessible. Réessayez.'); }
+  }
+}
+
+// ── 15초 타이머 ──
+function startTimer(n) {
+  const st = qState[n];
+  const el = document.getElementById('q-timer-' + n);
+  st.timerVal = RECORD_SECONDS;
+  el.textContent = RECORD_SECONDS + ' s';
+  el.classList.remove('timer-idle');
+  clearInterval(st.timer);
+  st.timer = setInterval(() => {
+    st.timerVal--;
+    el.textContent = st.timerVal + ' s';
+    if (st.timerVal <= 0) {   // 15초 자동 종료
+      stopTimer(n);
+      if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
+      else if (st.recording) { st.recording = false; }
+    }
+  }, 1000);
+}
+function stopTimer(n) {
+  const st = qState[n];
+  clearInterval(st.timer); st.timer = null;
+  const el = document.getElementById('q-timer-' + n);
+  if (el) el.classList.add('timer-idle');
+}
+
+// ── 녹음 종료 → 힌트+마이크란을 전사·점수 공개란으로 같은 크기로 교체 ──
+function finishQuestion(n, audioBlob) {
+  const st = qState[n];
+  if (st.done) return;
+  const micBtn = document.getElementById('mic-' + n);
+  micBtn.classList.remove('recording');
+  micBtn.classList.add('disabled');
+  micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
+  // 힌트+마이크 공개란과 동일 크기의 전사·점수란으로 전환 (레이아웃 고정)
+  swapToReveal(n);
+  const trEl = document.getElementById('reveal-tr-' + n);
+  const scEl = document.getElementById('reveal-sc-' + n);
+  trEl.textContent = 'Analyse en cours...';
+  scEl.textContent = '';
+  scEl.className = 'reveal-score';
+  scoreWithGemini(n, audioBlob);
+}
+
+async function scoreWithGemini(n, audioBlob) {
+  const st = qState[n];
+  try {
+    const audioBase64 = await blobToBase64(audioBlob);
+    let imageBase64 = null;
+    try { imageBase64 = await getImageBase64(n); } catch (e) { imageBase64 = null; }   // 그림 링크 없으면 오디오만 전송
+    const parts = [{ inline_data: { mime_type: 'audio/webm', data: audioBase64 } }];
+    if (imageBase64) parts.unshift({ inline_data: { mime_type: 'image/png', data: imageBase64 } });
+    const payload = {
+      contents: [{ role: "user", parts }],
+      systemInstruction: systemInstruction(n)
+    };
+    if (!lessonPermit || !lessonId) throw new Error('Lesson permit is not available yet.');
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, permit: lessonPermit, lesson_id: lessonId })
+    });
+    if (!res.ok) throw new Error("API status: " + res.status);
+    const data = await res.json();
+    const resultText = (data.text || "").trim();
+    // #output format: "발화값", 점수
+    const m = resultText.match(/^[“”"']([^“”"']*)[“”"']\s*,\s*(\d+)\s*$/);
+    if (!m) throw new Error('Bad format: ' + resultText.slice(0, 40));
+    let transcript = m[1].trim();
+    let score = parseInt(m[2], 10);
+    if (isNaN(score)) throw new Error('Bad score');
+    score = Math.max(0, Math.min(10, score));
+    if (qState[n].hintUsed) score = Math.max(0, score - 2);   // 힌트 사용: 2점 감점, 최소 0점
+    st.transcript = transcript;
+    st.score = score;
+    st.done = true;
+    showRevealScore(n, transcript, score);
+  } catch (error) {
+    console.warn('Gemini API Error:', error);
+    showRevealError(n, geminiErrorMessage(error));
+  }
+}
+
+function showRevealScore(n, transcript, score) {
+  document.getElementById('reveal-tr-' + n).textContent = transcript;
+  const scEl = document.getElementById('reveal-sc-' + n);
+  scEl.className = 'reveal-score';
+  scEl.textContent = score + '/10';
+  if (n < TOTAL_Q - 1) {   // 점수 공개 후 3초 뒤 자동 전환
+    qState[n].autoTimer = setTimeout(() => { if (currentPage === 2 + n) goToPage(3 + n); }, AUTO_NEXT_MS);
+  } else {                 // 마지막 문제: 점수 공개란 하단 중앙에 Voir le résultat
+    document.getElementById('voir-' + n).classList.remove('invisible');
+  }
+}
+
+function showRevealError(n, message) {
+  document.getElementById('reveal-tr-' + n).textContent = message;
+  const scEl = document.getElementById('reveal-sc-' + n);
+  scEl.className = 'reveal-score no-score';
+  scEl.innerHTML = '<button class="reveal-retry" onclick="retryQuestion(' + n + ')">Réessayer</button>';
+}
+
+function retryQuestion(n) {
+  const st = qState[n];
+  st.retrying = true;
+  const controls = document.getElementById('q-controls-' + n);
+  const reveal = revealEl(n);
+  reveal.style.display = 'none';
+  reveal.style.minHeight = '';
+  controls.style.display = '';
+  // 힌트를 이미 봤다면 메시지 상태 유지
+  if (st.hintUsed) document.getElementById('q-hint-' + n).innerHTML = `<p class="hint-msg">${HINTS[n]}</p>`;
+  startRecording(n);
+}
+
+// ================================================================
+// Gemini 호출 오류 — 프랑스어 안내 (기존 레슨 기준 문구)
+// ================================================================
+let geminiErrorStreak = 0;
+function geminiErrorMessage(error) {
+  const msg = (error && error.message) || String(error);
+  if (msg.indexOf('Lesson permit') !== -1) {
+    return "Permis d'accès indisponible. Veuillez actualiser la page et réessayer.";
+  }
+  if (msg === 'img' || /failed to fetch|network/i.test(msg)) return "Erreur de connexion. Veuillez réessayer.";
+  const m = msg.match(/API status: (\d+)/);
+  if (m) {
+    const status = parseInt(m[1], 10);
+    if (status === 401 || status === 403) return "Permis d'accès expiré. Veuillez actualiser la page et réessayer.";
+    if (status === 429) return "Limite d'utilisation atteinte. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    if (status >= 500) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+    return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+  }
+  geminiErrorStreak++;
+  if (geminiErrorStreak >= 2) return "Erreur du serveur. Veuillez réessayer dans quelques instants. Si l'erreur persiste, signalez un bug.";
+  return "Erreur inattendue. Si le problème persiste, signalez un bug.";
+}
+
+// ================================================================
+// 이미지 base64 (그림 포함 채점 전송용)
+// ================================================================
+const imageB64Cache = {};
+async function prefetchImage(n) {
+  if (imageB64Cache[n]) return imageB64Cache[n];
+  try {
+    const blob = await fetch(IMAGES[n]).then(r => { if (!r.ok) throw new Error('img status ' + r.status); return r.blob(); });
+    imageB64Cache[n] = await blobToBase64(blob);
+  } catch (e) { imageB64Cache[n] = null; }
+  return imageB64Cache[n];
+}
+async function getImageBase64(n) {
+  if (imageB64Cache[n]) return imageB64Cache[n];
+  const b64 = await prefetchImage(n);
+  if (!b64) throw new Error('img');
+  return b64;
+}
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// ================================================================
+// Résultat — 입장 동시에 lesson complete
+// ================================================================
+function enterResultat() {
+  playSfx('end');
+  triggerLessonComplete();
+  buildResultat();
+}
+function triggerLessonComplete() { window.parent.postMessage({ type: 'lesson_complete' }, '*'); }
+
+function buildResultat() {
+  const wrap = document.getElementById('res-wrap');
+  wrap.innerHTML = '';
+  for (let n = 0; n < TOTAL_Q; n++) {
+    const row = document.createElement('div');
+    row.className = 'res-row';
+    const st = qState[n];
+    const transcript = st.transcript !== null ? st.transcript : '—';
+    const scoreTxt = st.score !== null ? st.score + '/10' : '—';
+    row.innerHTML = `
+      <div class="res-thumbwrap" onclick="openPopup(${n})">
+        <img class="res-thumb" ${IMAGES[n] ? `src="${IMAGES[n]}"` : ''} alt="Image ${n + 1}">
+        ${IMAGES[n] ? '<span class="res-zoom"><i class="ph-bold ph-magnifying-glass-plus"></i></span>' : ''}
+      </div>
+      <div class="res-texts">
+        <p class="res-ko">${EXAMPLES[n].ko}</p>
+        <p class="res-fr">${EXAMPLES[n].fr}</p>
+        <div class="res-divider"></div>
+        <p class="res-user">${transcript}</p>
+      </div>
+      <p class="res-score">${scoreTxt}</p>`;
+    row.id = 'res-row-' + n;
+    wrap.appendChild(row);
+  }
+  resView = 1;
+  fitResultat();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentPage === 7) fitResultat(); });
+}
+// ── 실라버스: 유저 발화값이 많아 한 페이지에 안 들어갈 경우 모바일은 2페이지로 분할
+//    (page 1: 문제 1,2,3 / page 2: 문제 4,5). 발화값이 짧으면 분할 없이 한 페이지.
+//    분할한 페이지가 꽉 차면(또는 비모바일 통합) 꽉 찬 만큼만 비율 축소 ──
+let resView = 1;
+function resRows() { return Array.from(document.querySelectorAll('#res-wrap .res-row')); }
+function applyResSplit(view) {   // 0: 전부 표시 / 1: 문제 1,2,3 표시 / 2: 문제 4,5 표시
+  resRows().forEach((r, i) => {
+    const show = view === 0 ? true : (view === 1 ? i < 3 : i >= 3);
+    r.style.display = show ? '' : 'none';
+  });
+}
+function resScaleLoop(wrap, avail) {
+  for (let i = 0; i < 3; i++) {
+    const need = wrap.scrollHeight;
+    if (need <= avail) break;
+    document.documentElement.style.setProperty('--res-scale', Math.max(0.5, (avail / need) * 0.98));
+  }
+}
+function fitResultat() {
+  const wrap = document.getElementById('res-wrap');
+  const btn = document.getElementById('res-suivant');
+  document.documentElement.style.setProperty('--res-scale', 1);
+  // 1) 한 페이지(5행)에 전부 들어가는지
+  applyResSplit(0);   // 0 = 전부 표시
+  btn.style.display = 'none';
+  const avail = wrap.clientHeight;
+  if (wrap.scrollHeight > avail && window.matchMedia('(orientation: portrait)').matches) {
+    // 모바일(세로): 2페이지 분할 — page 1: 문제 1,2,3 / page 2: 문제 4,5
+    if (resView === 2) { applyResSplit(2); btn.style.display = 'none'; }
+    else { applyResSplit(1); btn.style.display = 'inline-flex'; }
+  }
+  resScaleLoop(wrap, avail);
+}
+function showResView2() {   // 분할 모드 page 2: 문제 4,5
+  resView = 2;
+  const wrap = document.getElementById('res-wrap');
+  document.getElementById('res-suivant').style.display = 'none';
+  applyResSplit(2);
+  resScaleLoop(wrap, wrap.clientHeight);
+}
+
+// ── 이미지 팝업: 화면 크기 80%, 우측 상단 X ──
+function openPopup(n) {
+  if (!IMAGES[n]) return;   // 링크 없는 이미지는 팝업 없음
+  document.getElementById('popup-img').src = IMAGES[n];
+  document.getElementById('img-popup').style.display = 'flex';
+}
+function closePopup() {
+  document.getElementById('img-popup').style.display = 'none';
+}
+
+// ================================================================
+// 페이지 전환
+// ================================================================
+function goToPage(n) {
+  if (n === currentPage) return;
+  playSfx('pageTurn');
+  const oldPage = document.getElementById('page-' + currentPage);
+  if (oldPage) oldPage.classList.remove('active');
+  currentPage = n;
+  const newPage = document.getElementById('page-' + n);
+  if (newPage) newPage.classList.add('active');
+  if (n >= 2 && n <= 6) enterQuestion(n - 2);
+  if (n === 7) enterResultat();
+}
+
+async function startLesson() {
+  await initTone();
+  playSfx('start');
+  goToPage(1);
+}
+
+// ================================================================
+// 효과음 (표준 5종 중 이 레슨 적용분: 시작/페이지넘김/종료)
+// ================================================================
+let toneReady = false, startSynth, transitionSynth, completionSynth;
+async function initTone() {
+  if (toneReady) return;
+  try {
+    await Tone.start();
+    completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+    transitionSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+    transitionSynth.volume.value = -15;
+    startSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.15 } }).toDestination();
+    toneReady = true;
+  } catch (e) { console.warn('Tone init failed:', e); }
+}
+function playSfx(type) {
+  if (!toneReady) return;
+  try {
+    switch (type) {
+      case 'pageTurn':
+        transitionSynth.triggerAttackRelease('C6', '0.05s');
+        break;
+      case 'start':
+        startSynth.triggerAttackRelease("E4", "16n", Tone.now());
+        startSynth.triggerAttackRelease("A4", "16n", Tone.now() + 0.12);
+        startSynth.triggerAttackRelease("C#5", "8n", Tone.now() + 0.24);
+        break;
+      case 'end':
+        completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+        break;
+    }
+  } catch (e) {}
+}
+
+buildQuestionPages();
+</script>
+</body>
+</html>
