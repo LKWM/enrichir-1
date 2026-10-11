@@ -399,7 +399,7 @@
 /* ═══════════════════════════════════════
    CONFIG
    ═══════════════════════════════════════ */
-const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiTransSecure';
 let lessonPermit = null;
 let lessonId = null;
 window.addEventListener("message", (event) => {
@@ -462,26 +462,16 @@ const MATCH_PAGES = {
 
 // Speaking (실라버스 Pages 14-19) — 프랑스어 뜻을 보고 한국어 단어 발화
 const EXERCISES = {
-  14: { type: 'speak', maxAttempts: 2, answer: WORDS[0],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  15: { type: 'speak', maxAttempts: 2, answer: WORDS[1],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  16: { type: 'speak', maxAttempts: 2, answer: WORDS[2],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  17: { type: 'speak', maxAttempts: 2, answer: WORDS[3],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  18: { type: 'speak', maxAttempts: 2, answer: WORDS[4],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  19: { type: 'speak', maxAttempts: 2, answer: WORDS[5],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  20: { type: 'speak', maxAttempts: 2, answer: WORDS[6],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  21: { type: 'speak', maxAttempts: 2, answer: WORDS[7],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  22: { type: 'speak', maxAttempts: 2, answer: WORDS[8],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  23: { type: 'speak', maxAttempts: 2, answer: WORDS[9],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
+  14: { type: 'speak', maxAttempts: 2, answer: WORDS[0] },
+  15: { type: 'speak', maxAttempts: 2, answer: WORDS[1] },
+  16: { type: 'speak', maxAttempts: 2, answer: WORDS[2] },
+  17: { type: 'speak', maxAttempts: 2, answer: WORDS[3] },
+  18: { type: 'speak', maxAttempts: 2, answer: WORDS[4] },
+  19: { type: 'speak', maxAttempts: 2, answer: WORDS[5] },
+  20: { type: 'speak', maxAttempts: 2, answer: WORDS[6] },
+  21: { type: 'speak', maxAttempts: 2, answer: WORDS[7] },
+  22: { type: 'speak', maxAttempts: 2, answer: WORDS[8] },
+  23: { type: 'speak', maxAttempts: 2, answer: WORDS[9] },
 };
 
 // 다음 페이지 진행 게이트가 있는 페이지 (완료 전 Suivant 비활성)
@@ -1087,9 +1077,7 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
         { text: "Analyze the audio response." },
         { inline_data: { mime_type: mimeType, data: audioBase64 } }
       ]
-    }],
-    systemInstruction: ex.systemInstruction
-  };
+    }] };
 
   let transcript = "";
   let isPass = false;

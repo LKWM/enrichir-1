@@ -353,28 +353,19 @@ const SENTENCES = [
 ];
 
 const EXERCISES = {
-  1: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[3],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  2: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[4],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  3: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[5],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  4: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[6],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  5: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[7],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  6: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[8],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  7: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[9],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  16: { type: 'speak', maxAttempts: 2, answer: SENTENCES[3],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
-  17: { type: 'speak', maxAttempts: 2, answer: SENTENCES[9],
-        systemInstruction: "유저의 발화를 한국어로 그대로 전사하라. 점수, 평가, 설명 등 어떤 문구도 덧붙이지 말고 전사값만 답하라." },
+  1: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[3] },
+  2: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[4] },
+  3: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[5] },
+  4: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[6] },
+  5: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[7] },
+  6: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[8] },
+  7: { type: 'repeat', maxAttempts: 2, answer: SENTENCES[9] },
+  16: { type: 'speak', maxAttempts: 2, answer: SENTENCES[3] },
+  17: { type: 'speak', maxAttempts: 2, answer: SENTENCES[9] },
 };
 
 const TOTAL_PAGES = 19;
-const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiChatSecure';
+const GEMINI_URL = 'https://coreeno.base44.app/functions/GeminiTransSecure';
 let lessonPermit = null;
 let lessonId = null;
 window.addEventListener("message", (event) => {
@@ -942,9 +933,7 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
         { text: "Analyze the audio response." },
         { inline_data: { mime_type: mimeType, data: audioBase64 } }
       ]
-    }],
-    systemInstruction: ex.systemInstruction
-  };
+    }] };
 
   let transcript = "";
   let isPass = false;
