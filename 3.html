@@ -798,7 +798,12 @@ function updateProgress() {
 }
 
 async function handleMicClick(pageNum) {
-  if (!EXERCISES[pageNum] || pageState[pageNum]?.completed) return;
+  if (!EXERCISES[pageNum]) return;
+  const st = pageState[pageNum];
+  // [버그수정] Listen and repeat 1회차 이후 재시도 가능 — completed는 다음 버튼 활성화용 (실라버스: 1회 더 시도 가능 / 2회차 종료)
+  if (EXERCISES[pageNum].type === 'repeat') {
+    if ((st?.attempts || 0) >= EXERCISES[pageNum].maxAttempts) return;
+  } else if (st?.completed) return;
   const micBtn = document.getElementById('mic-' + pageNum);
   if (micBtn.classList.contains('disabled')) return;
 
