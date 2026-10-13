@@ -35,7 +35,7 @@
     .invisible { visibility: hidden; }
 
     /* ── 문제 페이지: 상단 칩 ── */
-    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: 2vh; }
+    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: calc((clamp(2.6rem, 10vh, 99rem) - clamp(0.9rem, max(2.2vw, 2.2vh), 99rem) * 1.5 - 2.4vh) / 2); }
     .q-chip {
       font-size: clamp(1.05rem, max(2.9vw, 2.9vh), 99rem); font-weight: 800; color: #6d28d9;
       background: #ede9fe; border-radius: 1.2vw; padding: 1.1vh 2.8vw; line-height: 1.2;
@@ -45,7 +45,7 @@
     .q-img {
       width: min(46vh, 84vw); aspect-ratio: 1 / 1; object-fit: cover;
       border-radius: 1.6vw; box-shadow: 0 0.6vh 2.4vh rgba(124,58,237,0.18);
-      background: #ede9fe; flex-shrink: 0; margin-bottom: 2vh;
+      background: #ede9fe; flex-shrink: 0;
     }
     /* ── 힌트 영역: 힌트 메시지 최대 크기만큼 항상 공간 확보 ── */
     .q-hint {
