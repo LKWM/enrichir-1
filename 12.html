@@ -34,7 +34,7 @@
     .invisible { visibility: hidden; }
 
     /* ── 문제 페이지: 상단 칩 ── */
-    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .q-top { width: 100%; max-width: 92vw; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: 2vh; }
     .q-chip {
       font-size: clamp(1.05rem, max(2.9vw, 2.9vh), 99rem); font-weight: 800; color: #6d28d9;
       background: #ede9fe; border-radius: 1.2vw; padding: 1.1vh 2.8vw; line-height: 1.2;
@@ -44,7 +44,7 @@
     .q-img {
       width: min(46vh, 84vw); aspect-ratio: 1 / 1; object-fit: cover;
       border-radius: 1.6vw; box-shadow: 0 0.6vh 2.4vh rgba(124,58,237,0.18);
-      background: #ede9fe; flex-shrink: 0;
+      background: #ede9fe; flex-shrink: 0; margin-bottom: 2vh;
     }
     /* ── 힌트 영역: 힌트 메시지 최대 크기만큼 항상 공간 확보 ── */
     .q-hint {
@@ -160,6 +160,7 @@
       font-size: clamp(0.9rem, max(2vw, 2vh), 99rem);
       text-align: justify;
     }
+    .goal-sub + .goal-sub { border-top: 0.25vh solid #e9d5ff; padding-top: 2vh; }
   </style>
 </head>
 <body class="bg-violet-50">
@@ -184,9 +185,9 @@
     <div style="width:95%;max-width:90vw;display:flex;flex-direction:column;gap:3vh;">
       <div id="goals-box">
         <p class="goal-main">On va vous montrer 5 images. Décrivez chaque image en coréen.</p>
-        <p class="goal-sub">Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
-        <p class="goal-sub">Vous pouvez obtenir jusqu’à 10 points par question.</p>
-        <p class="goal-sub">Vous perdez 2 points si vous ouvrez l’indice.</p>
+        <p class="goal-sub">1. Pour chaque image, vous pouvez parler pendant 15 secondes maximum. Le microphone se désactive automatiquement au bout de 15 secondes. Si vous n’avez plus rien à dire, vous pouvez cliquer sur le bouton du microphone pour le désactiver vous-même.</p>
+        <p class="goal-sub">2. Vous pouvez obtenir jusqu’à 10 points par question.</p>
+        <p class="goal-sub">3. Vous perdez 2 points si vous ouvrez l’indice.</p>
       </div>
       <div style="display:flex;justify-content:center;">
         <button class="main-btn" id="goals-btn" onclick="goToPage(2)">C’est parti !</button>
@@ -239,7 +240,7 @@ const QUESTION_KEYWORDS = [
 ];
 function systemInstruction(n) {
   return `#ilnk: ${IMAGES[n]}
-#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 
+#context: 이 그림에 대한 한국어 학습자의 묘사이다. 발화를 한글로 전사하고 다음 조건에 맞게 10점 만점으로 평가하라. 발화를 하지 않으면 공란으로 출력, 짧거나 이해할 수 없는 발화도 들린대로 전사한다. 절대 임의로 내용을 생성하거나 교정하지 않는다.
 #conditions:
 - 문제의 키워드를 2개 이상 사용해 문법적으로 완전한 문장을 만들어야 10점 가능. (동사 활용 가능)
   ${QUESTION_KEYWORDS[n]}
@@ -416,6 +417,7 @@ function finishQuestion(n, audioBlob) {
   micBtn.classList.remove('recording');
   micBtn.classList.add('disabled');
   micBtn.innerHTML = '<i class="ph-fill ph-microphone" style="font-size:var(--btn);"></i>';
+  playSfx('recDone');   // 녹음 완료 알림
   // 힌트+마이크 공개란과 동일 크기의 전사·점수란으로 전환 (레이아웃 고정)
   swapToReveal(n);
   const trEl = document.getElementById('reveal-tr-' + n);
@@ -445,7 +447,7 @@ async function scoreWithGemini(n, audioBlob) {
     const res = await fetch(GEMINI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...payload, permit: lessonPermit, lesson_id: lessonId })
+      body: JSON.stringify({ ...payload, model: 'gemini-3.5-flash-lite', permit: lessonPermit, lesson_id: lessonId })
     });
     if (!res.ok) throw new Error("API status: " + res.status);
     const data = await res.json();
@@ -469,6 +471,7 @@ async function scoreWithGemini(n, audioBlob) {
 }
 
 function showRevealScore(n, transcript, score) {
+  playSfx('evalDone');   // 평가 완료 알림
   document.getElementById('reveal-tr-' + n).textContent = transcript;
   const scEl = document.getElementById('reveal-sc-' + n);
   scEl.className = 'reveal-score';
@@ -680,6 +683,13 @@ function playSfx(type) {
     switch (type) {
       case 'pageTurn':
         transitionSynth.triggerAttackRelease('C6', '0.05s');
+        break;
+      case 'recDone':   // 녹음 완료 알림 (짧은 단음)
+        transitionSynth.triggerAttackRelease('G5', '0.08s');
+        break;
+      case 'evalDone':  // 평가 완료 알림 (짧은 2음)
+        transitionSynth.triggerAttackRelease('C5', '0.06s');
+        transitionSynth.triggerAttackRelease('G5', '0.06s', Tone.now() + 0.09);
         break;
       case 'start':
         startSynth.triggerAttackRelease("E4", "16n", Tone.now());
