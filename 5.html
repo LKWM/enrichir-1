@@ -825,7 +825,6 @@ async function processGeminiChat(audioBase64, mimeType, pageNum) {
     contents: [{
       role: "user",
       parts: [
-        { text: "Analyze the audio response." },
         { inline_data: { mime_type: mimeType, data: audioBase64 } }
       ]
     }] };
